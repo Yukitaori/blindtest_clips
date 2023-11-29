@@ -3,14 +3,18 @@
   "version": "1.0.0",
   "description": "Appli pour blindtests de clips avec Electron",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
-    "start": "electron .",
+    "start": "npx tailwind -i styles.css -o ./dist/styles.css && electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Yukitaori",
   "license": "ISC",
   "devDependencies": {
     "electron": "^27.1.2"
+  },
+  "dependencies": {
+    "tailwindcss": "^3.3.5"
   }
 }
 
