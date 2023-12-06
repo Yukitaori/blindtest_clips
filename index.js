@@ -1,5 +1,6 @@
 const { app, BrowserWindow, screen } = require("electron");
 const path = require("node:path");
+var fs = require("fs");
 
 const createWindows = (screens) => {
   // Création de la fenêtre principale
