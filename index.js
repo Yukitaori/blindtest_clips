@@ -1,6 +1,6 @@
-const { app, BrowserWindow, screen } = require("electron");
+const { app, BrowserWindow, ipcMain, screen } = require("electron");
 const path = require("node:path");
-var fs = require("fs");
+const fs = require("node:fs/promises");
 
 const createWindows = (screens) => {
   // Création de la fenêtre principale
@@ -11,6 +11,16 @@ const createWindows = (screens) => {
   });
   mainWindow.loadFile("main.html");
   mainWindow.setPosition(screens[0].bounds.x, screens[0].bounds.y);
+
+  // Ecoute de l'événement "readdir" et récupération des fichier du répertoire dir, que l'on renvoie au renderer via l'événement "createTrackList"
+  ipcMain.on("readdir", async (event, dir) => {
+    await fs.readdir(dir, (err, array) => {
+      console.log(dir);
+      if (err) console.log(err);
+      console.log("click");
+      event.sender.send("createTrackList", array);
+    });
+  });
 
   // Création de la fenêtre secondaire : si deux écrans ou plus sont branchés,
   // la fenêtre est automatiquement en fullscreen sur l'écran 2
@@ -27,6 +37,7 @@ const createWindows = (screens) => {
     const secondaryWindow = new BrowserWindow({
       webPreferences: {
         preload: path.join(__dirname, "secondaryPreload.js"),
+        nodeIntegration: true,
       },
     });
     secondaryWindow.loadFile("secondary.html");
@@ -40,8 +51,8 @@ app.whenReady().then(() => {
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindows();
   });
-});
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
+  app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") app.quit();
+  });
 });
