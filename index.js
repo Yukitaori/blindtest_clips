@@ -12,36 +12,49 @@ const createWindows = (screens) => {
   mainWindow.loadFile("main.html");
   mainWindow.setPosition(screens[0].bounds.x, screens[0].bounds.y);
 
-  // Ecoute de l'événement "readdir" et récupération des fichier du répertoire dir, que l'on renvoie au renderer via l'événement "createTrackList"
-  ipcMain.on("readdir", async (event, dir) => {
-    await fs.readdir(dir, (err, array) => {
-      console.log(dir);
-      if (err) console.log(err);
-      console.log("click");
-      event.sender.send("createTrackList", array);
-    });
-  });
-
   // Création de la fenêtre secondaire : si deux écrans ou plus sont branchés,
   // la fenêtre est automatiquement en fullscreen sur l'écran 2
+  const secondaryWindow = new BrowserWindow({
+    webPreferences: {
+      preload: path.join(__dirname, "secondaryPreload.js"),
+    },
+  });
+  secondaryWindow.loadFile("secondary.html");
   if (screens[1]) {
-    const secondaryWindow = new BrowserWindow({
-      webPreferences: {
-        preload: path.join(__dirname, "secondaryPreload.js"),
-      },
-    });
-    secondaryWindow.loadFile("secondary.html");
     secondaryWindow.setPosition(screens[1].bounds.x, screens[1].bounds.y);
     secondaryWindow.setFullScreen(true);
-  } else {
-    const secondaryWindow = new BrowserWindow({
-      webPreferences: {
-        preload: path.join(__dirname, "secondaryPreload.js"),
-        nodeIntegration: true,
-      },
-    });
-    secondaryWindow.loadFile("secondary.html");
   }
+
+  // Ecoute de l'événement "playFile" et envoi de l'adresse du fichier à ouvrir à la fenêtre secondaire
+  ipcMain.on("playFile", (event, path) => {
+    console.log(path);
+    console.log(event);
+    secondaryWindow.webContents.send("playFile", path);
+  });
+
+  ipcMain.on("play", () => {
+    secondaryWindow.webContents.send("play");
+  });
+
+  ipcMain.on("pause", () => {
+    secondaryWindow.webContents.send("pause");
+  });
+
+  ipcMain.on("stop", () => {
+    secondaryWindow.webContents.send("stop");
+  });
+
+  ipcMain.on("mute", () => {
+    secondaryWindow.webContents.send("mute");
+  });
+
+  ipcMain.on("duration", (event, duration) => {
+    console.log(duration);
+    mainWindow.webContents.send("getDuration", duration);
+  });
+
+  mainWindow.webContents.openDevTools();
+  secondaryWindow.webContents.openDevTools();
 };
 
 app.whenReady().then(() => {

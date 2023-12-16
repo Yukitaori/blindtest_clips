@@ -10,17 +10,17 @@ contextBridge.exposeInMainWorld("fs", {
   read: (dir) => ipcRenderer.send("readdir", dir),
 });
 
-// Ecoute de l'événement createTrackList
-ipcRenderer.on("createTrackList", (event, array) => {
-  const tracklist = document.getElementById("tracklist");
-  console.log(array);
-  for (file of array) {
-    let listItem = document.createElement("li");
-    let button = document.createElement("button");
-    let p = document.createElement("p");
-    p.innerText = file;
-    button.appendChild(p);
-    listItem.appendChild(button);
-    tracklist.appendChild(listItem);
-  }
+contextBridge.exposeInMainWorld("player", {
+  playFile: (path) => ipcRenderer.send("playFile", path),
+  play: () => ipcRenderer.send("play"),
+  pause: () => ipcRenderer.send("pause"),
+  stop: () => ipcRenderer.send("stop"),
+  mute: () => ipcRenderer.send("mute"),
+  volumeUp: (volume) => ipcRenderer.send("volumeUp", volume),
+  volumeDown: (volume) => ipcRenderer.send("volumeDown", volume),
+  changeTime: (time) => ipcRenderer.send("changeTime", time),
+});
+
+ipcRenderer.on("getDuration", (event, duration) => {
+  console.log(duration);
 });

@@ -16,45 +16,65 @@
   <body>
     <div>
       <h1 class="text-2xl font-bold underline">Voici la main window.</h1>
-      <p>👋</p>
-      <p id="info"></p>
     </div>
     <div id="playlist">
       <h2 class="text-2xl font-bold">Liste de lecture</h2>
       <div>
-        <input type="file" id="choosefile" webkitdirectory directory multiple></input>
-        <button type="button" id="getplaylist">Récupérer la playlist</button>
-        <ul id="tracklist"></ul>
+        <div
+          id="dropzone"
+          class="min-h-[200px] h-fit border border-solid border-black m-10"
+        >
+          <p>Droppe ici les videos à lire !</p>
+          <ul id="tracklist" class="max-h-[500px] overflow-y-auto"></ul>
+        </div>
       </div>
     </div>
     <div>
       <ul class="m-auto w-[80%] flex gap-4 justify-between flex-wrap">
         <li>
           <button class="border border-black p-4" id="playerprev">
-            Previous
+            <img
+              class="h-10 w-10"
+              src="./src/assets/icons/previous.png"
+              alt="Previous track"
+            />
           </button>
-        </li>
-        <li>
-          <button class="border border-black p-4" id="playerback">Back</button>
-        </li>
-        <li>
-          <button class="border border-black p-4" id="playerplay">Play</button>
         </li>
         <li>
           <button class="border border-black p-4" id="playerpause">
-            Pause
+            <img
+              class="h-10 w-10 hover:scale-110"
+              src="./src/assets/icons/pause.png"
+              alt="Pause"
+            />
           </button>
         </li>
         <li>
-          <button class="border border-black p-4" id="playerstop">Stop</button>
-        </li>
-        <li>
-          <button class="border border-black p-4" id="playerforward">
-            Forward
+          <button class="border border-black p-4" id="playerplay">
+            <img
+              class="h-10 w-10 hover:scale-110"
+              src="./src/assets/icons/play.png"
+              alt="Play"
+            />
           </button>
         </li>
         <li>
-          <button class="border border-black p-4" id="playernext">Next</button>
+          <button class="border border-black p-4" id="playerstop">
+            <img
+              class="h-10 w-10 hover:scale-110"
+              src="./src/assets/icons/stop.png"
+              alt="Stop"
+            />
+          </button>
+        </li>
+        <li>
+          <button class="border border-black p-4" id="playernext">
+            <img
+              class="h-10 w-10 hover:scale-110"
+              src="./src/assets/icons/next.png"
+              alt="Next track"
+            />
+          </button>
         </li>
       </ul>
     </div>
