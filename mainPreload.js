@@ -2,33 +2,18 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 let fileDuration;
 const getTimeControlPosition = (current) => {
-  console.log(current);
-  console.log(fileDuration);
-  console.log((parseInt(current) / parseInt(fileDuration)) * 1000);
   return (parseInt(current) / parseInt(fileDuration)) * 1000;
 };
 
 const getReadableTime = (rawTime) => {
-  // console.log(rawTime);
   let readableTime;
   let minutes = Math.floor(rawTime / 60);
-  let seconds = rawTime % 60;
+  let seconds = (rawTime % 60).toFixed();
   readableTime = `${minutes.toString().padStart(2, "0")}:${seconds
     .toString()
     .padStart(2, "0")}`;
-  // console.log(minutes, seconds, readableTime);
   return readableTime;
 };
-
-contextBridge.exposeInMainWorld("versions", {
-  node: () => process.versions.node,
-  chrome: () => process.versions.chrome,
-  electron: () => process.versions.electron,
-});
-
-contextBridge.exposeInMainWorld("fs", {
-  read: (dir) => ipcRenderer.send("readdir", dir),
-});
 
 contextBridge.exposeInMainWorld("player", {
   playFile: (path) => ipcRenderer.send("playFile", path),
@@ -38,7 +23,11 @@ contextBridge.exposeInMainWorld("player", {
   mute: () => ipcRenderer.send("mute"),
   volumeUp: (volume) => ipcRenderer.send("volumeUp", volume),
   volumeDown: (volume) => ipcRenderer.send("volumeDown", volume),
-  changeTime: (time) => ipcRenderer.send("changeTime", time),
+  changeTime: (time) => {
+    ipcRenderer.send("changeTime", (time / 1000) * fileDuration);
+    let currentTime = document.getElementById("current");
+    currentTime.innerText = getReadableTime((time / 1000) * fileDuration);
+  },
 });
 
 ipcRenderer.on("getDuration", (event, duration) => {
@@ -48,8 +37,15 @@ ipcRenderer.on("getDuration", (event, duration) => {
 });
 
 ipcRenderer.on("getCurrent", (event, current) => {
-  let currentTime = document.getElementById("current");
   let timeControl = document.getElementById("timecontrol");
+  let currentTime = document.getElementById("current");
   currentTime.innerText = getReadableTime(current).toString();
   timeControl.value = getTimeControlPosition(current);
+});
+
+ipcRenderer.on("videoover", () => {
+  let timeControl = document.getElementById("timecontrol");
+  timeControl.value = 0;
+  let currentTime = document.getElementById("current");
+  currentTime.innerText = getReadableTime(0);
 });

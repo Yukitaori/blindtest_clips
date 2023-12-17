@@ -29,6 +29,7 @@ ipcRenderer.on("playFile", (event, path) => {
   videoPlayer.addEventListener("ended", () => {
     delete videoPlayer.src;
     clearInterval(intervals[0]);
+    ipcRenderer.send("videoover");
     // TODO Mettre en place un écran noir lors de l'arrêt et supprimer la source
   });
 });
@@ -69,4 +70,14 @@ ipcRenderer.on("mute", () => {
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.muted = !videoPlayer.muted;
   console.log("muted ? ", videoPlayer.muted);
+});
+
+ipcRenderer.on("changeTime", (event, time) => {
+  let videoPlayer = document.getElementById("videoplayer");
+  videoPlayer.currentTime = time;
+  clearInterval(intervals[0]);
+  intervals.shift();
+  intervals.push(
+    (getCurrentTimeEverySecond = setInterval(getCurrentTime, 1000))
+  );
 });

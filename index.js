@@ -56,6 +56,14 @@ const createWindows = (screens) => {
     mainWindow.webContents.send("getCurrent", current);
   });
 
+  ipcMain.on("changeTime", (event, time) => {
+    secondaryWindow.webContents.send("changeTime", time);
+  });
+
+  ipcMain.on("videoover", () => {
+    mainWindow.webContents.send("videoover");
+  });
+
   mainWindow.webContents.openDevTools();
   secondaryWindow.webContents.openDevTools();
 };

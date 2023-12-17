@@ -52,3 +52,8 @@ pauseButton.addEventListener("click", () => player.pause());
 playButton.addEventListener("click", () => player.play());
 stopButton.addEventListener("click", () => player.stop());
 muteButton.addEventListener("click", () => player.mute());
+
+let timeControl = document.getElementById("timecontrol");
+timeControl.addEventListener("change", () => {
+  player.changeTime(timeControl.value);
+});
