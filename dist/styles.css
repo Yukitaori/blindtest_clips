@@ -577,6 +577,10 @@ video {
   width: 2.5rem;
 }
 
+.w-\[10\%\] {
+  width: 10%;
+}
+
 .w-\[80\%\] {
   width: 80%;
 }
@@ -630,6 +634,10 @@ video {
 
 .text-left {
   text-align: left;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .text-2xl {

@@ -49,8 +49,11 @@ const createWindows = (screens) => {
   });
 
   ipcMain.on("duration", (event, duration) => {
-    console.log(duration);
     mainWindow.webContents.send("getDuration", duration);
+  });
+
+  ipcMain.on("current", (event, current) => {
+    mainWindow.webContents.send("getCurrent", current);
   });
 
   mainWindow.webContents.openDevTools();

@@ -37,14 +37,18 @@ dropzone.addEventListener("drop", (event) => {
 });
 dropzone.addEventListener("dragover", (event) => {
   event.preventDefault();
-  console.log(event.target);
+  // TODO mettre en place une animation au dragover
 });
 
 // Boutons des contrôles
 const playButton = document.getElementById("playerplay");
 const pauseButton = document.getElementById("playerpause");
 const stopButton = document.getElementById("playerstop");
+const muteButton = document.getElementById("playermute");
 
+// TODO mettre en place des raccourcis clavier pour chaque action
+// TODO mettre en place un seul bouton pour Play / Pause
 pauseButton.addEventListener("click", () => player.pause());
 playButton.addEventListener("click", () => player.play());
 stopButton.addEventListener("click", () => player.stop());
+muteButton.addEventListener("click", () => player.mute());
