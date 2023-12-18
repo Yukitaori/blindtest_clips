@@ -48,10 +48,18 @@ const muteButton = document.getElementById("playermute");
 
 // TODO mettre en place des raccourcis clavier pour chaque action
 // TODO mettre en place un seul bouton pour Play / Pause
-pauseButton.addEventListener("click", () => player.pause());
-playButton.addEventListener("click", () => player.play());
-stopButton.addEventListener("click", () => player.stop());
-muteButton.addEventListener("click", () => player.mute());
+pauseButton.addEventListener("click", () => {
+  player.pause();
+});
+playButton.addEventListener("click", () => {
+  player.play(selectedTrack.path);
+});
+stopButton.addEventListener("click", () => {
+  player.stop();
+});
+muteButton.addEventListener("click", () => {
+  player.mute();
+});
 
 let timeControl = document.getElementById("timecontrol");
 timeControl.addEventListener("change", () => {

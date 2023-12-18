@@ -15,6 +15,7 @@ ipcRenderer.on("playFile", (event, path) => {
   console.log(path);
   videoPlayer.setAttribute("src", path);
   videoPlayer.play();
+  videoPlayer.muted = true;
   if (videoPlayer.src) {
     clearInterval(intervals[0]);
     intervals.shift();
