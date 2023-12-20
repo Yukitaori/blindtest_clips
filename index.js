@@ -60,6 +60,10 @@ const createWindows = (screens) => {
     secondaryWindow.webContents.send("changeTime", time);
   });
 
+  ipcMain.on("changeVolume", (event, volume) => {
+    secondaryWindow.webContents.send("changeVolume", volume);
+  });
+
   ipcMain.on("videoover", () => {
     mainWindow.webContents.send("videoover");
   });

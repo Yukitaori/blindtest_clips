@@ -14,91 +14,122 @@
     <title>Main window</title>
   </head>
   <body>
-    <div>
-      <h1 class="text-2xl font-bold underline">Voici la main window.</h1>
-    </div>
-    <div id="playlist">
-      <h2 class="text-2xl font-bold">Liste de lecture</h2>
-      <div>
-        <div
-          id="dropzone"
-          class="min-h-[200px] h-fit border border-solid border-black m-10"
-        >
-          <p>Droppe ici les videos à lire !</p>
-          <ul id="tracklist" class="max-h-[500px] overflow-y-auto"></ul>
+    <div class="flex justify-between gap-[2%]">
+      <div id="videoside" class="w-[49%]">
+        <div id="playlist">
+          <h2 class="text-2xl font-bold text-center">Liste de lecture</h2>
+          <div>
+            <div
+              id="dropzone"
+              class="min-h-[200px] h-fit border border-solid border-black my-10 mx-5"
+            >
+              <p class="pl-2">Droppe ici les videos à lire !</p>
+              <ul id="tracklist" class="max-h-[500px] overflow-y-auto"></ul>
+            </div>
+          </div>
+        </div>
+        <div class="w-[80%] flex flex-col justify-between mb-6 mx-auto">
+          <input
+            type="range"
+            name="range"
+            min="0"
+            max="1000"
+            value="0"
+            id="timecontrol"
+            class="appearance-none h-2 border border-black border-solid rounded-2xl"
+          />
+          <div class="flex justify-between items-center">
+            <p id="current" class="w-[10%] text-center">00:00</p>
+            <p id="duration" class="w-[10%] text-center">00:00</p>
+          </div>
+        </div>
+        <div class="flex gap-4 w-[90%] m-auto">
+          <ul class="flex gap-2 flex-wrap">
+            <li>
+              <button class="border border-black p-4" id="playerprev">
+                <img
+                  class="h-4 w-4"
+                  src="./src/assets/icons/previous.png"
+                  alt="Previous track"
+                />
+              </button>
+            </li>
+            <li>
+              <button class="border border-black p-4" id="playerpause">
+                <img
+                  class="h-4 w-4 hover:scale-110"
+                  src="./src/assets/icons/pause.png"
+                  alt="Pause"
+                />
+              </button>
+            </li>
+            <li>
+              <button class="border border-black p-4" id="playerplay">
+                <img
+                  class="h-4 w-4 hover:scale-110"
+                  src="./src/assets/icons/play.png"
+                  alt="Play"
+                />
+              </button>
+            </li>
+            <li>
+              <button class="border border-black p-4" id="playerstop">
+                <img
+                  class="h-4 w-4 hover:scale-110"
+                  src="./src/assets/icons/stop.png"
+                  alt="Stop"
+                />
+              </button>
+            </li>
+            <li>
+              <button class="border border-black p-4" id="playernext">
+                <img
+                  class="h-4 w-4 hover:scale-110"
+                  src="./src/assets/icons/next.png"
+                  alt="Next track"
+                />
+              </button>
+            </li>
+            <li>
+              <button class="border border-black p-4" id="playermute">
+                <img
+                  class="h-4 w-4 hover:scale-110"
+                  src="./src/assets/icons/mute.png"
+                  alt="Mute"
+                />
+              </button>
+            </li>
+          </ul>
+          <div class="flex flex-col">
+            <p>Volume</p>
+            <input
+              type="range"
+              name="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value="1"
+              id="volumecontrol"
+              alt="Volume control"
+              class="appearance-none h-2 border border-black border-solid rounded-2xl"
+            />
+            <div class="flex justify-between gap-1">
+              <p>0%</p>
+              <p>100%</p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="w-full flex justify-between">
-      <p id="current" class="w-[10%] text-center">00:00</p>
-      <input
-        type="range"
-        name="range"
-        min="0"
-        max="1000"
-        value="0"
-        id="timecontrol"
-        class="w-[80%]"
-      />
-      <p id="duration" class="w-[10%] text-center">00:00</p>
-    </div>
-    <div>
-      <ul class="m-auto w-[80%] flex gap-4 justify-between flex-wrap">
-        <li>
-          <button class="border border-black p-4" id="playerprev">
-            <img
-              class="h-10 w-10"
-              src="./src/assets/icons/previous.png"
-              alt="Previous track"
-            />
-          </button>
-        </li>
-        <li>
-          <button class="border border-black p-4" id="playerpause">
-            <img
-              class="h-10 w-10 hover:scale-110"
-              src="./src/assets/icons/pause.png"
-              alt="Pause"
-            />
-          </button>
-        </li>
-        <li>
-          <button class="border border-black p-4" id="playerplay">
-            <img
-              class="h-10 w-10 hover:scale-110"
-              src="./src/assets/icons/play.png"
-              alt="Play"
-            />
-          </button>
-        </li>
-        <li>
-          <button class="border border-black p-4" id="playerstop">
-            <img
-              class="h-10 w-10 hover:scale-110"
-              src="./src/assets/icons/stop.png"
-              alt="Stop"
-            />
-          </button>
-        </li>
-        <li>
-          <button class="border border-black p-4" id="playernext">
-            <img
-              class="h-10 w-10 hover:scale-110"
-              src="./src/assets/icons/next.png"
-              alt="Next track"
-            />
-          </button>
-        </li>
-        <li>
-          <button class="border border-black p-4" id="playermute">
-            <img
-              class="h-10 w-10 hover:scale-110"
-              src="./src/assets/icons/mute.png"
-              alt="Mute"
-            />
-          </button>
-        </li>
-      </ul>
+      <div id="scoreside" class="w-[49%]">
+        <h2 class="text-2xl font-bold text-center">Contrôle des scores</h2>
+        <div
+          id="teams"
+          class="min-h-[200px] h-fit border border-solid border-black my-10 mx-5"
+        >
+          <p class="pl-2">Inscris ici les équipes</p>
+          <ul id="teamlist" class="max-h-[500px] overflow-y-auto"></ul>
+        </div>
+      </div>
     </div>
   </body>
   <script src="./mainRenderer.js"></script>

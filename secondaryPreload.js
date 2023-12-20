@@ -82,3 +82,8 @@ ipcRenderer.on("changeTime", (event, time) => {
     (getCurrentTimeEverySecond = setInterval(getCurrentTime, 1000))
   );
 });
+
+ipcRenderer.on("changeVolume", (event, volume) => {
+  let videoPlayer = document.getElementById("videoplayer");
+  videoPlayer.volume = volume;
+});

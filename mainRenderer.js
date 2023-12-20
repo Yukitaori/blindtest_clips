@@ -13,7 +13,7 @@ const createTrackList = () => {
     trackbutton.classList.add("text-left");
     trackbutton.innerText = `${file.trackNumber} - ${file.name}`;
     track.appendChild(trackbutton);
-    track.addEventListener("dblclick", () => player.playFile(file.path));
+    track.addEventListener("dblclick", () => player.playFile(file.path, index));
     track.addEventListener("click", () => {
       selectedTrack = file;
       createTrackList();
@@ -34,6 +34,7 @@ dropzone.addEventListener("drop", (event) => {
   });
   console.log(playlist);
   createTrackList();
+  player.getPlaylist(playlist);
 });
 dropzone.addEventListener("dragover", (event) => {
   event.preventDefault();
@@ -41,13 +42,17 @@ dropzone.addEventListener("dragover", (event) => {
 });
 
 // Boutons des contrôles
+const timeControl = document.getElementById("timecontrol");
 const playButton = document.getElementById("playerplay");
 const pauseButton = document.getElementById("playerpause");
 const stopButton = document.getElementById("playerstop");
 const muteButton = document.getElementById("playermute");
+const previousButton = document.getElementById("playerprev");
+const nextButton = document.getElementById("playernext");
+const volumeControl = document.getElementById("volumecontrol");
 
 // TODO mettre en place des raccourcis clavier pour chaque action
-// TODO mettre en place un seul bouton pour Play / Pause
+// TODO mettre en place un seul bouton pour Play / Pause ?
 pauseButton.addEventListener("click", () => {
   player.pause();
 });
@@ -60,8 +65,19 @@ stopButton.addEventListener("click", () => {
 muteButton.addEventListener("click", () => {
   player.mute();
 });
+previousButton.addEventListener("click", () => {
+  player.previousTrack();
+});
+nextButton.addEventListener("click", () => {
+  player.nextTrack();
+});
 
-let timeControl = document.getElementById("timecontrol");
 timeControl.addEventListener("change", () => {
+  // TODO Mettre en place un message qui stoppe le getCurrent pendant la modification de l'input
   player.changeTime(timeControl.value);
+});
+
+volumeControl.addEventListener("change", () => {
+  // TODO Mettre en place un message qui stoppe le getCurrent pendant la modification de l'input
+  player.changeVolume(volumeControl.value);
 });

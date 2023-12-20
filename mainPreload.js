@@ -1,9 +1,11 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 let playerState = {
+  playlist: null,
   mute: true,
   videoPlaying: false,
   selectedTrack: null,
+  selectedTrackIndex: null,
   loadedTrack: null,
   fileDuration: null,
 };
@@ -21,26 +23,29 @@ const getReadableTime = (rawTime) => {
   return readableTime;
 };
 
+const playTrack = (path, index) => {
+  ipcRenderer.send("playFile", path);
+  playerState.selectedTrack = path;
+  playerState.loadedTrack = path;
+  playerState.videoPlaying = true;
+  playerState.mute = true;
+  const playButton = document.getElementById("playerplay");
+  const pauseButton = document.getElementById("playerpause");
+  const muteButton = document.getElementById("playermute");
+  playerState.mute
+    ? muteButton.classList.add("bg-gray-300")
+    : muteButton.classList.remove("bg-gray-300");
+  playerState.videoPlaying
+    ? playButton.classList.add("bg-gray-300")
+    : playButton.classList.remove("bg-gray-300");
+  playerState.videoPlaying
+    ? pauseButton.classList.remove("bg-gray-300")
+    : playButton.classList.add("bg-gray-300");
+};
+
 contextBridge.exposeInMainWorld("player", {
-  playFile: (path) => {
-    ipcRenderer.send("playFile", path);
-    playerState.selectedTrack = path;
-    playerState.loadedTrack = path;
-    playerState.videoPlaying = true;
-    playerState.mute = true;
-    const playButton = document.getElementById("playerplay");
-    const pauseButton = document.getElementById("playerpause");
-    const muteButton = document.getElementById("playermute");
-    playerState.mute
-      ? muteButton.classList.add("bg-gray-300")
-      : muteButton.classList.remove("bg-gray-300");
-    playerState.videoPlaying
-      ? playButton.classList.add("bg-gray-300")
-      : playButton.classList.remove("bg-gray-300");
-    playerState.videoPlaying
-      ? pauseButton.classList.remove("bg-gray-300")
-      : playButton.classList.add("bg-gray-300");
-  },
+  getPlaylist: (list) => (playerState.playlist = list),
+  playFile: (track, index) => playTrack(track),
   play: (path) => {
     console.log(path);
     const playButton = document.getElementById("playerplay");
@@ -123,8 +128,16 @@ contextBridge.exposeInMainWorld("player", {
       ? muteButton.classList.add("bg-gray-300")
       : muteButton.classList.remove("bg-gray-300");
   },
-  volumeUp: (volume) => ipcRenderer.send("volumeUp", volume),
-  volumeDown: (volume) => ipcRenderer.send("volumeDown", volume),
+  changeVolume: (volume) => ipcRenderer.send("changeVolume", volume),
+  previousTrack: () => {
+    console.log(playerState.playlist, playerState.selectedTrack);
+    playerState.playlist;
+    playTrack();
+  },
+  nextTrack: () => {
+    console.log(playerState.playlist, playerState.selectedTrack);
+    playTrack();
+  },
 });
 
 ipcRenderer.on("getDuration", (event, duration) => {
