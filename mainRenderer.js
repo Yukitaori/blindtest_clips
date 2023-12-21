@@ -4,16 +4,16 @@ const tracklist = document.getElementById("tracklist");
 
 const createTrackList = () => {
   tracklist.innerHTML = "";
-  let index = 1;
+  let index = 0;
 
   playlist.forEach((file) => {
-    file.trackNumber = index;
+    file.trackNumber = index + 1;
     let track = document.createElement("li");
     let trackbutton = document.createElement("button");
     trackbutton.classList.add("text-left");
     trackbutton.innerText = `${file.trackNumber} - ${file.name}`;
     track.appendChild(trackbutton);
-    track.addEventListener("dblclick", () => player.playFile(file.path, index));
+    track.addEventListener("dblclick", () => player.playFile(file, index));
     track.addEventListener("click", () => {
       selectedTrack = file;
       createTrackList();
@@ -27,12 +27,10 @@ const createTrackList = () => {
 const dropzone = document.getElementById("dropzone");
 dropzone.addEventListener("drop", (event) => {
   event.preventDefault();
-  console.log(event.dataTransfer.files);
   Object.entries(event.dataTransfer.files).forEach((file) => {
     file[1].id = file[0];
     playlist.push(file[1]);
   });
-  console.log(playlist);
   createTrackList();
   player.getPlaylist(playlist);
 });
@@ -57,7 +55,7 @@ pauseButton.addEventListener("click", () => {
   player.pause();
 });
 playButton.addEventListener("click", () => {
-  player.play(selectedTrack.path);
+  player.play(selectedTrack);
 });
 stopButton.addEventListener("click", () => {
   player.stop();
@@ -67,9 +65,17 @@ muteButton.addEventListener("click", () => {
 });
 previousButton.addEventListener("click", () => {
   player.previousTrack();
+  if (parseInt(selectedTrack.id) - 1 >= 0) {
+    selectedTrack = playlist[parseInt(selectedTrack.id) - 1];
+  }
+  createTrackList();
 });
 nextButton.addEventListener("click", () => {
   player.nextTrack();
+  if (parseInt(selectedTrack.id) + 1 <= playlist.length - 1) {
+    selectedTrack = playlist[parseInt(selectedTrack.id) + 1];
+  }
+  createTrackList();
 });
 
 timeControl.addEventListener("change", () => {

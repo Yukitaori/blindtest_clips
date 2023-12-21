@@ -28,7 +28,6 @@ const createWindows = (screens) => {
   // Ecoute de l'événement "playFile" et envoi de l'adresse du fichier à ouvrir à la fenêtre secondaire
   ipcMain.on("playFile", (event, path) => {
     console.log(path);
-    console.log(event);
     secondaryWindow.webContents.send("playFile", path);
   });
 

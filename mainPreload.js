@@ -23,10 +23,10 @@ const getReadableTime = (rawTime) => {
   return readableTime;
 };
 
-const playTrack = (path, index) => {
-  ipcRenderer.send("playFile", path);
-  playerState.selectedTrack = path;
-  playerState.loadedTrack = path;
+const playTrack = (track) => {
+  ipcRenderer.send("playFile", track.path);
+  playerState.selectedTrack = track;
+  playerState.loadedTrack = track;
   playerState.videoPlaying = true;
   playerState.mute = true;
   const playButton = document.getElementById("playerplay");
@@ -44,17 +44,18 @@ const playTrack = (path, index) => {
 };
 
 contextBridge.exposeInMainWorld("player", {
-  getPlaylist: (list) => (playerState.playlist = list),
-  playFile: (track, index) => playTrack(track),
-  play: (path) => {
-    console.log(path);
+  getPlaylist: (list) => {
+    playerState.playlist = list;
+  },
+  playFile: (track) => playTrack(track),
+  play: (track) => {
     const playButton = document.getElementById("playerplay");
     const pauseButton = document.getElementById("playerpause");
     const muteButton = document.getElementById("playermute");
-    if (playerState.loadedTrack !== path) {
-      ipcRenderer.send("playFile", path);
-      playerState.selectedTrack = path;
-      playerState.loadedTrack = path;
+    if (playerState.loadedTrack.path !== track.path) {
+      ipcRenderer.send("playFile", track.path);
+      playerState.selectedTrack = track;
+      playerState.loadedTrack = track;
       playerState.videoPlaying = true;
       playerState.mute = true;
       playerState.mute
@@ -130,13 +131,18 @@ contextBridge.exposeInMainWorld("player", {
   },
   changeVolume: (volume) => ipcRenderer.send("changeVolume", volume),
   previousTrack: () => {
-    console.log(playerState.playlist, playerState.selectedTrack);
-    playerState.playlist;
-    playTrack();
+    let trackToPlay =
+      playerState.playlist[
+        playerState.playlist.indexOf(playerState.loadedTrack) - 1
+      ];
+    playTrack(trackToPlay);
   },
   nextTrack: () => {
-    console.log(playerState.playlist, playerState.selectedTrack);
-    playTrack();
+    let trackToPlay =
+      playerState.playlist[
+        playerState.playlist.indexOf(playerState.loadedTrack) + 1
+      ];
+    playTrack(trackToPlay);
   },
 });
 
