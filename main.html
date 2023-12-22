@@ -21,7 +21,7 @@
           <div>
             <div
               id="dropzone"
-              class="min-h-[200px] h-fit border border-solid border-black my-10 mx-5"
+              class="min-h-[200px] h-fit border border-solid border-black my-10 mx-5 rounded-xl"
             >
               <p class="pl-2">Droppe ici les videos à lire !</p>
               <ul id="tracklist" class="max-h-[500px] overflow-y-auto"></ul>
@@ -46,54 +46,69 @@
         <div class="flex gap-4 w-[90%] m-auto">
           <ul class="flex gap-2 flex-wrap">
             <li>
-              <button class="border border-black p-4" id="playerprev">
+              <button
+                class="border border-black p-4 group bg-blue-600"
+                id="playerprev"
+              >
                 <img
-                  class="h-4 w-4"
+                  class="h-2 w-2"
                   src="./src/assets/icons/previous.png"
                   alt="Previous track"
                 />
               </button>
             </li>
             <li>
-              <button class="border border-black p-4" id="playerpause">
+              <button
+                class="border border-black p-4 group bg-orange-600"
+                id="playerpause"
+              >
                 <img
-                  class="h-4 w-4 hover:scale-110"
+                  class="h-2 w-2 group-hover:scale-110"
                   src="./src/assets/icons/pause.png"
                   alt="Pause"
                 />
               </button>
             </li>
             <li>
-              <button class="border border-black p-4" id="playerplay">
+              <button
+                class="border border-black p-4 group bg-green-600"
+                id="playerplay"
+              >
                 <img
-                  class="h-4 w-4 hover:scale-110"
+                  class="h-2 w-2 group-hover:scale-110"
                   src="./src/assets/icons/play.png"
                   alt="Play"
                 />
               </button>
             </li>
             <li>
-              <button class="border border-black p-4" id="playerstop">
+              <button
+                class="border border-black p-4 group bg-red-600"
+                id="playerstop"
+              >
                 <img
-                  class="h-4 w-4 hover:scale-110"
+                  class="h-2 w-2 group-hover:scale-110"
                   src="./src/assets/icons/stop.png"
                   alt="Stop"
                 />
               </button>
             </li>
             <li>
-              <button class="border border-black p-4" id="playernext">
+              <button
+                class="border border-black p-4 group bg-blue-600"
+                id="playernext"
+              >
                 <img
-                  class="h-4 w-4 hover:scale-110"
+                  class="h-2 w-2 group-hover:scale-110"
                   src="./src/assets/icons/next.png"
                   alt="Next track"
                 />
               </button>
             </li>
             <li>
-              <button class="border border-black p-4" id="playermute">
+              <button class="border border-black p-4 group" id="playermute">
                 <img
-                  class="h-4 w-4 hover:scale-110"
+                  class="h-2 w-2 group-hover:scale-110"
                   src="./src/assets/icons/mute.png"
                   alt="Mute"
                 />
@@ -124,7 +139,7 @@
         <h2 class="text-2xl font-bold text-center">Contrôle des scores</h2>
         <div
           id="teams"
-          class="min-h-[200px] h-fit border border-solid border-black my-10 mx-5"
+          class="min-h-[200px] h-fit border border-solid border-black my-10 mx-5 rounded-xl"
         >
           <p class="pl-2">Inscris ici les équipes</p>
           <ul id="teamlist" class="max-h-[500px] overflow-y-auto"></ul>

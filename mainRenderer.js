@@ -1,4 +1,5 @@
 let selectedTrack;
+let loadedTrack;
 const playlist = [];
 const tracklist = document.getElementById("tracklist");
 
@@ -13,7 +14,10 @@ const createTrackList = () => {
     trackbutton.classList.add("text-left");
     trackbutton.innerText = `${file.trackNumber} - ${file.name}`;
     track.appendChild(trackbutton);
-    track.addEventListener("dblclick", () => player.playFile(file, index));
+    track.addEventListener("dblclick", () => {
+      player.playFile(file, index);
+      loadedTrack = file;
+    });
     track.addEventListener("click", () => {
       selectedTrack = file;
       createTrackList();
@@ -56,6 +60,7 @@ pauseButton.addEventListener("click", () => {
 });
 playButton.addEventListener("click", () => {
   player.play(selectedTrack);
+  loadedTrack = selectedTrack;
 });
 stopButton.addEventListener("click", () => {
   player.stop();
@@ -65,15 +70,17 @@ muteButton.addEventListener("click", () => {
 });
 previousButton.addEventListener("click", () => {
   player.previousTrack();
-  if (parseInt(selectedTrack.id) - 1 >= 0) {
-    selectedTrack = playlist[parseInt(selectedTrack.id) - 1];
+  if (parseInt(loadedTrack.id) - 1 >= 0) {
+    selectedTrack = playlist[parseInt(loadedTrack.id) - 1];
+    loadedTrack = playlist[parseInt(loadedTrack.id) - 1];
   }
   createTrackList();
 });
 nextButton.addEventListener("click", () => {
   player.nextTrack();
-  if (parseInt(selectedTrack.id) + 1 <= playlist.length - 1) {
-    selectedTrack = playlist[parseInt(selectedTrack.id) + 1];
+  if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
+    selectedTrack = playlist[parseInt(loadedTrack.id) + 1];
+    loadedTrack = playlist[parseInt(loadedTrack.id) + 1];
   }
   createTrackList();
 });

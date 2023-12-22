@@ -36,11 +36,11 @@ const playTrack = (track) => {
     ? muteButton.classList.add("bg-gray-300")
     : muteButton.classList.remove("bg-gray-300");
   playerState.videoPlaying
-    ? playButton.classList.add("bg-gray-300")
-    : playButton.classList.remove("bg-gray-300");
+    ? playButton.classList.add("bg-green-800")
+    : playButton.classList.remove("bg-green-800");
   playerState.videoPlaying
-    ? pauseButton.classList.remove("bg-gray-300")
-    : playButton.classList.add("bg-gray-300");
+    ? pauseButton.classList.remove("bg-orange-800")
+    : pauseButton.classList.add("bg-orange-800");
 };
 
 contextBridge.exposeInMainWorld("player", {
@@ -62,11 +62,11 @@ contextBridge.exposeInMainWorld("player", {
         ? muteButton.classList.add("bg-gray-300")
         : muteButton.classList.remove("bg-gray-300");
       playerState.videoPlaying
-        ? playButton.classList.add("bg-gray-300")
-        : playButton.classList.remove("bg-gray-300");
+        ? playButton.classList.add("bg-green-800")
+        : playButton.classList.remove("bg-green-800");
       playerState.videoPlaying
-        ? pauseButton.classList.remove("bg-gray-300")
-        : pauseButton.classList.add("bg-gray-300");
+        ? pauseButton.classList.remove("bg-orange-800")
+        : pauseButton.classList.add("bg-orange-800");
     } else {
       ipcRenderer.send("play");
       playerState.videoPlaying = true;
@@ -74,11 +74,11 @@ contextBridge.exposeInMainWorld("player", {
         ? muteButton.classList.add("bg-gray-300")
         : muteButton.classList.remove("bg-gray-300");
       playerState.videoPlaying
-        ? playButton.classList.add("bg-gray-300")
-        : playButton.classList.remove("bg-gray-300");
+        ? playButton.classList.add("bg-green-800")
+        : playButton.classList.remove("bg-green-800");
       playerState.videoPlaying
-        ? pauseButton.classList.remove("bg-gray-300")
-        : pauseButton.classList.add("bg-gray-300");
+        ? pauseButton.classList.remove("bg-orange-800")
+        : pauseButton.classList.add("bg-orange-800");
     }
   },
   pause: () => {
@@ -92,11 +92,11 @@ contextBridge.exposeInMainWorld("player", {
         ? muteButton.classList.add("bg-gray-300")
         : muteButton.classList.remove("bg-gray-300");
       playerState.videoPlaying
-        ? playButton.classList.add("bg-gray-300")
-        : playButton.classList.remove("bg-gray-300");
+        ? playButton.classList.add("bg-green-800")
+        : playButton.classList.remove("bg-green-800");
       playerState.videoPlaying
-        ? pauseButton.classList.remove("bg-gray-300")
-        : pauseButton.classList.add("bg-gray-300");
+        ? pauseButton.classList.remove("bg-orange-800")
+        : pauseButton.classList.add("bg-orange-800");
     }
   },
   stop: () => {
@@ -110,8 +110,8 @@ contextBridge.exposeInMainWorld("player", {
     durationTime.innerText = getReadableTime(0);
     const playButton = document.getElementById("playerplay");
     const pauseButton = document.getElementById("playerpause");
-    playButton.classList.remove("bg-gray-300");
-    pauseButton.classList.remove("bg-gray-300");
+    playButton.classList.remove("bg-green-800");
+    pauseButton.classList.remove("bg-orange-800");
   },
   changeTime: (time) => {
     ipcRenderer.send("changeTime", (time / 1000) * playerState.fileDuration);
@@ -168,6 +168,6 @@ ipcRenderer.on("videoover", () => {
   durationTime.innerText = getReadableTime(0);
   const playButton = document.getElementById("playerplay");
   const pauseButton = document.getElementById("playerpause");
-  playButton.classList.remove("bg-gray-300");
-  pauseButton.classList.remove("bg-gray-300");
+  playButton.classList.remove("bg-green-800");
+  pauseButton.classList.remove("bg-orange-800");
 });
