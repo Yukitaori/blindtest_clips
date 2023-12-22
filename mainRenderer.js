@@ -6,13 +6,31 @@ const tracklist = document.getElementById("tracklist");
 const createTrackList = () => {
   tracklist.innerHTML = "";
   let index = 0;
+  if (document.getElementById("playlistInstruction"))
+    document
+      .getElementById("dropzone")
+      .removeChild(document.getElementById("playlistInstruction"));
 
   playlist.forEach((file) => {
     file.trackNumber = index + 1;
     let track = document.createElement("li");
     let trackbutton = document.createElement("button");
-    trackbutton.classList.add("text-left");
-    trackbutton.innerText = `${file.trackNumber} - ${file.name}`;
+    track.classList.add(
+      "cursor-pointer",
+      "text-left",
+      "text-sm",
+      "pl-2",
+      "border-b",
+      "border-black",
+      "border-dotted"
+    );
+    track.addEventListener("mouseover", () => {
+      track.classList.add("bg-gray-200");
+    });
+    track.addEventListener("mouseleave", () => {
+      track.classList.remove("bg-gray-200");
+    });
+    track.innerText = `${file.trackNumber} - ${file.name}`;
     track.appendChild(trackbutton);
     track.addEventListener("dblclick", () => {
       player.playFile(file, index);
@@ -29,8 +47,10 @@ const createTrackList = () => {
 };
 
 const dropzone = document.getElementById("dropzone");
-dropzone.addEventListener("drop", (event) => {
-  event.preventDefault();
+
+dropzone.addEventListener("drop", (e) => {
+  dropzone.classList.remove("bg-gray-300");
+  e.preventDefault();
   Object.entries(event.dataTransfer.files).forEach((file) => {
     file[1].id = file[0];
     playlist.push(file[1]);
@@ -38,10 +58,22 @@ dropzone.addEventListener("drop", (event) => {
   createTrackList();
   player.getPlaylist(playlist);
 });
-dropzone.addEventListener("dragover", (event) => {
-  event.preventDefault();
-  // TODO mettre en place une animation au dragover
+dropzone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  if (document.getElementById("playlistInstruction"))
+    document
+      .getElementById("dropzone")
+      .removeChild(document.getElementById("playlistInstruction"));
 });
+dropzone.addEventListener("dragenter", (e) => {
+  e.preventDefault();
+  dropzone.classList.add("bg-gray-300");
+});
+dropzone.addEventListener("dragleave", (e) => {
+  e.preventDefault();
+  dropzone.classList.remove("bg-gray-300");
+});
+// TODO mettre en place une animation au dragover
 
 // Boutons des contrôles
 const timeControl = document.getElementById("timecontrol");
@@ -52,6 +84,19 @@ const muteButton = document.getElementById("playermute");
 const previousButton = document.getElementById("playerprev");
 const nextButton = document.getElementById("playernext");
 const volumeControl = document.getElementById("volumecontrol");
+const buttons = document.getElementsByTagName("button");
+for (let button of buttons) {
+  button.addEventListener("mousedown", () => {
+    button.classList.remove("shadow-buttonShadow");
+    button.classList.add("translate-x-[3px]");
+    button.classList.add("translate-y-[3px]");
+  });
+  button.addEventListener("mouseup", () => {
+    button.classList.add("shadow-buttonShadow");
+    button.classList.remove("translate-x-[3px]");
+    button.classList.remove("translate-y-[3px]");
+  });
+}
 
 // TODO mettre en place des raccourcis clavier pour chaque action
 // TODO mettre en place un seul bouton pour Play / Pause ?

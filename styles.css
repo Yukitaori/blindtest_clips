@@ -1,9 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+input::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 8px;
+  border-radius: 25px;
+  background-color: black;
+}

@@ -1,5 +1,6 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
+// le state du player : les informations sont mises à jour à chaque action
 let playerState = {
   playlist: null,
   mute: true,
@@ -10,9 +11,12 @@ let playerState = {
   fileDuration: null,
 };
 
+// Cette fonction permet de transformer le currentTime du media en position du curseur sur l'input range
 const getTimeControlPosition = (current) => {
   return (parseInt(current) / parseInt(playerState.fileDuration)) * 1000;
 };
+
+// Cette fonction permet de transformer chaque donnée temps en chaîne mm:ss lisible par l'utilisateur
 const getReadableTime = (rawTime) => {
   let readableTime;
   let minutes = Math.floor(rawTime / 60);
@@ -23,6 +27,8 @@ const getReadableTime = (rawTime) => {
   return readableTime;
 };
 
+// Cette fonction permet d'envoyer la track sélectionnée pour la lecture à la secondaryWindow
+// et gère la mise à jour du state et tous les effets liés aux styles des boutons
 const playTrack = (track) => {
   ipcRenderer.send("playFile", track.path);
   playerState.selectedTrack = track;
@@ -43,6 +49,7 @@ const playTrack = (track) => {
     : pauseButton.classList.add("bg-orange-800");
 };
 
+// Ce contextBridge contient toutes les méthodes du player
 contextBridge.exposeInMainWorld("player", {
   getPlaylist: (list) => {
     playerState.playlist = list;
@@ -131,34 +138,52 @@ contextBridge.exposeInMainWorld("player", {
   },
   changeVolume: (volume) => ipcRenderer.send("changeVolume", volume),
   previousTrack: () => {
-    let trackToPlay =
-      playerState.playlist[
-        playerState.playlist.indexOf(playerState.loadedTrack) - 1
-      ];
-    playTrack(trackToPlay);
+    if (playerState.playlist.indexOf(playerState.loadedTrack) - 1 >= 0) {
+      let trackToPlay =
+        playerState.playlist[
+          playerState.playlist.indexOf(playerState.loadedTrack) - 1
+        ];
+      let currentTime = document.getElementById("current");
+      currentTime.innerText = getReadableTime(0).toString();
+      let timeControl = document.getElementById("timecontrol");
+      timeControl.value = getTimeControlPosition(0);
+      playTrack(trackToPlay);
+    }
   },
   nextTrack: () => {
-    let trackToPlay =
-      playerState.playlist[
-        playerState.playlist.indexOf(playerState.loadedTrack) + 1
-      ];
-    playTrack(trackToPlay);
+    if (
+      playerState.playlist.indexOf(playerState.loadedTrack) + 1 <
+      playerState.playlist.length
+    ) {
+      let trackToPlay =
+        playerState.playlist[
+          playerState.playlist.indexOf(playerState.loadedTrack) + 1
+        ];
+      let currentTime = document.getElementById("current");
+      currentTime.innerText = getReadableTime(0).toString();
+      let timeControl = document.getElementById("timecontrol");
+      timeControl.value = getTimeControlPosition(0);
+      playTrack(trackToPlay);
+    }
   },
 });
 
+// Ecoute du message getDuration, qui permet de récupérer de la secondaryWindow la durée maximale de la loadedTrack et de l'afficher sur l'input range
 ipcRenderer.on("getDuration", (event, duration) => {
   playerState.fileDuration = duration;
   let durationTime = document.getElementById("duration");
   durationTime.innerText = getReadableTime(duration).toString();
 });
 
+// Ecoute du message getCurrent, qui permet de récupérer de la secondaryWindow le currentTime de la loadedTrack et de l'afficher sur l'input range
 ipcRenderer.on("getCurrent", (event, current) => {
-  let timeControl = document.getElementById("timecontrol");
   let currentTime = document.getElementById("current");
   currentTime.innerText = getReadableTime(current).toString();
+  let timeControl = document.getElementById("timecontrol");
   timeControl.value = getTimeControlPosition(current);
 });
 
+// Ecoute du message videoover, qui permet de remettre à zéro tous les affichages en fin de video
 ipcRenderer.on("videoover", () => {
   let timeControl = document.getElementById("timecontrol");
   timeControl.value = 0;

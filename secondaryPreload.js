@@ -47,6 +47,7 @@ ipcRenderer.on("play", () => {
       (getCurrentTimeEverySecond = setInterval(getCurrentTime, 1000))
     );
   }
+  ipcRenderer.send("duration", videoPlayer.duration.toFixed());
 });
 
 // Ecoute de l'événement "pause" et mise en pause de la video

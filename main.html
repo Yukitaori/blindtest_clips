@@ -17,13 +17,15 @@
     <div class="flex justify-between gap-[2%]">
       <div id="videoside" class="w-[49%]">
         <div id="playlist">
-          <h2 class="text-2xl font-bold text-center">Liste de lecture</h2>
+          <p class="text-2xl font-bold text-center">Liste de lecture</p>
           <div>
             <div
               id="dropzone"
-              class="min-h-[200px] h-fit border border-solid border-black my-10 mx-5 rounded-xl"
+              class="min-h-[200px] h-fit border border-solid border-black my-10 mx-5 rounded-xl overflow-hidden"
             >
-              <p class="pl-2">Droppe ici les videos à lire !</p>
+              <p id="playlistInstruction" class="pl-2">
+                Droppe ici les videos à lire !
+              </p>
               <ul id="tracklist" class="max-h-[500px] overflow-y-auto"></ul>
             </div>
           </div>
@@ -36,22 +38,22 @@
             max="1000"
             value="0"
             id="timecontrol"
-            class="appearance-none h-2 border border-black border-solid rounded-2xl"
+            class="appearance-none h-2 border border-black border-solid shadow-slideShadow rounded-2xl"
           />
           <div class="flex justify-between items-center">
             <p id="current" class="w-[10%] text-center">00:00</p>
             <p id="duration" class="w-[10%] text-center">00:00</p>
           </div>
         </div>
-        <div class="flex gap-4 w-[90%] m-auto">
+        <div class="flex justify-center gap-8 w-[90%] m-auto">
           <ul class="flex gap-2 flex-wrap">
             <li>
               <button
-                class="border border-black p-4 group bg-blue-600"
+                class="border border-black p-4 group shadow-buttonShadow transition-all bg-blue-500"
                 id="playerprev"
               >
                 <img
-                  class="h-2 w-2"
+                  class="h-3 w-3 group-hover:scale-125"
                   src="./src/assets/icons/previous.png"
                   alt="Previous track"
                 />
@@ -59,11 +61,11 @@
             </li>
             <li>
               <button
-                class="border border-black p-4 group bg-orange-600"
+                class="border border-black p-4 group shadow-buttonShadow transition-all bg-orange-500"
                 id="playerpause"
               >
                 <img
-                  class="h-2 w-2 group-hover:scale-110"
+                  class="h-3 w-3 group-hover:scale-125"
                   src="./src/assets/icons/pause.png"
                   alt="Pause"
                 />
@@ -71,11 +73,11 @@
             </li>
             <li>
               <button
-                class="border border-black p-4 group bg-green-600"
+                class="border border-black p-4 group shadow-buttonShadow transition-all bg-green-500"
                 id="playerplay"
               >
                 <img
-                  class="h-2 w-2 group-hover:scale-110"
+                  class="h-3 w-3 group-hover:scale-125"
                   src="./src/assets/icons/play.png"
                   alt="Play"
                 />
@@ -83,11 +85,11 @@
             </li>
             <li>
               <button
-                class="border border-black p-4 group bg-red-600"
+                class="border border-black p-4 group shadow-buttonShadow transition-all bg-red-500"
                 id="playerstop"
               >
                 <img
-                  class="h-2 w-2 group-hover:scale-110"
+                  class="h-3 w-3 group-hover:scale-125"
                   src="./src/assets/icons/stop.png"
                   alt="Stop"
                 />
@@ -95,20 +97,23 @@
             </li>
             <li>
               <button
-                class="border border-black p-4 group bg-blue-600"
+                class="border border-black p-4 group shadow-buttonShadow transition-all bg-blue-500"
                 id="playernext"
               >
                 <img
-                  class="h-2 w-2 group-hover:scale-110"
+                  class="h-3 w-3 group-hover:scale-125"
                   src="./src/assets/icons/next.png"
                   alt="Next track"
                 />
               </button>
             </li>
             <li>
-              <button class="border border-black p-4 group" id="playermute">
+              <button
+                class="border border-black p-4 group shadow-buttonShadow transition-all"
+                id="playermute"
+              >
                 <img
-                  class="h-2 w-2 group-hover:scale-110"
+                  class="h-3 w-3 group-hover:scale-125"
                   src="./src/assets/icons/mute.png"
                   alt="Mute"
                 />
@@ -126,7 +131,7 @@
               value="1"
               id="volumecontrol"
               alt="Volume control"
-              class="appearance-none h-2 border border-black border-solid rounded-2xl"
+              class="appearance-none h-2 border border-black border-solid shadow-slideShadow rounded-2xl"
             />
             <div class="flex justify-between gap-1">
               <p>0%</p>
@@ -136,12 +141,12 @@
         </div>
       </div>
       <div id="scoreside" class="w-[49%]">
-        <h2 class="text-2xl font-bold text-center">Contrôle des scores</h2>
+        <p class="text-2xl font-bold text-center">Contrôle des scores</p>
         <div
           id="teams"
           class="min-h-[200px] h-fit border border-solid border-black my-10 mx-5 rounded-xl"
         >
-          <p class="pl-2">Inscris ici les équipes</p>
+          <p id="teamlistInstruction" class="pl-2">Inscris ici les équipes</p>
           <ul id="teamlist" class="max-h-[500px] overflow-y-auto"></ul>
         </div>
       </div>
