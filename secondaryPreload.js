@@ -1,18 +1,16 @@
 const { contextBridge, ipcRenderer } = require("electron");
+let getCurrentTimeEverySecond;
+const intervals = [];
 
 const getCurrentTime = () => {
   let videoPlayer = document.getElementById("videoplayer");
   let currentTime = videoPlayer.currentTime;
   ipcRenderer.send("current", currentTime.toFixed());
 };
-let getCurrentTimeEverySecond;
-const intervals = [];
 
 // Ecoute de l'événement "playFile" et lancement de la video selon le chemin spécifié dans la mainWindow
 ipcRenderer.on("playFile", (event, path) => {
-  console.log("here");
   let videoPlayer = document.getElementById("videoplayer");
-  console.log(path);
   videoPlayer.setAttribute("src", path);
   videoPlayer.play();
   videoPlayer.muted = true;
@@ -37,7 +35,6 @@ ipcRenderer.on("playFile", (event, path) => {
 
 // Ecoute de l'événement "play" et reprise de la video
 ipcRenderer.on("play", () => {
-  console.log("play");
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.play();
   if (videoPlayer.src) {
@@ -52,7 +49,6 @@ ipcRenderer.on("play", () => {
 
 // Ecoute de l'événement "pause" et mise en pause de la video
 ipcRenderer.on("pause", () => {
-  console.log("pause");
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.pause();
   clearInterval(intervals[0]);
@@ -60,7 +56,6 @@ ipcRenderer.on("pause", () => {
 
 // Ecoute de l'événement "stop" et arrêt de la video
 ipcRenderer.on("stop", () => {
-  console.log("stop");
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.load();
   clearInterval(intervals[0]);
@@ -71,9 +66,10 @@ ipcRenderer.on("stop", () => {
 ipcRenderer.on("mute", () => {
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.muted = !videoPlayer.muted;
-  console.log("muted ? ", videoPlayer.muted);
 });
 
+// Ecoute de l'événement "changeTime" et changement dynamique du currentTime sélectionné via l'input range dans la primaryWindow
+// On nettoie les intervalles pour éviter que plusieurs soient actifs en même temps
 ipcRenderer.on("changeTime", (event, time) => {
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.currentTime = time;
@@ -84,6 +80,7 @@ ipcRenderer.on("changeTime", (event, time) => {
   );
 });
 
+// Ecoute de l'événement "changeVolume" et changement du volume sélectionné via l'input range dans la primaryWindow
 ipcRenderer.on("changeVolume", (event, volume) => {
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.volume = volume;
