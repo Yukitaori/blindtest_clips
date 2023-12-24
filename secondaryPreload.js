@@ -1,5 +1,4 @@
-const { contextBridge, ipcRenderer } = require("electron");
-let getCurrentTimeEverySecond;
+const { ipcRenderer } = require("electron");
 const intervals = [];
 
 const getCurrentTime = () => {
@@ -17,9 +16,7 @@ ipcRenderer.on("playFile", (event, path) => {
   if (videoPlayer.src) {
     clearInterval(intervals[0]);
     intervals.shift();
-    intervals.push(
-      (getCurrentTimeEverySecond = setInterval(getCurrentTime, 1000))
-    );
+    intervals.push(setInterval(getCurrentTime, 1000));
   }
   videoPlayer.setAttribute("preload", "metadata");
   videoPlayer.addEventListener("loadedmetadata", () => {
@@ -40,9 +37,7 @@ ipcRenderer.on("play", () => {
   if (videoPlayer.src) {
     clearInterval(intervals[0]);
     intervals.shift();
-    intervals.push(
-      (getCurrentTimeEverySecond = setInterval(getCurrentTime, 1000))
-    );
+    intervals.push(setInterval(getCurrentTime, 1000));
   }
   ipcRenderer.send("duration", videoPlayer.duration.toFixed());
 });
@@ -75,9 +70,7 @@ ipcRenderer.on("changeTime", (event, time) => {
   videoPlayer.currentTime = time;
   clearInterval(intervals[0]);
   intervals.shift();
-  intervals.push(
-    (getCurrentTimeEverySecond = setInterval(getCurrentTime, 1000))
-  );
+  intervals.push(setInterval(getCurrentTime, 1000));
 });
 
 // Ecoute de l'événement "changeVolume" et changement du volume sélectionné via l'input range dans la primaryWindow
@@ -87,14 +80,49 @@ ipcRenderer.on("changeVolume", (event, volume) => {
 });
 
 ipcRenderer.on("displayVideoOnly", () => {
-  let videoPlayer = document.getElementById("videoplayer");
-  videoPlayer.innerHTML = "";
+  let displayScreen = document.getElementById("displayscreen");
+  let displayScores = document.createElement("div");
+  let nodeToRemove = document.getElementById("displayscores");
+  if (nodeToRemove) displayScreen.removeChild(nodeToRemove);
+  displayScores.setAttribute("id", "displayscores");
 });
 
 ipcRenderer.on("displayVideoAndScores", (event, teams) => {
+  console.log(teams);
+  let displayScreen = document.getElementById("displayscreen");
   let videoPlayer = document.getElementById("videoplayer");
-  videoPlayer.innerHTML = "";
   let displayScores = document.createElement("div");
+  let nodeToRemove = document.getElementById("displayscores");
+  if (nodeToRemove) displayScreen.removeChild(nodeToRemove);
+  displayScores.setAttribute("id", "displayscores");
+  for (let team of teams) {
+    let teamBlock = document.createElement("div");
+    let teamName = document.createElement("p");
+    let teamScore = document.createElement("p");
+    teamName.innerText = team.name;
+    teamScore.innerText = team.score;
+    teamBlock.appendChild(teamName);
+    teamBlock.appendChild(teamScore);
+    teamName.classList.add("font-bold", "text-xl");
+    teamScore.classList.add("font-bold", "text-2xl");
+    teamBlock.classList.add("flex", "flex-between", "gap-4", "flex-wrap");
+    displayScores.appendChild(teamBlock);
+  }
+  displayScores.classList.add(
+    "bg-transparent",
+    "border",
+    "border-solid",
+    "border-white",
+    "text-white",
+    "z-10",
+    "absolute",
+    "right-0",
+    "top-0",
+    "flex",
+    "flex-col",
+    "gap-2"
+  );
+  displayScreen.insertBefore(displayScores, videoPlayer);
 });
 
 ipcRenderer.on("displayVideoAndPodium", (event, teams) => {

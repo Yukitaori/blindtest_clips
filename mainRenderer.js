@@ -54,7 +54,7 @@ const createTrackList = () => {
 
     // Le double clic permet le chargement de la piste dans le player (loadedTrack)
     track.addEventListener("dblclick", () => {
-      player.playFile(file, index);
+      window.player.playFile(file, index);
       loadedTrack = file;
       createTrackList();
     });
@@ -86,7 +86,7 @@ dropzone.addEventListener("drop", (e) => {
     playlist.push(file[1]);
   });
   createTrackList();
-  player.getPlaylist(playlist);
+  window.player.getPlaylist(playlist);
 });
 
 dropzone.addEventListener("dragover", (e) => {
@@ -110,19 +110,19 @@ dropzone.addEventListener("dragleave", (e) => {
 
 // TODO mettre en place des raccourcis clavier pour chaque action
 pauseButton.addEventListener("click", () => {
-  player.pause();
+  window.player.pause();
 });
 playButton.addEventListener("click", () => {
-  player.play();
+  window.player.play();
 });
 stopButton.addEventListener("click", () => {
-  player.stop();
+  window.player.stop();
 });
 muteButton.addEventListener("click", () => {
-  player.mute();
+  window.player.mute();
 });
 previousButton.addEventListener("click", () => {
-  player.previousTrack();
+  window.player.previousTrack();
   if (parseInt(loadedTrack.id) - 1 >= 0) {
     selectedTrack = playlist[parseInt(loadedTrack.id) - 1];
     loadedTrack = playlist[parseInt(loadedTrack.id) - 1];
@@ -130,7 +130,7 @@ previousButton.addEventListener("click", () => {
   createTrackList();
 });
 nextButton.addEventListener("click", () => {
-  player.nextTrack();
+  window.player.nextTrack();
   if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
     selectedTrack = playlist[parseInt(loadedTrack.id) + 1];
     loadedTrack = playlist[parseInt(loadedTrack.id) + 1];
@@ -139,10 +139,10 @@ nextButton.addEventListener("click", () => {
 });
 timeControl.addEventListener("change", () => {
   // TODO Mettre en place un message qui stoppe le getCurrent pendant la modification de l'input
-  player.changeTime(timeControl.value);
+  window.player.changeTime(timeControl.value);
 });
 volumeControl.addEventListener("change", () => {
-  player.changeVolume(volumeControl.value);
+  window.player.changeVolume(volumeControl.value);
 });
 
 //////////////////////// PARTIE TEAMLIST ////////////////////////
@@ -332,14 +332,14 @@ sortDescAlphaButton.addEventListener("click", () => handleSort("descAlpha"));
 sortAscNumButton.addEventListener("click", () => handleSort("ascNum"));
 sortDescNumButton.addEventListener("click", () => handleSort("descNum"));
 videoOnlyDisplayButton.addEventListener("click", () =>
-  display.displayVideoOnly()
+  window.display.displayVideoOnly()
 );
-videoAndScoresDisplayButton.addEventListener("click", () =>
-  display.displayVideoAndScores(teams)
-);
-videoAndPodiumDisplayButton.addEventListener("click", () =>
-  display.displayVideoAndPodium(teams)
-);
+videoAndScoresDisplayButton.addEventListener("click", () => {
+  if (teams.length > 0) window.display.displayVideoAndScores(teams);
+});
+videoAndPodiumDisplayButton.addEventListener("click", () => {
+  if (teams.length > 0) window.display.displayVideoAndPodium(teams);
+});
 
 //////////////////////// GENERAL ////////////////////////
 

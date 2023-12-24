@@ -1,6 +1,5 @@
 const { app, BrowserWindow, ipcMain, screen } = require("electron");
 const path = require("node:path");
-const fs = require("node:fs/promises");
 
 const createWindows = (screens) => {
   // Création de la fenêtre principale

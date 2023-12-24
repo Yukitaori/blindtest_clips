@@ -11,10 +11,10 @@
   "author": "Yukitaori",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^27.1.2"
+    "electron": "^27.1.2",
+    "eslint": "^8.56.0"
   },
   "dependencies": {
     "tailwindcss": "^3.3.5"
   }
 }
-
