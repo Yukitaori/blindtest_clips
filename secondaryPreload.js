@@ -105,7 +105,7 @@ ipcRenderer.on("displayVideoAndScores", (event, teams) => {
     teamBlock.appendChild(teamScore);
     teamName.classList.add("font-bold", "text-xl");
     teamScore.classList.add("font-bold", "text-2xl");
-    teamBlock.classList.add("flex", "flex-between", "gap-4", "flex-wrap");
+    teamBlock.classList.add("flex", "justify-between", "gap-4", "flex-wrap");
     displayScores.appendChild(teamBlock);
   }
   displayScores.classList.add(

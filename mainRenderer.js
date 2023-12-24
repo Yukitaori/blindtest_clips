@@ -185,22 +185,22 @@ const handleScore = (action, team) => {
 const handleSort = (sortType) => {
   if (sortType === "ascAlpha") {
     teams.sort((a, b) => {
-      return a.name.toLowerCase() > b.name.toLowerCase() ? -1 : 1;
+      return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
     });
     createTeamList();
   }
   if (sortType === "descAlpha") {
     teams.sort((a, b) => {
-      return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
+      return a.name.toLowerCase() > b.name.toLowerCase() ? -1 : 1;
     });
     createTeamList();
   }
   if (sortType === "ascNum") {
-    teams.sort((a, b) => b.score - a.score);
+    teams.sort((a, b) => a.score - b.score);
     createTeamList();
   }
   if (sortType === "descNum") {
-    teams.sort((a, b) => a.score - b.score);
+    teams.sort((a, b) => b.score - a.score);
     createTeamList();
   }
 };
@@ -289,7 +289,7 @@ const addTeamLine = (teamToAdd) => {
   teamLine.appendChild(teamName);
   teamLine.appendChild(teamScore);
   teamScore.appendChild(teamDeleteButton);
-  teamList.prepend(teamLine);
+  teamList.appendChild(teamLine);
   animateButtons();
 
   // Lors du clic sur le nom de l'équipe, un ipnput remplace le paragraphe afin de permettre la modif (modif en temps réel au change => pas de validation requise)
