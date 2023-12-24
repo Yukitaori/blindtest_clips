@@ -154,12 +154,15 @@ volumeControl.addEventListener("change", () => {
 //////////////////////// PARTIE TEAMLIST ////////////////////////
 
 const teams = [];
+const sortAscAlphaButton = document.getElementById("sortAscAlpha");
+const sortDescAlphaButton = document.getElementById("sortDescAlpha");
+const sortAscNumButton = document.getElementById("sortAscNum");
+const sortDescNumButton = document.getElementById("sortDescNum");
 
 const createTeamList = () => {
   const teamList = document.getElementById("teamlist");
-  console.log("ici");
   teamList.innerHTML =
-    '<li class="p-1"><button class="h-8 w-8" id="addTeam">+</button></li>';
+    '<li class="p-1 pl-4"><button class="h-10 w-10 border border-solid border-black rounded-3xl" id="addTeam">+</button></li>';
   const addTeamButton = document.getElementById("addTeam");
   addTeamButton.addEventListener("click", () => addTeamLine());
   for (let team of teams) {
@@ -174,8 +177,26 @@ const handleScore = (action, team) => {
   if (action === "decrement") {
     team.score--;
   }
-  console.log(team.score);
   createTeamList();
+};
+
+const handleSort = (sortType) => {
+  if (sortType === "ascAlpha") {
+    teams.sort((a, b) => b.name - a.name);
+    createTeamList();
+  }
+  if (sortType === "descAlpha") {
+    teams.sort((a, b) => a.name - b.name);
+    createTeamList();
+  }
+  if (sortType === "ascNum") {
+    teams.sort((a, b) => b.score - a.score);
+    createTeamList();
+  }
+  if (sortType === "descNum") {
+    teams.sort((a, b) => a.score - b.score);
+    createTeamList();
+  }
 };
 
 const addTeamLine = (teamToAdd) => {
@@ -200,13 +221,13 @@ const addTeamLine = (teamToAdd) => {
     "justify-between",
     "align-center",
     "gap-1",
-    "h-8",
-    "p-4"
+    "h-10",
+    "px-4"
   );
-  teamScore.classList.add("flex", "gap-4", "h-8");
+  teamScore.classList.add("flex", "gap-4", "h-10");
   teamScoreDecButton.classList.add(
-    "h-8",
-    "w-8",
+    "h-10",
+    "w-10",
     "p-1",
     "border",
     "border-black",
@@ -214,8 +235,8 @@ const addTeamLine = (teamToAdd) => {
     "shadow-buttonShadow"
   );
   teamScoreIncButton.classList.add(
-    "h-8",
-    "w-8",
+    "h-10",
+    "w-10",
     "p-1",
     "border",
     "border-black",
@@ -223,8 +244,8 @@ const addTeamLine = (teamToAdd) => {
     "shadow-buttonShadow"
   );
   teamScoreDisplay.classList.add(
-    "h-8",
-    "w-8",
+    "h-10",
+    "w-10",
     "p-1",
     "text-center",
     "border",
@@ -232,8 +253,8 @@ const addTeamLine = (teamToAdd) => {
     "border-solid"
   );
   teamDeleteButton.classList.add(
-    "h-8",
-    "w-8",
+    "h-10",
+    "w-10",
     "p-1",
     "border",
     "border-black",
@@ -262,14 +283,18 @@ const addTeamLine = (teamToAdd) => {
   });
   teamDeleteButton.addEventListener("click", () => {
     teams.splice(
-      teams.find((team) => team.id === teamToAdd.id),
+      teams.indexOf(teams.find((team) => team.id === teamToAdd.id)),
       1
     );
-    teamList.removeChild(teamLine);
     createTeamList();
   });
 };
 createTeamList();
+
+sortAscAlphaButton.addEventListener("click", () => handleSort("ascAlpha"));
+sortDescAlphaButton.addEventListener("click", () => handleSort("descAlpha"));
+sortAscNumButton.addEventListener("click", () => handleSort("ascNum"));
+sortDescNumButton.addEventListener("click", () => handleSort("descNum"));
 
 //////////////////////// GENERAL ////////////////////////
 
