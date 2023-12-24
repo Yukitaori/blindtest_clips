@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="w-full h-full">
   <head>
     <meta charset="UTF-8" />
     <meta
@@ -10,12 +10,13 @@
       http-equiv="X-Content-Security-Policy"
       content="default-src 'self'; script-src 'self'"
     />
+    <link href="./dist/styles.css" rel="stylesheet" />
     <title>Secondary window</title>
   </head>
-  <body>
-    <h1>Voici la secondary window.</h1>
-    <p>👋</p>
-    <p id="info"></p>
+  <body class="w-full h-full">
+    <div class="w-full h-full">
+      <video class="w-full h-full bg-black relative" id="videoplayer"></video>
+    </div>
   </body>
   <script src="./secondaryRenderer.js"></script>
 </html>
