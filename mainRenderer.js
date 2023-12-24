@@ -162,7 +162,7 @@ const sortDescNumButton = document.getElementById("sortDescNum");
 const createTeamList = () => {
   const teamList = document.getElementById("teamlist");
   teamList.innerHTML =
-    '<li class="p-1 pl-4"><button class="h-10 w-10 border border-solid border-black rounded-3xl" id="addTeam">+</button></li>';
+    '<li class="p-1 pl-4"><button class="h-10 w-10 border border-solid border-black shadow-buttonShadow rounded-3xl" id="addTeam">+</button></li>';
   const addTeamButton = document.getElementById("addTeam");
   addTeamButton.addEventListener("click", () => addTeamLine());
   for (let team of teams) {
@@ -182,11 +182,15 @@ const handleScore = (action, team) => {
 
 const handleSort = (sortType) => {
   if (sortType === "ascAlpha") {
-    teams.sort((a, b) => b.name - a.name);
+    teams.sort((a, b) => {
+      return a.name.toLowerCase() > b.name.toLowerCase() ? -1 : 1;
+    });
     createTeamList();
   }
   if (sortType === "descAlpha") {
-    teams.sort((a, b) => a.name - b.name);
+    teams.sort((a, b) => {
+      return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
+    });
     createTeamList();
   }
   if (sortType === "ascNum") {
@@ -219,7 +223,7 @@ const addTeamLine = (teamToAdd) => {
   teamLine.classList.add(
     "flex",
     "justify-between",
-    "align-center",
+    "items-center",
     "gap-1",
     "h-10",
     "px-4"
@@ -261,6 +265,15 @@ const addTeamLine = (teamToAdd) => {
     "border-solid",
     "shadow-buttonShadow"
   );
+  teamDeleteButton.classList.add(
+    "h-10",
+    "w-10",
+    "border",
+    "border-solid",
+    "border-black",
+    "rounded-3xl"
+  );
+  teamName.classList.add("h-fit", "font-semibold");
   teamName.innerText = teamToAdd.name;
   teamDeleteButton.innerText = "🗑️";
   teamScoreDecButton.innerText = "-1";
@@ -271,10 +284,25 @@ const addTeamLine = (teamToAdd) => {
   teamScore.appendChild(teamScoreIncButton);
   teamLine.appendChild(teamName);
   teamLine.appendChild(teamScore);
-  teamLine.appendChild(teamDeleteButton);
+  teamScore.appendChild(teamDeleteButton);
   teamList.prepend(teamLine);
   animateButtons();
 
+  teamName.addEventListener("click", () => {
+    const teamNameInput = document.createElement("input");
+    teamNameInput.setAttribute("type", "text");
+    teamNameInput.setAttribute("value", teamToAdd.name);
+    teamNameInput.addEventListener("change", (e) => {
+      teamToAdd.name = e.target.value;
+    });
+    teamNameInput.addEventListener("focusout", () => {
+      teamLine.replaceChild(teamName, teamNameInput);
+      createTeamList();
+    });
+    teamLine.replaceChild(teamNameInput, teamName);
+    teamNameInput.focus();
+    teamNameInput.select();
+  });
   teamScoreDecButton.addEventListener("click", () => {
     handleScore("decrement", teamToAdd);
   });
