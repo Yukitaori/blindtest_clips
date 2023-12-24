@@ -85,3 +85,20 @@ ipcRenderer.on("changeVolume", (event, volume) => {
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.volume = volume;
 });
+
+ipcRenderer.on("displayVideoOnly", () => {
+  let videoPlayer = document.getElementById("videoplayer");
+  videoPlayer.innerHTML = "";
+});
+
+ipcRenderer.on("displayVideoAndScores", (event, teams) => {
+  let videoPlayer = document.getElementById("videoplayer");
+  videoPlayer.innerHTML = "";
+  let displayScores = document.createElement("div");
+});
+
+ipcRenderer.on("displayVideoAndPodium", (event, teams) => {
+  let videoPlayer = document.getElementById("videoplayer");
+  videoPlayer.innerHTML = "";
+  let displayPodium = document.createElement("div");
+});

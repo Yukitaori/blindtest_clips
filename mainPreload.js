@@ -198,6 +198,18 @@ contextBridge.exposeInMainWorld("player", {
   },
 });
 
+contextBridge.exposeInMainWorld("display", {
+  displayVideoOnly: () => {
+    ipcRenderer.send("displayVideoOnly");
+  },
+  displayVideoAndScores: (teams) => {
+    ipcRenderer.send("displayVideoAndScores", teams);
+  },
+  displayVideoAndPodium: (teams) => {
+    ipcRenderer.send("displayVideoAndPodium", teams);
+  },
+});
+
 // Ecoute du message getDuration, qui permet de récupérer de la secondaryWindow la durée maximale de la loadedTrack et de l'afficher sur l'input range
 ipcRenderer.on("getDuration", (event, duration) => {
   const durationTime = document.getElementById("duration");

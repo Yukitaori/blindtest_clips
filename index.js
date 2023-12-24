@@ -67,6 +67,18 @@ const createWindows = (screens) => {
     mainWindow.webContents.send("videoover");
   });
 
+  ipcMain.on("displayVideoOnly", () => {
+    secondaryWindow.webContents.send("displayVideoOnly");
+  });
+
+  ipcMain.on("displayVideoAndScores", (event, teams) => {
+    secondaryWindow.webContents.send("displayVideoAndScores", teams);
+  });
+
+  ipcMain.on("displayVideoAndPodium", (event, teams) => {
+    secondaryWindow.webContents.send("displayVideoAndPodium", teams);
+  });
+
   mainWindow.webContents.openDevTools();
   secondaryWindow.webContents.openDevTools();
 };

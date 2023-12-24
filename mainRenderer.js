@@ -113,12 +113,6 @@ pauseButton.addEventListener("click", () => {
   player.pause();
 });
 playButton.addEventListener("click", () => {
-  // TODO revoir la gestion du play/pause (en fonction de la selectedTrack)
-  // Double clic uniquement pour le playFile ?
-  // voir pour remettre la selectedTrack d'origine lors de la pause ???
-  // Sous VLC le play est indépendant de la seletedTrack
-  // player.play(selectedTrack);
-  // loadedTrack = selectedTrack;
   player.play();
 });
 stopButton.addEventListener("click", () => {
@@ -158,7 +152,13 @@ const sortAscAlphaButton = document.getElementById("sortAscAlpha");
 const sortDescAlphaButton = document.getElementById("sortDescAlpha");
 const sortAscNumButton = document.getElementById("sortAscNum");
 const sortDescNumButton = document.getElementById("sortDescNum");
+const videoOnlyDisplayButton = document.getElementById("videoDisplay");
+const videoAndScoresDisplayButton =
+  document.getElementById("videoScoreDisplay");
+const videoAndPodiumDisplayButton =
+  document.getElementById("videoPodiumDisplay");
 
+// Création de la teamlist
 const createTeamList = () => {
   const teamList = document.getElementById("teamlist");
   teamList.innerHTML =
@@ -170,6 +170,7 @@ const createTeamList = () => {
   }
 };
 
+// Logique de modification du score lors du clic sur les boutons
 const handleScore = (action, team) => {
   if (action === "increment") {
     team.score++;
@@ -180,6 +181,7 @@ const handleScore = (action, team) => {
   createTeamList();
 };
 
+// Logique de tri lors du clic sur les boutons
 const handleSort = (sortType) => {
   if (sortType === "ascAlpha") {
     teams.sort((a, b) => {
@@ -203,7 +205,9 @@ const handleSort = (sortType) => {
   }
 };
 
+// Création d'une ligne d'équipe
 const addTeamLine = (teamToAdd) => {
+  // Si l'équipe n'est pas présente dans l'objet teams, elle est créée
   if (!teamToAdd) {
     teamToAdd = {
       id: teams.length + 1,
@@ -288,6 +292,9 @@ const addTeamLine = (teamToAdd) => {
   teamList.prepend(teamLine);
   animateButtons();
 
+  // Lors du clic sur le nom de l'équipe, un ipnput remplace le paragraphe afin de permettre la modif (modif en temps réel au change => pas de validation requise)
+  // Lorsque le focus n'est plus sur l'input, et celle-ci redevient un paragraphe
+  // TODO : ajouter un système de boutons pour valider ou annuler la modification du nom
   teamName.addEventListener("click", () => {
     const teamNameInput = document.createElement("input");
     teamNameInput.setAttribute("type", "text");
@@ -303,6 +310,7 @@ const addTeamLine = (teamToAdd) => {
     teamNameInput.focus();
     teamNameInput.select();
   });
+
   teamScoreDecButton.addEventListener("click", () => {
     handleScore("decrement", teamToAdd);
   });
@@ -323,6 +331,15 @@ sortAscAlphaButton.addEventListener("click", () => handleSort("ascAlpha"));
 sortDescAlphaButton.addEventListener("click", () => handleSort("descAlpha"));
 sortAscNumButton.addEventListener("click", () => handleSort("ascNum"));
 sortDescNumButton.addEventListener("click", () => handleSort("descNum"));
+videoOnlyDisplayButton.addEventListener("click", () =>
+  display.displayVideoOnly()
+);
+videoAndScoresDisplayButton.addEventListener("click", () =>
+  display.displayVideoAndScores(teams)
+);
+videoAndPodiumDisplayButton.addEventListener("click", () =>
+  display.displayVideoAndPodium(teams)
+);
 
 //////////////////////// GENERAL ////////////////////////
 
