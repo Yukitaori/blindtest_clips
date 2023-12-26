@@ -148,6 +148,7 @@ volumeControl.addEventListener("change", () => {
 //////////////////////// PARTIE TEAMLIST ////////////////////////
 
 const teams = [];
+let sortTeamsState = null;
 const sortAscAlphaButton = document.getElementById("sortAscAlpha");
 const sortDescAlphaButton = document.getElementById("sortDescAlpha");
 const sortAscNumButton = document.getElementById("sortAscNum");
@@ -160,6 +161,7 @@ const videoAndPodiumDisplayButton =
 
 // Création de la teamlist
 const createTeamList = () => {
+  if (sortTeamsState) handleSort(sortTeamsState);
   const teamList = document.getElementById("teamlist");
   teamList.innerHTML =
     '<li class="p-1 pl-4"><button class="h-10 w-10 border border-solid border-black shadow-buttonShadow rounded-3xl" id="addTeam">+</button></li>';
@@ -183,26 +185,53 @@ const handleScore = (action, team) => {
 
 // Logique de tri lors du clic sur les boutons
 const handleSort = (sortType) => {
+  console.log(sortType);
+  sortTeamsState = sortType;
+  console.log(sortType);
   if (sortType === "ascAlpha") {
     teams.sort((a, b) => {
       return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
     });
-    createTeamList();
   }
   if (sortType === "descAlpha") {
     teams.sort((a, b) => {
       return a.name.toLowerCase() > b.name.toLowerCase() ? -1 : 1;
     });
-    createTeamList();
   }
   if (sortType === "ascNum") {
     teams.sort((a, b) => a.score - b.score);
-    createTeamList();
   }
   if (sortType === "descNum") {
     teams.sort((a, b) => b.score - a.score);
-    createTeamList();
   }
+};
+
+// Fonction qui gère le clic sur un mode de display pour la mise en style du bouton du display actif
+const resetDisplayButtonsStyle = (clickedButton) => {
+  for (let button of [
+    videoOnlyDisplayButton,
+    videoAndScoresDisplayButton,
+    videoAndPodiumDisplayButton,
+  ]) {
+    if (button.classList.contains("bg-yellow-300")) {
+      button.classList.remove("bg-yellow-300", "font-bold");
+    }
+  }
+  clickedButton.classList.add("bg-yellow-300", "font-bold");
+};
+
+const resetSortButtonsStyle = (clickedButton) => {
+  for (let button of [
+    sortAscAlphaButton,
+    sortAscNumButton,
+    sortDescAlphaButton,
+    sortDescNumButton,
+  ]) {
+    if (button.classList.contains("bg-purple-300")) {
+      button.classList.remove("bg-purple-300", "font-bold");
+    }
+  }
+  clickedButton.classList.add("bg-purple-300", "font-bold");
 };
 
 // Création d'une ligne d'équipe
@@ -322,23 +351,55 @@ const addTeamLine = (teamToAdd) => {
       teams.indexOf(teams.find((team) => team.id === teamToAdd.id)),
       1
     );
+    handleSort(sortTeamsState);
     createTeamList();
   });
 };
 createTeamList();
 
-sortAscAlphaButton.addEventListener("click", () => handleSort("ascAlpha"));
-sortDescAlphaButton.addEventListener("click", () => handleSort("descAlpha"));
-sortAscNumButton.addEventListener("click", () => handleSort("ascNum"));
-sortDescNumButton.addEventListener("click", () => handleSort("descNum"));
-videoOnlyDisplayButton.addEventListener("click", () =>
-  window.display.displayVideoOnly()
-);
+sortAscAlphaButton.addEventListener("click", () => {
+  if (teams.length > 0) {
+    resetSortButtonsStyle(sortAscAlphaButton);
+    handleSort("ascAlpha");
+    createTeamList();
+  }
+});
+sortDescAlphaButton.addEventListener("click", () => {
+  if (teams.length > 0) {
+    resetSortButtonsStyle(sortDescAlphaButton);
+    handleSort("descAlpha");
+    createTeamList();
+  }
+});
+sortAscNumButton.addEventListener("click", () => {
+  if (teams.length > 0) {
+    resetSortButtonsStyle(sortAscNumButton);
+    handleSort("ascNum");
+    createTeamList();
+  }
+});
+sortDescNumButton.addEventListener("click", () => {
+  if (teams.length > 0) {
+    resetSortButtonsStyle(sortDescNumButton);
+    handleSort("descNum");
+    createTeamList();
+  }
+});
+videoOnlyDisplayButton.addEventListener("click", () => {
+  resetDisplayButtonsStyle(videoOnlyDisplayButton);
+  window.display.displayVideoOnly();
+});
 videoAndScoresDisplayButton.addEventListener("click", () => {
-  if (teams.length > 0) window.display.displayVideoAndScores(teams);
+  if (teams.length > 0) {
+    resetDisplayButtonsStyle(videoAndScoresDisplayButton);
+    window.display.displayVideoAndScores(teams);
+  }
 });
 videoAndPodiumDisplayButton.addEventListener("click", () => {
-  if (teams.length > 0) window.display.displayVideoAndPodium(teams);
+  if (teams.length > 0) {
+    resetDisplayButtonsStyle(videoAndPodiumDisplayButton);
+    window.display.displayVideoAndPodium(teams);
+  }
 });
 
 //////////////////////// GENERAL ////////////////////////

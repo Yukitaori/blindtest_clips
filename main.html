@@ -45,11 +45,11 @@
             <p id="duration" class="w-[10%] text-center">00:00</p>
           </div>
         </div>
-        <div class="flex justify-center gap-8 w-[90%] m-auto">
-          <ul class="flex gap-2 flex-wrap">
+        <div class="flex justify-around gap-8 w-[90%] m-auto">
+          <ul class="flex gap-2 flex-wrap items-center">
             <li>
               <button
-                class="border border-black p-4 group shadow-buttonShadow transition-all bg-blue-500"
+                class="border border-black p-4 group shadow-buttonShadow rounded-3xl transition-all bg-blue-500"
                 id="playerprev"
               >
                 <img
@@ -97,7 +97,7 @@
             </li>
             <li>
               <button
-                class="border border-black p-4 group shadow-buttonShadow transition-all bg-blue-500"
+                class="border border-black p-4 group shadow-buttonShadow rounded-3xl transition-all bg-blue-500"
                 id="playernext"
               >
                 <img
@@ -107,35 +107,35 @@
                 />
               </button>
             </li>
-            <li>
-              <button
-                class="border border-black p-4 group shadow-buttonShadow transition-all"
-                id="playermute"
-              >
-                <img
-                  class="h-3 w-3 group-hover:scale-125"
-                  src="./src/assets/icons/mute.png"
-                  alt="Mute"
-                />
-              </button>
-            </li>
           </ul>
-          <div class="flex flex-col">
-            <p>Volume</p>
-            <input
-              type="range"
-              name="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value="1"
-              id="volumecontrol"
-              alt="Volume control"
-              class="appearance-none h-2 border border-black border-solid shadow-slideShadow rounded-2xl"
-            />
-            <div class="flex justify-between gap-1">
-              <p>0%</p>
-              <p>100%</p>
+          <div class="flex gap-4">
+            <button
+              class="h-16 w-16 border border-black p-4 group shadow-buttonShadow transition-all"
+              id="playermute"
+            >
+              <img
+                class="h-3 w-3 m-auto group-hover:scale-125"
+                src="./src/assets/icons/mute.png"
+                alt="Mute"
+              />
+            </button>
+            <div class="flex flex-col">
+              <p>Volume</p>
+              <input
+                type="range"
+                name="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value="1"
+                id="volumecontrol"
+                alt="Volume control"
+                class="appearance-none h-2 border border-black border-solid shadow-slideShadow rounded-2xl"
+              />
+              <div class="flex justify-between gap-1">
+                <p>0%</p>
+                <p>100%</p>
+              </div>
             </div>
           </div>
         </div>
@@ -157,25 +157,25 @@
         <div class="flex justify-between gap-1 mt-1 mx-5">
           <div class="flex gap-1 mb-10 h-20">
             <button
-              class="border border-solid border-black shadow-buttonShadow h-20 w-20 p-1 hover:font-bold"
+              class="border border-solid border-black shadow-buttonShadow rounded-teamSettings h-20 w-20 p-1 hover:font-bold"
               id="sortAscAlpha"
             >
               A-Z
             </button>
             <button
-              class="border border-solid border-black shadow-buttonShadow h-20 w-20 p-1 hover:font-bold"
+              class="border border-solid border-black shadow-buttonShadow rounded-teamSettings h-20 w-20 p-1 hover:font-bold"
               id="sortDescAlpha"
             >
               Z-A
             </button>
             <button
-              class="border border-solid border-black shadow-buttonShadow h-20 w-20 p-1 hover:font-bold"
+              class="border border-solid border-black shadow-buttonShadow rounded-teamSettings h-20 w-20 p-1 hover:font-bold"
               id="sortAscNum"
             >
               1-3
             </button>
             <button
-              class="border border-solid border-black shadow-buttonShadow h-20 w-20 p-1 hover:font-bold"
+              class="border border-solid border-black shadow-buttonShadow rounded-teamSettings h-20 w-20 p-1 hover:font-bold"
               id="sortDescNum"
             >
               3-1
@@ -183,19 +183,19 @@
           </div>
           <div class="flex gap-1">
             <button
-              class="border border-solid border-black shadow-buttonShadow h-20 w-20 p-1 hover:font-bold"
+              class="border border-solid border-black shadow-buttonShadow rounded-teamSettings h-20 w-20 p-1 hover:font-bold bg-yellow-300 font-bold"
               id="videoDisplay"
             >
               Video
             </button>
             <button
-              class="border border-solid border-black shadow-buttonShadow h-20 w-20 p-1 hover:font-bold"
+              class="border border-solid border-black shadow-buttonShadow rounded-teamSettings h-20 w-20 p-1 hover:font-bold"
               id="videoScoreDisplay"
             >
               Video + Scores
             </button>
             <button
-              class="border border-solid border-black shadow-buttonShadow h-20 w-20 p-1 hover:font-bold"
+              class="border border-solid border-black shadow-buttonShadow rounded-teamSettings h-20 w-20 p-1 hover:font-bold"
               id="videoPodiumDisplay"
             >
               Podium
