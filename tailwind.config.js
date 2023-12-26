@@ -10,6 +10,36 @@ module.exports = {
       borderRadius: {
         teamSettings: "25px 0",
       },
+      backgroundColor: {
+        transparentDisplay: "rgb(0,0,0, 0.7)",
+      },
+      keyframes: {
+        "top-come": {
+          "0%": { transform: "translateY(-100%)" },
+          "100%": { transform: "translateY(0px)" },
+        },
+        "right-come": {
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(0px)" },
+        },
+        fadein: {
+          "0%": { opacity: 0 },
+          "100%": { opacity: 1 },
+        },
+        turn: {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+      },
+      animation: {
+        "top-come": "top-come 1s ease",
+        "right-come": "right-come 1s ease",
+        fadein: "fadein 3s ease-in 3s forwards",
+        fadein0: "fadein 2s ease-in 5s forwards",
+        fadein1: "fadein 2s ease-in 4s forwards",
+        fadein2: "fadein 2s ease-in 3s forwards",
+        turn: "turn 1s ease-in-out",
+      },
     },
   },
   plugins: [],

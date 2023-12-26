@@ -88,7 +88,6 @@ ipcRenderer.on("displayVideoOnly", () => {
 });
 
 ipcRenderer.on("displayVideoAndScores", (event, teams) => {
-  console.log(teams);
   let displayScreen = document.getElementById("displayscreen");
   let videoPlayer = document.getElementById("videoplayer");
   let displayScores = document.createElement("div");
@@ -103,16 +102,21 @@ ipcRenderer.on("displayVideoAndScores", (event, teams) => {
     teamScore.innerText = team.score;
     teamBlock.appendChild(teamName);
     teamBlock.appendChild(teamScore);
-    teamName.classList.add("font-bold", "text-xl");
-    teamScore.classList.add("font-bold", "text-2xl");
+    teamName.classList.add("font-bold", "text-2xl");
+    teamScore.classList.add(
+      "font-bold",
+      "text-2xl",
+      "opacity-0",
+      "animate-fadein"
+    );
     teamBlock.classList.add("flex", "justify-between", "gap-4", "flex-wrap");
     displayScores.appendChild(teamBlock);
   }
   displayScores.classList.add(
-    "bg-transparent",
-    "border",
+    "bg-transparentDisplay",
+    "border-b-4",
     "border-solid",
-    "border-white",
+    "border-black",
     "text-white",
     "z-10",
     "absolute",
@@ -120,13 +124,76 @@ ipcRenderer.on("displayVideoAndScores", (event, teams) => {
     "top-0",
     "flex",
     "flex-col",
-    "gap-2"
+    "gap-2",
+    "animate-right-come"
   );
   displayScreen.insertBefore(displayScores, videoPlayer);
 });
 
 ipcRenderer.on("displayVideoAndPodium", (event, teams) => {
+  let displayScreen = document.getElementById("displayscreen");
   let videoPlayer = document.getElementById("videoplayer");
-  videoPlayer.innerHTML = "";
-  let displayPodium = document.createElement("div");
+  let displayScores = document.createElement("div");
+  let nodeToRemove = document.getElementById("displayscores");
+  let trophiesUrl = [
+    "./src/assets/images/gold-trophy.png",
+    "./src/assets/images/silver-trophy.png",
+    "./src/assets/images/bronze-trophy.png",
+  ];
+  if (nodeToRemove) displayScreen.removeChild(nodeToRemove);
+  displayScores.setAttribute("id", "displayscores");
+  for (let i = 0; i < 3 && i < teams.length; i++) {
+    let teamBlock = document.createElement("div");
+    let teamName = document.createElement("p");
+    let teamScore = document.createElement("p");
+    let teamTrophy = document.createElement("img");
+    teamTrophy.src = trophiesUrl[i];
+    teamName.innerText = teams[i].name;
+    teamScore.innerText = teams[i].score;
+    teamBlock.appendChild(teamName);
+    teamBlock.appendChild(teamTrophy);
+    teamBlock.appendChild(teamScore);
+    teamName.classList.add("font-bold", "text-2xl");
+    teamTrophy.classList.add(
+      "w-[50%]",
+      "opacity-0",
+      `animate-fadein${i.toString()}`
+    );
+    teamScore.classList.add(
+      "font-bold",
+      "text-4xl",
+      "opacity-0",
+      i === 0
+        ? "animate-fadein0"
+        : i === 1
+        ? "animate-fadein1"
+        : "animate-fadein2"
+    );
+    teamBlock.classList.add(
+      "flex",
+      "flex-col",
+      "justify-between",
+      "items-center",
+      "gap-4",
+      "flex-wrap"
+    );
+    displayScores.appendChild(teamBlock);
+    if (displayScores.childNodes.length === 3) break;
+  }
+  displayScores.classList.add(
+    "w-full",
+    "bg-transparentDisplay",
+    "border-b-4",
+    "border-solid",
+    "border-black",
+    "text-white",
+    "z-10",
+    "absolute",
+    "top-0",
+    "flex",
+    "justify-between",
+    "gap-2",
+    "animate-top-come"
+  );
+  displayScreen.insertBefore(displayScores, videoPlayer);
 });

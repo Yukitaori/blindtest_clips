@@ -8,10 +8,23 @@
   padding: 0;
 }
 
-input::-webkit-slider-thumb {
+#timecontrol::-webkit-slider-thumb {
   appearance: none;
   width: 16px;
-  height: 8px;
+  height: 16px;
+  border-radius: 25px;
+  background-color: black;
+}
+#timecontrol::-webkit-slider-thumb::after {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#volumecontrol::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
   border-radius: 25px;
   background-color: black;
 }

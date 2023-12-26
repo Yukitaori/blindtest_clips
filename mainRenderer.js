@@ -164,7 +164,7 @@ const createTeamList = () => {
   if (sortTeamsState) handleSort(sortTeamsState);
   const teamList = document.getElementById("teamlist");
   teamList.innerHTML =
-    '<li class="p-1 pl-4"><button class="h-10 w-10 border border-solid border-black shadow-buttonShadow rounded-3xl" id="addTeam">+</button></li>';
+    '<li class="w-full p-1 pl-4 flex justify-center"><button class="h-10 w-10 border border-solid border-black shadow-buttonShadow rounded-3xl" id="addTeam">+</button></li>';
   const addTeamButton = document.getElementById("addTeam");
   addTeamButton.addEventListener("click", () => addTeamLine());
   for (let team of teams) {
@@ -185,9 +185,7 @@ const handleScore = (action, team) => {
 
 // Logique de tri lors du clic sur les boutons
 const handleSort = (sortType) => {
-  console.log(sortType);
   sortTeamsState = sortType;
-  console.log(sortType);
   if (sortType === "ascAlpha") {
     teams.sort((a, b) => {
       return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
@@ -398,7 +396,9 @@ videoAndScoresDisplayButton.addEventListener("click", () => {
 videoAndPodiumDisplayButton.addEventListener("click", () => {
   if (teams.length > 0) {
     resetDisplayButtonsStyle(videoAndPodiumDisplayButton);
-    window.display.displayVideoAndPodium(teams);
+    window.display.displayVideoAndPodium(
+      teams.sort((a, b) => b.score - a.score)
+    );
   }
 });
 
