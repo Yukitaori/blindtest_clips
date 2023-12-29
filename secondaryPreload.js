@@ -1,5 +1,4 @@
-const { contextBridge, ipcRenderer } = require("electron");
-let getCurrentTimeEverySecond;
+const { ipcRenderer } = require("electron");
 const intervals = [];
 
 const getCurrentTime = () => {
@@ -17,9 +16,7 @@ ipcRenderer.on("playFile", (event, path) => {
   if (videoPlayer.src) {
     clearInterval(intervals[0]);
     intervals.shift();
-    intervals.push(
-      (getCurrentTimeEverySecond = setInterval(getCurrentTime, 1000))
-    );
+    intervals.push(setInterval(getCurrentTime, 1000));
   }
   videoPlayer.setAttribute("preload", "metadata");
   videoPlayer.addEventListener("loadedmetadata", () => {
@@ -40,9 +37,7 @@ ipcRenderer.on("play", () => {
   if (videoPlayer.src) {
     clearInterval(intervals[0]);
     intervals.shift();
-    intervals.push(
-      (getCurrentTimeEverySecond = setInterval(getCurrentTime, 1000))
-    );
+    intervals.push(setInterval(getCurrentTime, 1000));
   }
   ipcRenderer.send("duration", videoPlayer.duration.toFixed());
 });
@@ -75,9 +70,7 @@ ipcRenderer.on("changeTime", (event, time) => {
   videoPlayer.currentTime = time;
   clearInterval(intervals[0]);
   intervals.shift();
-  intervals.push(
-    (getCurrentTimeEverySecond = setInterval(getCurrentTime, 1000))
-  );
+  intervals.push(setInterval(getCurrentTime, 1000));
 });
 
 // Ecoute de l'événement "changeVolume" et changement du volume sélectionné via l'input range dans la primaryWindow
@@ -87,18 +80,122 @@ ipcRenderer.on("changeVolume", (event, volume) => {
 });
 
 ipcRenderer.on("displayVideoOnly", () => {
-  let videoPlayer = document.getElementById("videoplayer");
-  videoPlayer.innerHTML = "";
+  let displayScreen = document.getElementById("displayscreen");
+  let displayScores = document.createElement("div");
+  let nodeToRemove = document.getElementById("displayscores");
+  if (nodeToRemove) displayScreen.removeChild(nodeToRemove);
+  displayScores.setAttribute("id", "displayscores");
 });
 
 ipcRenderer.on("displayVideoAndScores", (event, teams) => {
+  let displayScreen = document.getElementById("displayscreen");
   let videoPlayer = document.getElementById("videoplayer");
-  videoPlayer.innerHTML = "";
   let displayScores = document.createElement("div");
+  let nodeToRemove = document.getElementById("displayscores");
+  if (nodeToRemove) displayScreen.removeChild(nodeToRemove);
+  displayScores.setAttribute("id", "displayscores");
+  for (let team of teams) {
+    let teamBlock = document.createElement("div");
+    let teamName = document.createElement("p");
+    let teamScore = document.createElement("p");
+    teamName.innerText = team.name;
+    teamScore.innerText = team.score;
+    teamBlock.appendChild(teamName);
+    teamBlock.appendChild(teamScore);
+    teamName.classList.add("font-bold", "text-2xl");
+    teamScore.classList.add(
+      "font-bold",
+      "text-2xl",
+      "opacity-0",
+      "animate-fadein"
+    );
+    teamBlock.classList.add("flex", "justify-between", "gap-4", "flex-wrap");
+    displayScores.appendChild(teamBlock);
+  }
+  displayScores.classList.add(
+    "h-full",
+    "bg-transparentDisplay",
+    "border-b-4",
+    "border-solid",
+    "border-black",
+    "text-white",
+    "z-10",
+    "absolute",
+    "right-0",
+    "top-0",
+    "flex",
+    "flex-col",
+    "gap-2",
+    "animate-right-come",
+    "p-4"
+  );
+  displayScreen.insertBefore(displayScores, videoPlayer);
 });
 
 ipcRenderer.on("displayVideoAndPodium", (event, teams) => {
+  let displayScreen = document.getElementById("displayscreen");
   let videoPlayer = document.getElementById("videoplayer");
-  videoPlayer.innerHTML = "";
-  let displayPodium = document.createElement("div");
+  let displayScores = document.createElement("div");
+  let nodeToRemove = document.getElementById("displayscores");
+  let trophiesUrl = [
+    "./src/assets/images/gold-trophy.png",
+    "./src/assets/images/silver-trophy.png",
+    "./src/assets/images/bronze-trophy.png",
+  ];
+  if (nodeToRemove) displayScreen.removeChild(nodeToRemove);
+  displayScores.setAttribute("id", "displayscores");
+  for (let i = 0; i < 3 && i < teams.length; i++) {
+    let teamBlock = document.createElement("div");
+    let teamName = document.createElement("p");
+    let teamScore = document.createElement("p");
+    let teamTrophy = document.createElement("img");
+    teamTrophy.src = trophiesUrl[i];
+    teamName.innerText = teams[i].name;
+    teamScore.innerText = teams[i].score;
+    teamBlock.appendChild(teamName);
+    teamBlock.appendChild(teamTrophy);
+    teamBlock.appendChild(teamScore);
+    teamName.classList.add("font-bold", "text-2xl");
+    teamTrophy.classList.add(
+      "opacity-0",
+      `animate-fadein${i.toString()}`,
+      "w-[50%]"
+    );
+    teamScore.classList.add(
+      "font-bold",
+      "text-4xl",
+      "2xl:text-9xl",
+      "opacity-0",
+      i === 0
+        ? "animate-fadein0"
+        : i === 1
+        ? "animate-fadein1"
+        : "animate-fadein2"
+    );
+    teamBlock.classList.add(
+      "flex",
+      "flex-col",
+      "justify-between",
+      "items-center",
+      "gap-4"
+    );
+    displayScores.appendChild(teamBlock);
+    if (displayScores.childNodes.length === 3) break;
+  }
+  displayScores.classList.add(
+    "w-full",
+    "bg-transparentDisplay",
+    "border-b-4",
+    "border-solid",
+    "border-black",
+    "text-white",
+    "z-10",
+    "absolute",
+    "top-0",
+    "flex",
+    "justify-between",
+    "gap-2",
+    "animate-top-come"
+  );
+  displayScreen.insertBefore(displayScores, videoPlayer);
 });

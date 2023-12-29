@@ -3,15 +3,34 @@
 @tailwind utilities;
 
 * {
+  --primary: #dda15e;
+  --secondary: #bc6c25;
+  --third: #fefae0;
+  --fourth: #283618;
+  --fifth: #606c38;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-input::-webkit-slider-thumb {
+#timecontrol::-webkit-slider-thumb {
   appearance: none;
   width: 16px;
-  height: 8px;
+  height: 16px;
   border-radius: 25px;
-  background-color: black;
+  background-color: var(--fourth);
+}
+
+#timecontrol::-webkit-slider-thumb::after {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#volumecontrol::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 25px;
+  background-color: var(--fourth);
 }

@@ -1,10 +1,11 @@
 const { app, BrowserWindow, ipcMain, screen } = require("electron");
 const path = require("node:path");
-const fs = require("node:fs/promises");
 
 const createWindows = (screens) => {
   // Création de la fenêtre principale
   const mainWindow = new BrowserWindow({
+    width: 1300,
+    height: 800,
     webPreferences: {
       preload: path.join(__dirname, "mainPreload.js"),
     },
@@ -79,8 +80,8 @@ const createWindows = (screens) => {
     secondaryWindow.webContents.send("displayVideoAndPodium", teams);
   });
 
-  mainWindow.webContents.openDevTools();
-  secondaryWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
+  // secondaryWindow.webContents.openDevTools();
 };
 
 app.whenReady().then(() => {
