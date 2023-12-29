@@ -22,6 +22,7 @@ const volumeControl = document.getElementById("volumecontrol");
 const createTrackList = () => {
   // la tracklist précédente est effacée
   tracklist.innerHTML = "";
+  let draggedTracks = [];
   let index = 0;
 
   if (document.getElementById("playlistInstruction")) {
@@ -89,6 +90,16 @@ const createTrackList = () => {
           }
         }
       });
+      if (selectedTracks.includes(file)) {
+        track.setAttribute("draggable", "true");
+        track.addEventListener("drag", () => {
+          draggedTracks = selectedTracks.slice(0);
+        });
+        track.addEventListener("dragend", () => {
+          draggedTracks = [];
+        });
+      }
+
       // Création du témoin de localisation de l'endroit où les pistes vont être insérées lors que l'on drag les fichiers par-dessus
       track.addEventListener("dragenter", (e) => {
         e.preventDefault();
@@ -114,12 +125,23 @@ const createTrackList = () => {
       // Au drop sur une track existante, les fichiers déposés sont insérés dans la playlist à l'index suivant cette track
       // Les tracks déposées deviennent les selectedTracks (si besoin de les supprimer immédiatement)
       track.addEventListener("drop", (e) => {
+        console.log(e.toElement);
         e.preventDefault();
         selectedTracks = [];
-        Object.entries(e.dataTransfer.files).forEach((element) => {
-          playlist.splice(playlist.indexOf(file) + 1, 0, element[1]);
-          selectedTracks.push(element[1]);
-        });
+        if (draggedTracks.length > 0) {
+          draggedTracks.forEach((element) => {
+            console.log(element);
+            playlist.splice(playlist.indexOf(element), 1);
+            playlist.splice(playlist.indexOf(file) + 1, 0, element);
+            selectedTracks.push(element);
+          });
+        } else {
+          Object.entries(e.dataTransfer.files).forEach((element) => {
+            console.log(element);
+            playlist.splice(playlist.indexOf(file) + 1, 0, element[1]);
+            selectedTracks.push(element[1]);
+          });
+        }
         createTrackList();
         track.classList.remove(
           "pb-4",
