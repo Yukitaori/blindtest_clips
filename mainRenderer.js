@@ -31,96 +31,104 @@ const createTrackList = () => {
 
   // Pour chaque track de la playlist, une entrée est générée dans la liste
   playlist.forEach((file) => {
-    file.id = index;
-    file.trackNumber = index + 1;
-    let track = document.createElement("li");
-
-    let trackbutton = document.createElement("button");
-    track.classList.add(
-      "cursor-pointer",
-      "text-left",
-      "text-sm",
-      "pl-2",
-      "flex",
-      "items-center",
-      "gap-2"
-    );
-
-    track.addEventListener("mouseover", () => {
-      if (file !== loadedTrack && !selectedTracks.includes(file))
-        track.classList.add("bg-fourth", "text-white");
-    });
-    track.addEventListener("mouseleave", () => {
-      if (file !== loadedTrack && !selectedTracks.includes(file))
-        track.classList.remove("bg-fourth", "text-white");
-    });
-
-    // Le double clic permet le chargement de la piste dans le player (loadedTrack)
-    track.addEventListener("dblclick", () => {
-      selectedTracks = [];
-      window.player.playFile(file, index);
-      loadedTrack = file;
-      createTrackList();
-    });
-    // Le clic simple permet juste de sélectionner une piste
-    track.addEventListener("click", () => {
-      selectedTracks = [file];
-      createTrackList();
-    });
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Delete" && selectedTracks.includes(file)) {
-        playlist.splice(playlist.indexOf(file), selectedTracks.length);
-        selectedTracks = [];
-        createTrackList();
-      }
-    });
-    track.addEventListener("dragenter", (e) => {
-      e.preventDefault();
+    if (file.type.includes("video")) {
+      file.id = index;
+      file.trackNumber = index + 1;
+      let track = document.createElement("li");
+      let trackbutton = document.createElement("button");
       track.classList.add(
-        "pb-4",
-        "bg-fifth",
-        "border-b",
-        "border-double",
-        "border-black"
+        "cursor-pointer",
+        "text-left",
+        "text-sm",
+        "pl-2",
+        "flex",
+        "items-center",
+        "gap-2"
       );
-    });
-    track.addEventListener("dragleave", (e) => {
-      e.preventDefault();
-      track.classList.remove(
-        "pb-4",
-        "bg-fifth",
-        "border-b",
-        "border-double",
-        "border-black"
-      );
-    });
-    track.addEventListener("drop", (e) => {
-      e.preventDefault();
-      selectedTracks = [];
-      Object.entries(e.dataTransfer.files).forEach((element) => {
-        playlist.splice(playlist.indexOf(file) + 1, 0, element[1]);
-        selectedTracks.push(element[1]);
+      trackbutton.classList.add("text-left");
+      // Si une track est survolée, et qu'elle n'est ni selected ni loaded, elle change de style
+      // Le style est supprimé lorsquel la track n'est plus survolée
+      track.addEventListener("mouseover", () => {
+        if (file !== loadedTrack && !selectedTracks.includes(file))
+          track.classList.add("bg-fourth", "text-white");
       });
-      createTrackList();
-      track.classList.remove(
-        "pb-4",
-        "bg-fifth",
-        "border-b",
-        "border-double",
-        "border-black"
-      );
-    });
-    if (selectedTracks.includes(file) && file !== loadedTrack)
-      track.classList.add("bg-fifth", "text-primary");
-    if (loadedTrack === file) {
-      track.innerHTML =
-        '<img src="./src/assets/icons/playwhite.png" class="h-2 w-2"></img>';
-      track.classList.add("bg-secondary", "text-fourth", "font-semibold");
+      track.addEventListener("mouseleave", () => {
+        if (file !== loadedTrack && !selectedTracks.includes(file))
+          track.classList.remove("bg-fourth", "text-white");
+      });
+      // Le double clic permet le chargement de la piste dans le player (loadedTrack)
+      track.addEventListener("dblclick", () => {
+        selectedTracks = [];
+        window.player.playFile(file, index);
+        loadedTrack = file;
+        createTrackList();
+      });
+      // Le clic simple permet juste de sélectionner une piste
+      track.addEventListener("click", () => {
+        selectedTracks = [file];
+        createTrackList();
+      });
+      // Lors de l'appui sur Suppr, les pistes sélectionnées (selectedTracks) sont supprimées
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Delete" && selectedTracks.includes(file)) {
+          playlist.splice(playlist.indexOf(file), selectedTracks.length);
+          selectedTracks = [];
+          createTrackList();
+        }
+      });
+      // Création du témoin de localisation de l'endroit où les pistes vont être insérées lors que l'on drag les fichiers par-dessus
+      track.addEventListener("dragenter", (e) => {
+        e.preventDefault();
+        track.classList.add(
+          "pb-4",
+          "bg-fifth",
+          "border-b",
+          "border-double",
+          "border-black"
+        );
+      });
+      // Suppression du témoin de localisation de l'endroit où les pistes vont être insérées lors que l'on drag les fichiers en-dehors
+      track.addEventListener("dragleave", (e) => {
+        e.preventDefault();
+        track.classList.remove(
+          "pb-4",
+          "bg-fifth",
+          "border-b",
+          "border-double",
+          "border-black"
+        );
+      });
+      // Au drop sur une track existante, les fichiers déposés sont insérés dans la playlist à l'index suivant cette track
+      // Les tracks déposées deviennent les selectedTracks (si besoin de les supprimer immédiatement)
+      track.addEventListener("drop", (e) => {
+        e.preventDefault();
+        selectedTracks = [];
+        Object.entries(e.dataTransfer.files).forEach((element) => {
+          playlist.splice(playlist.indexOf(file) + 1, 0, element[1]);
+          selectedTracks.push(element[1]);
+        });
+        createTrackList();
+        track.classList.remove(
+          "pb-4",
+          "bg-fifth",
+          "border-b",
+          "border-double",
+          "border-black"
+        );
+      });
+      // Changement de style des tracks selon si elles sont selected ou loaded
+      if (selectedTracks.includes(file) && file !== loadedTrack)
+        track.classList.add("bg-fifth", "text-primary");
+      if (loadedTrack === file) {
+        track.innerHTML =
+          '<img src="./src/assets/icons/playwhite.png" class="h-2 w-2"></img>';
+        track.classList.add("bg-secondary", "text-fourth", "font-semibold");
+      }
+      trackbutton.innerText = `${file.trackNumber} - ${file.name}`;
+      track.appendChild(trackbutton);
+      tracklist.appendChild(track);
+      index++;
     }
-    trackbutton.innerText = `${file.trackNumber} - ${file.name}`;
-    track.appendChild(trackbutton);
-    tracklist.appendChild(track);
-    index++;
   });
 
   for (const [i, value] of playlist.entries()) {
@@ -166,7 +174,7 @@ pauseButton.addEventListener("click", () => {
   window.player.pause();
 });
 playButton.addEventListener("click", () => {
-  window.player.play();
+  if (loadedTrack) window.player.play();
 });
 stopButton.addEventListener("click", () => {
   window.player.stop();
