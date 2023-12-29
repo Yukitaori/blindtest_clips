@@ -46,14 +46,17 @@ const createTrackList = () => {
     );
 
     track.addEventListener("mouseover", () => {
-      track.classList.add("bg-gray-100");
+      if (file !== loadedTrack && file !== selectedTrack)
+        track.classList.add("bg-fourth", "text-white");
     });
     track.addEventListener("mouseleave", () => {
-      track.classList.remove("bg-gray-100");
+      if (file !== loadedTrack && file !== selectedTrack)
+        track.classList.remove("bg-fourth", "text-white");
     });
 
     // Le double clic permet le chargement de la piste dans le player (loadedTrack)
     track.addEventListener("dblclick", () => {
+      selectedTrack = null;
       window.player.playFile(file, index);
       loadedTrack = file;
       createTrackList();
@@ -63,11 +66,12 @@ const createTrackList = () => {
       selectedTrack = file;
       createTrackList();
     });
-    if (selectedTrack === file) track.classList.add("bg-gray-200");
+    if (selectedTrack === file && file !== loadedTrack)
+      track.classList.add("bg-fifth", "text-primary");
     if (loadedTrack === file) {
       track.innerHTML =
-        '<img src="./src/assets/icons/play.png" class="h-2 w-2"></img>';
-      track.classList.add("bg-gray-300", "font-semibold");
+        '<img src="./src/assets/icons/playwhite.png" class="h-2 w-2"></img>';
+      track.classList.add("bg-secondary", "text-fourth", "font-semibold");
     }
     trackbutton.innerText = `${file.trackNumber} - ${file.name}`;
     track.appendChild(trackbutton);
@@ -78,7 +82,7 @@ const createTrackList = () => {
 
 // Gestion du drag'n'drop sur la zone d'affichage des pistes video
 dropzone.addEventListener("drop", (e) => {
-  dropzone.classList.remove("bg-gray-300");
+  dropzone.classList.remove("bg-fifth");
   e.preventDefault();
   // Au drop, la playlist est de nouveau générée intégralement et transmise au preload pour la gestion
   Object.entries(event.dataTransfer.files).forEach((file) => {
@@ -101,11 +105,11 @@ dropzone.addEventListener("dragover", (e) => {
 // Gestion des animations lors du drag au-dessus de la dropzone
 dropzone.addEventListener("dragenter", (e) => {
   e.preventDefault();
-  dropzone.classList.add("bg-gray-300");
+  dropzone.classList.add("bg-fifth");
 });
 dropzone.addEventListener("dragleave", (e) => {
   e.preventDefault();
-  dropzone.classList.remove("bg-gray-300");
+  dropzone.classList.remove("bg-fifth");
 });
 
 // TODO mettre en place des raccourcis clavier pour chaque action
@@ -119,7 +123,7 @@ stopButton.addEventListener("click", () => {
   window.player.stop();
 });
 muteButton.addEventListener("click", () => {
-  window.player.mute();
+  if (loadedTrack) window.player.mute();
 });
 previousButton.addEventListener("click", () => {
   window.player.previousTrack();
@@ -139,9 +143,12 @@ nextButton.addEventListener("click", () => {
 });
 timeControl.addEventListener("change", () => {
   // TODO Mettre en place un message qui stoppe le getCurrent pendant la modification de l'input
+  // TODO Mettre un fond de couleur différente à gauche et à droite du curseur
   window.player.changeTime(timeControl.value);
 });
 volumeControl.addEventListener("change", () => {
+  // TODO Mettre en place un changement progressif du volume lors du clic maintenu
+  // TODO Mettre un fond de couleur différente à gauche et à droite du curseur
   window.player.changeVolume(volumeControl.value);
 });
 
@@ -154,6 +161,11 @@ const sortDescAlphaButton = document.getElementById("sortDescAlpha");
 const sortAscNumButton = document.getElementById("sortAscNum");
 const sortDescNumButton = document.getElementById("sortDescNum");
 const videoOnlyDisplayButton = document.getElementById("videoDisplay");
+videoOnlyDisplayButton.classList.add(
+  "bg-yellow-300",
+  "font-bold",
+  "rounded-teamSettingsSelected"
+);
 const videoAndScoresDisplayButton =
   document.getElementById("videoScoreDisplay");
 const videoAndPodiumDisplayButton =
@@ -164,7 +176,7 @@ const createTeamList = () => {
   if (sortTeamsState) handleSort(sortTeamsState);
   const teamList = document.getElementById("teamlist");
   teamList.innerHTML =
-    '<li class="w-full p-1 pl-4 flex justify-center"><button class="h-10 w-10 border border-solid border-black shadow-buttonShadow rounded-3xl" id="addTeam">+</button></li>';
+    '<li class="w-full p-1 pl-4 flex justify-center"><button class="h-10 w-10 flex justify-center items-center font-bold border border-solid border-black shadow-buttonShadow rounded-3xl group hover:scale-110" id="addTeam"><img src="./src/assets/icons/add.png" class="h-2 w-2 group-hover:scale-110"></img></button></li>';
   const addTeamButton = document.getElementById("addTeam");
   addTeamButton.addEventListener("click", () => addTeamLine());
   for (let team of teams) {
@@ -214,8 +226,15 @@ const resetDisplayButtonsStyle = (clickedButton) => {
     if (button.classList.contains("bg-yellow-300")) {
       button.classList.remove("bg-yellow-300", "font-bold");
     }
+    if (button.classList.contains("rounded-teamSettingsSelected")) {
+      button.classList.remove("rounded-teamSettingsSelected");
+    }
   }
-  clickedButton.classList.add("bg-yellow-300", "font-bold");
+  clickedButton.classList.add(
+    "bg-yellow-300",
+    "font-bold",
+    "rounded-teamSettingsSelected"
+  );
 };
 
 const resetSortButtonsStyle = (clickedButton) => {
@@ -228,8 +247,15 @@ const resetSortButtonsStyle = (clickedButton) => {
     if (button.classList.contains("bg-purple-300")) {
       button.classList.remove("bg-purple-300", "font-bold");
     }
+    if (button.classList.contains("rounded-teamSettingsSelected")) {
+      button.classList.remove("rounded-teamSettingsSelected");
+    }
   }
-  clickedButton.classList.add("bg-purple-300", "font-bold");
+  clickedButton.classList.add(
+    "bg-purple-300",
+    "font-bold",
+    "rounded-teamSettingsSelected"
+  );
 };
 
 // Création d'une ligne d'équipe
@@ -267,7 +293,9 @@ const addTeamLine = (teamToAdd) => {
     "border",
     "border-black",
     "border-solid",
-    "shadow-buttonShadow"
+    "shadow-buttonShadow",
+    "font-bold",
+    "hover:scale-110"
   );
   teamScoreIncButton.classList.add(
     "h-10",
@@ -276,25 +304,17 @@ const addTeamLine = (teamToAdd) => {
     "border",
     "border-black",
     "border-solid",
-    "shadow-buttonShadow"
+    "shadow-buttonShadow",
+    "font-bold",
+    "hover:scale-110"
   );
   teamScoreDisplay.classList.add(
     "h-10",
     "w-10",
     "p-1",
     "text-center",
-    "border",
-    "border-black",
-    "border-solid"
-  );
-  teamDeleteButton.classList.add(
-    "h-10",
-    "w-10",
-    "p-1",
-    "border",
-    "border-black",
-    "border-solid",
-    "shadow-buttonShadow"
+    "text-2xl",
+    "font-bold"
   );
   teamDeleteButton.classList.add(
     "h-10",
@@ -302,9 +322,11 @@ const addTeamLine = (teamToAdd) => {
     "border",
     "border-solid",
     "border-black",
-    "rounded-3xl"
+    "shadow-buttonShadow",
+    "rounded-3xl",
+    "hover:scale-110"
   );
-  teamName.classList.add("h-fit", "font-semibold");
+  teamName.classList.add("h-fit", "font-semibold", "text-xl");
   teamName.innerText = teamToAdd.name;
   teamDeleteButton.innerText = "🗑️";
   teamScoreDecButton.innerText = "-1";

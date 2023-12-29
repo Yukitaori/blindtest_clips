@@ -3,12 +3,20 @@ module.exports = {
   content: ["./*.{html,js}"],
   theme: {
     extend: {
+      colors: {
+        primary: "#DDA15E",
+        secondary: "#BC6C25",
+        third: "#FEFAE0",
+        fourth: "#283618",
+        fifth: "#606C38",
+      },
       boxShadow: {
         buttonShadow: "3px 3px black",
         slideShadow: "1px 1px black",
       },
       borderRadius: {
         teamSettings: "25px 0",
+        teamSettingsSelected: "0 25px",
       },
       backgroundColor: {
         transparentDisplay: "rgb(0,0,0, 0.7)",

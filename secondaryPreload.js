@@ -113,6 +113,7 @@ ipcRenderer.on("displayVideoAndScores", (event, teams) => {
     displayScores.appendChild(teamBlock);
   }
   displayScores.classList.add(
+    "h-full",
     "bg-transparentDisplay",
     "border-b-4",
     "border-solid",
@@ -125,7 +126,8 @@ ipcRenderer.on("displayVideoAndScores", (event, teams) => {
     "flex",
     "flex-col",
     "gap-2",
-    "animate-right-come"
+    "animate-right-come",
+    "p-4"
   );
   displayScreen.insertBefore(displayScores, videoPlayer);
 });
@@ -155,13 +157,14 @@ ipcRenderer.on("displayVideoAndPodium", (event, teams) => {
     teamBlock.appendChild(teamScore);
     teamName.classList.add("font-bold", "text-2xl");
     teamTrophy.classList.add(
-      "w-[50%]",
       "opacity-0",
-      `animate-fadein${i.toString()}`
+      `animate-fadein${i.toString()}`,
+      "w-[50%]"
     );
     teamScore.classList.add(
       "font-bold",
       "text-4xl",
+      "2xl:text-9xl",
       "opacity-0",
       i === 0
         ? "animate-fadein0"
@@ -174,8 +177,7 @@ ipcRenderer.on("displayVideoAndPodium", (event, teams) => {
       "flex-col",
       "justify-between",
       "items-center",
-      "gap-4",
-      "flex-wrap"
+      "gap-4"
     );
     displayScores.appendChild(teamBlock);
     if (displayScores.childNodes.length === 3) break;

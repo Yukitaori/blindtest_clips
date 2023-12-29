@@ -43,8 +43,8 @@ const playTrack = (track) => {
   playerState.mute = true;
 
   playerState.mute
-    ? muteButton.classList.add("bg-gray-300")
-    : muteButton.classList.remove("bg-gray-300");
+    ? muteButton.classList.add("bg-fifth")
+    : muteButton.classList.remove("bg-fifth");
   playerState.videoPlaying
     ? playButton.classList.add("bg-green-800")
     : playButton.classList.remove("bg-green-800");
@@ -69,8 +69,8 @@ contextBridge.exposeInMainWorld("player", {
     ipcRenderer.send("play");
     playerState.videoPlaying = true;
     playerState.mute
-      ? muteButton.classList.add("bg-gray-300")
-      : muteButton.classList.remove("bg-gray-300");
+      ? muteButton.classList.add("bg-fifth")
+      : muteButton.classList.remove("bg-fifth");
     playerState.videoPlaying
       ? playButton.classList.add("bg-green-800")
       : playButton.classList.remove("bg-green-800");
@@ -84,8 +84,8 @@ contextBridge.exposeInMainWorld("player", {
     //   playerState.videoPlaying = true;
     //   playerState.mute = true;
     //   playerState.mute
-    //     ? muteButton.classList.add("bg-gray-300")
-    //     : muteButton.classList.remove("bg-gray-300");
+    //     ? muteButton.classList.add("bg-fifth")
+    //     : muteButton.classList.remove("bg-fifth");
     //   playerState.videoPlaying
     //     ? playButton.classList.add("bg-green-800")
     //     : playButton.classList.remove("bg-green-800");
@@ -96,8 +96,8 @@ contextBridge.exposeInMainWorld("player", {
     //   ipcRenderer.send("play");
     //   playerState.videoPlaying = true;
     //   playerState.mute
-    //     ? muteButton.classList.add("bg-gray-300")
-    //     : muteButton.classList.remove("bg-gray-300");
+    //     ? muteButton.classList.add("bg-fifth")
+    //     : muteButton.classList.remove("bg-fifth");
     //   playerState.videoPlaying
     //     ? playButton.classList.add("bg-green-800")
     //     : playButton.classList.remove("bg-green-800");
@@ -116,8 +116,8 @@ contextBridge.exposeInMainWorld("player", {
       ipcRenderer.send("pause");
       playerState.videoPlaying = false;
       playerState.mute
-        ? muteButton.classList.add("bg-gray-300")
-        : muteButton.classList.remove("bg-gray-300");
+        ? muteButton.classList.add("bg-fifth")
+        : muteButton.classList.remove("bg-fifth");
       playerState.videoPlaying
         ? playButton.classList.add("bg-green-800")
         : playButton.classList.remove("bg-green-800");
@@ -159,8 +159,8 @@ contextBridge.exposeInMainWorld("player", {
     playerState.mute = !playerState.mute;
     playerState.mute;
     playerState.mute
-      ? muteButton.classList.add("bg-gray-300")
-      : muteButton.classList.remove("bg-gray-300");
+      ? muteButton.classList.add("bg-fifth")
+      : muteButton.classList.remove("bg-fifth");
   },
 
   changeVolume: (volume) => ipcRenderer.send("changeVolume", volume),
