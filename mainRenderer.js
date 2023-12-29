@@ -6,6 +6,7 @@ let selectedTracks = [];
 let loadedTrack;
 // La playlist permet  l'enregistrement des tracks dans leur oredre de diffusion
 const playlist = [];
+let textFocus = false;
 const tracklist = document.getElementById("tracklist");
 const dropzone = document.getElementById("dropzone");
 const timeControl = document.getElementById("timecontrol");
@@ -70,10 +71,22 @@ const createTrackList = () => {
       });
       // Lors de l'appui sur Suppr, les pistes sélectionnées (selectedTracks) sont supprimées
       document.addEventListener("keydown", (e) => {
-        if (e.key === "Delete" && selectedTracks.includes(file)) {
-          playlist.splice(playlist.indexOf(file), selectedTracks.length);
-          selectedTracks = [];
-          createTrackList();
+        if (!textFocus) {
+          if (e.key === "Delete" && selectedTracks.includes(file)) {
+            playlist.splice(playlist.indexOf(file), selectedTracks.length);
+            selectedTracks = [];
+            createTrackList();
+          }
+          if (
+            e.key === " " &&
+            selectedTracks.length === 1 &&
+            selectedTracks.includes(file)
+          ) {
+            selectedTracks = [];
+            window.player.playFile(file);
+            loadedTrack = file;
+            createTrackList();
+          }
         }
       });
       // Création du témoin de localisation de l'endroit où les pistes vont être insérées lors que l'on drag les fichiers par-dessus
@@ -408,13 +421,28 @@ const addTeamLine = (teamToAdd) => {
     teamNameInput.addEventListener("change", (e) => {
       teamToAdd.name = e.target.value;
     });
-    teamNameInput.addEventListener("focusout", () => {
-      teamLine.replaceChild(teamName, teamNameInput);
-      createTeamList();
+    teamNameInput.addEventListener("focusout", (e) => {
+      if (!e.target.value.match(/\S+/g)) {
+        teamNameInput.focus();
+        teamNameInput.select();
+      } else {
+        teamLine.replaceChild(teamName, teamNameInput);
+        textFocus = false;
+        createTeamList();
+      }
+    });
+    document.addEventListener("keydown", (e) => {
+      if (textFocus) {
+        if (e.key === "Enter" && e.target.value.match(/\S+/g)) {
+          textFocus = false;
+          createTeamList();
+        }
+      }
     });
     teamLine.replaceChild(teamNameInput, teamName);
     teamNameInput.focus();
     teamNameInput.select();
+    textFocus = true;
   });
 
   teamScoreDecButton.addEventListener("click", () => {
