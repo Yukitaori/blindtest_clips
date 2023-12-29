@@ -67,6 +67,13 @@ const createTrackList = () => {
       selectedTracks = [file];
       createTrackList();
     });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Delete" && selectedTracks.includes(file)) {
+        playlist.splice(playlist.indexOf(file), selectedTracks.length);
+        selectedTracks = [];
+        createTrackList();
+      }
+    });
     track.addEventListener("dragenter", (e) => {
       e.preventDefault();
       track.classList.add(
