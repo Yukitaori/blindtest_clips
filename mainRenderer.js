@@ -31,6 +31,7 @@ const createTrackList = () => {
 
   // Pour chaque track de la playlist, une entrée est générée dans la liste
   playlist.forEach((file) => {
+    file.id = index;
     file.trackNumber = index + 1;
     let track = document.createElement("li");
 
@@ -66,6 +67,40 @@ const createTrackList = () => {
       selectedTrack = file;
       createTrackList();
     });
+    track.addEventListener("dragenter", (e) => {
+      e.preventDefault();
+      track.classList.add(
+        "pb-4",
+        "bg-fifth",
+        "border-b",
+        "border-double",
+        "border-black"
+      );
+    });
+    track.addEventListener("dragleave", (e) => {
+      e.preventDefault();
+      track.classList.remove(
+        "pb-4",
+        "bg-fifth",
+        "border-b",
+        "border-double",
+        "border-black"
+      );
+    });
+    track.addEventListener("drop", (e) => {
+      e.preventDefault();
+      Object.entries(e.dataTransfer.files).forEach((element) => {
+        playlist.splice(playlist.indexOf(file) + 1, 0, element[1]);
+      });
+      createTrackList();
+      track.classList.remove(
+        "pb-4",
+        "bg-fifth",
+        "border-b",
+        "border-double",
+        "border-black"
+      );
+    });
     if (selectedTrack === file && file !== loadedTrack)
       track.classList.add("bg-fifth", "text-primary");
     if (loadedTrack === file) {
@@ -78,6 +113,10 @@ const createTrackList = () => {
     tracklist.appendChild(track);
     index++;
   });
+
+  for (const [i, value] of playlist.entries()) {
+    value.trackNumber = i + 1;
+  }
 };
 
 // Gestion du drag'n'drop sur la zone d'affichage des pistes video
@@ -85,12 +124,13 @@ dropzone.addEventListener("drop", (e) => {
   dropzone.classList.remove("bg-fifth");
   e.preventDefault();
   // Au drop, la playlist est de nouveau générée intégralement et transmise au preload pour la gestion
-  Object.entries(event.dataTransfer.files).forEach((file) => {
-    file[1].id = file[0];
-    playlist.push(file[1]);
-  });
-  createTrackList();
-  window.player.getPlaylist(playlist);
+  if (e.target === dropzone) {
+    Object.entries(e.dataTransfer.files).forEach((file) => {
+      playlist.push(file[1]);
+    });
+    createTrackList();
+    window.player.getPlaylist(playlist);
+  }
 });
 
 dropzone.addEventListener("dragover", (e) => {
