@@ -196,6 +196,10 @@ contextBridge.exposeInMainWorld("player", {
       playTrack(trackToPlay);
     }
   },
+
+  stopGetCurrent: () => {
+    ipcRenderer.send("stopGetCurrent");
+  },
 });
 
 contextBridge.exposeInMainWorld("display", {

@@ -141,11 +141,17 @@ nextButton.addEventListener("click", () => {
   }
   createTrackList();
 });
+
+// Gestion de l'input relative aux temps de la loadedTrack
 timeControl.addEventListener("change", () => {
-  // TODO Mettre en place un message qui stoppe le getCurrent pendant la modification de l'input
   // TODO Mettre un fond de couleur différente à gauche et à droite du curseur
   window.player.changeTime(timeControl.value);
 });
+timeControl.addEventListener("input", () => {
+  window.player.stopGetCurrent();
+});
+
+// Gestion de l'input relative au volume de la video
 volumeControl.addEventListener("change", () => {
   // TODO Mettre un fond de couleur différente à gauche et à droite du curseur
   window.player.changeVolume(volumeControl.value);
