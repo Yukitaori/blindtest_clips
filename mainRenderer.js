@@ -20,11 +20,11 @@ const volumeControl = document.getElementById("volumecontrol");
 
 // Cette fonction permet la génération de la Tracklist au sein de la dropzone
 const createTrackList = () => {
+  selectedTracks.sort((a, b) => a.id - b.id);
   // la tracklist précédente est effacée
   tracklist.innerHTML = "";
   let draggedTracks = [];
   let index = 0;
-
   if (document.getElementById("playlistInstruction")) {
     document
       .getElementById("dropzone")
@@ -66,8 +66,22 @@ const createTrackList = () => {
         createTrackList();
       });
       // Le clic simple permet juste de sélectionner une piste
-      track.addEventListener("click", () => {
-        selectedTracks = [file];
+      track.addEventListener("click", (e) => {
+        if (e.shiftKey) {
+          let newSelectedTracks = [];
+          for (
+            let i = Math.min(selectedTracks[0]?.id, file.id);
+            i <= Math.max(selectedTracks[0]?.id, file.id);
+            i++
+          ) {
+            newSelectedTracks.push(playlist[i]);
+          }
+          selectedTracks = newSelectedTracks;
+        } else if (e.ctrlKey) {
+          selectedTracks.push(file);
+        } else {
+          selectedTracks = [file];
+        }
         createTrackList();
       });
       // Lors de l'appui sur Suppr, les pistes sélectionnées (selectedTracks) sont supprimées
@@ -129,12 +143,14 @@ const createTrackList = () => {
         e.preventDefault();
         selectedTracks = [];
         if (draggedTracks.length > 0) {
-          draggedTracks.forEach((element) => {
-            console.log(element);
-            playlist.splice(playlist.indexOf(element), 1);
-            playlist.splice(playlist.indexOf(file) + 1, 0, element);
-            selectedTracks.push(element);
-          });
+          if (!draggedTracks.includes(file)) {
+            draggedTracks.forEach((element) => {
+              console.log(element);
+              playlist.splice(playlist.indexOf(element), 1);
+              playlist.splice(playlist.indexOf(file) + 1, 0, element);
+              selectedTracks.push(element);
+            });
+          }
         } else {
           Object.entries(e.dataTransfer.files).forEach((element) => {
             console.log(element);
