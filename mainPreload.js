@@ -152,6 +152,13 @@ contextBridge.exposeInMainWorld("player", {
     );
   },
 
+  displaySlidingInputValue: (time) => {
+    const currentTime = document.getElementById("current");
+    currentTime.innerText = getReadableTime(
+      (time / 1000) * playerState.fileDuration
+    );
+  },
+
   mute: () => {
     const muteButton = document.getElementById("playermute");
 

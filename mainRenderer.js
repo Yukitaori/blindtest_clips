@@ -147,8 +147,9 @@ timeControl.addEventListener("change", () => {
   // TODO Mettre un fond de couleur différente à gauche et à droite du curseur
   window.player.changeTime(timeControl.value);
 });
-timeControl.addEventListener("input", () => {
+timeControl.addEventListener("input", (e) => {
   window.player.stopGetCurrent();
+  window.player.displaySlidingInputValue(e.currentTarget.value);
 });
 
 // Gestion de l'input relative au volume de la video
