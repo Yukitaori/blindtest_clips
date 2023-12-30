@@ -20,7 +20,7 @@ const volumeControl = document.getElementById("volumecontrol");
 
 // Cette fonction permet la génération de la Tracklist au sein de la dropzone
 const createTrackList = () => {
-  selectedTracks.sort((a, b) => a.id - b.id);
+  selectedTracks.sort((a, b) => b.id - a.id);
   // la tracklist précédente est effacée
   tracklist.innerHTML = "";
   let draggedTracks = [];
@@ -33,153 +33,155 @@ const createTrackList = () => {
 
   // Pour chaque track de la playlist, une entrée est générée dans la liste
   playlist.forEach((file) => {
-    if (file.type.includes("video")) {
-      file.id = index;
-      file.trackNumber = index + 1;
-      let track = document.createElement("li");
-      let trackbutton = document.createElement("button");
-      track.classList.add(
-        "cursor-pointer",
-        "text-left",
-        "text-sm",
-        "pl-2",
-        "flex",
-        "items-center",
-        "gap-2"
-      );
-      trackbutton.classList.add("text-left");
-      // Si une track est survolée, et qu'elle n'est ni selected ni loaded, elle change de style
-      // Le style est supprimé lorsquel la track n'est plus survolée
-      track.addEventListener("mouseover", () => {
-        if (file !== loadedTrack && !selectedTracks.includes(file))
-          track.classList.add("bg-fourth", "text-white");
-      });
-      track.addEventListener("mouseleave", () => {
-        if (file !== loadedTrack && !selectedTracks.includes(file))
-          track.classList.remove("bg-fourth", "text-white");
-      });
-      // Le double clic permet le chargement de la piste dans le player (loadedTrack)
-      track.addEventListener("dblclick", () => {
-        selectedTracks = [];
-        window.player.playFile(file, index);
-        loadedTrack = file;
-        createTrackList();
-      });
-      // Le clic simple permet juste de sélectionner une piste
-      track.addEventListener("click", (e) => {
-        if (e.shiftKey) {
-          let newSelectedTracks = [];
-          for (
-            let i = Math.min(selectedTracks[0]?.id, file.id);
-            i <= Math.max(selectedTracks[0]?.id, file.id);
-            i++
-          ) {
-            newSelectedTracks.push(playlist[i]);
-          }
-          selectedTracks = newSelectedTracks;
-        } else if (e.ctrlKey) {
-          selectedTracks.push(file);
-        } else {
-          selectedTracks = [file];
+    file.id = index;
+    file.trackNumber = index + 1;
+    let track = document.createElement("li");
+    let trackbutton = document.createElement("button");
+    track.classList.add(
+      "cursor-pointer",
+      "text-left",
+      "text-sm",
+      "pl-2",
+      "flex",
+      "items-center",
+      "gap-2"
+    );
+    trackbutton.classList.add("text-left");
+    // Si une track est survolée, et qu'elle n'est ni selected ni loaded, elle change de style
+    // Le style est supprimé lorsquel la track n'est plus survolée
+    track.addEventListener("mouseover", () => {
+      if (
+        file !== loadedTrack &&
+        !selectedTracks.includes(file) &&
+        draggedTracks.length === 0
+      )
+        track.classList.add("bg-fourth", "text-white");
+    });
+    track.addEventListener("mouseleave", () => {
+      if (file !== loadedTrack && !selectedTracks.includes(file))
+        track.classList.remove("bg-fourth", "text-white");
+    });
+    // Le double clic permet le chargement de la piste dans le player (loadedTrack)
+    track.addEventListener("dblclick", () => {
+      selectedTracks = [];
+      window.player.playFile(file, index);
+      loadedTrack = file;
+      createTrackList();
+    });
+    // Le clic simple permet juste de sélectionner une piste
+    track.addEventListener("click", (e) => {
+      if (e.shiftKey) {
+        let newSelectedTracks = [];
+        for (
+          let i = Math.min(selectedTracks[0]?.id, file.id);
+          i <= Math.max(selectedTracks[0]?.id, file.id);
+          i++
+        ) {
+          newSelectedTracks.push(playlist[i]);
         }
-        createTrackList();
-      });
-      // Lors de l'appui sur Suppr, les pistes sélectionnées (selectedTracks) sont supprimées
-      document.addEventListener("keydown", (e) => {
-        if (!textFocus) {
-          if (e.key === "Delete" && selectedTracks.includes(file)) {
-            playlist.splice(playlist.indexOf(file), selectedTracks.length);
-            selectedTracks = [];
-            createTrackList();
-          }
-          if (
-            e.key === " " &&
-            selectedTracks.length === 1 &&
-            selectedTracks.includes(file)
-          ) {
-            selectedTracks = [];
-            window.player.playFile(file);
-            loadedTrack = file;
-            createTrackList();
-          }
-        }
-      });
-      if (selectedTracks.includes(file)) {
-        track.setAttribute("draggable", "true");
-        track.addEventListener("drag", () => {
-          draggedTracks = selectedTracks.slice(0);
-        });
-        track.addEventListener("dragend", () => {
-          draggedTracks = [];
-        });
+        selectedTracks = newSelectedTracks;
+      } else if (e.ctrlKey) {
+        selectedTracks.push(file);
+      } else {
+        selectedTracks = [file];
       }
+      createTrackList();
+    });
+    // Lors de l'appui sur Suppr, les pistes sélectionnées (selectedTracks) sont supprimées
+    document.addEventListener("keydown", (e) => {
+      if (!textFocus) {
+        if (e.key === "Delete" && selectedTracks.includes(file)) {
+          playlist.splice(playlist.indexOf(file), selectedTracks.length);
+          selectedTracks = [];
+          createTrackList();
+        }
+        if (
+          e.key === " " &&
+          selectedTracks.length === 1 &&
+          selectedTracks.includes(file)
+        ) {
+          selectedTracks = [];
+          window.player.playFile(file);
+          loadedTrack = file;
+          createTrackList();
+        }
+      }
+    });
+    if (selectedTracks.includes(file)) {
+      track.setAttribute("draggable", "true");
+      track.addEventListener("drag", () => {
+        draggedTracks = selectedTracks.slice(0);
+      });
+      track.addEventListener("dragend", () => {
+        draggedTracks = [];
+      });
+    }
 
-      // Création du témoin de localisation de l'endroit où les pistes vont être insérées lors que l'on drag les fichiers par-dessus
-      track.addEventListener("dragenter", (e) => {
-        e.preventDefault();
-        track.classList.add(
-          "pb-4",
-          "bg-fifth",
-          "border-b",
-          "border-double",
-          "border-black"
-        );
-      });
-      // Suppression du témoin de localisation de l'endroit où les pistes vont être insérées lors que l'on drag les fichiers en-dehors
-      track.addEventListener("dragleave", (e) => {
-        e.preventDefault();
-        track.classList.remove(
-          "pb-4",
-          "bg-fifth",
-          "border-b",
-          "border-double",
-          "border-black"
-        );
-      });
-      // Au drop sur une track existante, les fichiers déposés sont insérés dans la playlist à l'index suivant cette track
-      // Les tracks déposées deviennent les selectedTracks (si besoin de les supprimer immédiatement)
-      track.addEventListener("drop", (e) => {
-        console.log(e.toElement);
-        e.preventDefault();
-        selectedTracks = [];
-        if (draggedTracks.length > 0) {
-          if (!draggedTracks.includes(file)) {
-            draggedTracks.forEach((element) => {
-              console.log(element);
-              playlist.splice(playlist.indexOf(element), 1);
-              playlist.splice(playlist.indexOf(file) + 1, 0, element);
-              selectedTracks.push(element);
-            });
-          }
-        } else {
-          Object.entries(e.dataTransfer.files).forEach((element) => {
+    // Création du témoin de localisation de l'endroit où les pistes vont être insérées lors que l'on drag les fichiers par-dessus
+    track.addEventListener("dragenter", (e) => {
+      e.preventDefault();
+      track.classList.add(
+        "pb-4",
+        "bg-fifth",
+        "border-b",
+        "border-double",
+        "border-black"
+      );
+    });
+    // Suppression du témoin de localisation de l'endroit où les pistes vont être insérées lors que l'on drag les fichiers en-dehors
+    track.addEventListener("dragleave", (e) => {
+      e.preventDefault();
+      track.classList.remove(
+        "pb-4",
+        "bg-fifth",
+        "border-b",
+        "border-double",
+        "border-black"
+      );
+    });
+    // Au drop sur une track existante, les fichiers déposés sont insérés dans la playlist à l'index suivant cette track
+    // Les tracks déposées deviennent les selectedTracks (si besoin de les supprimer immédiatement)
+    track.addEventListener("drop", (e) => {
+      console.log(e.toElement);
+      e.preventDefault();
+      selectedTracks = [];
+      if (draggedTracks.length > 0) {
+        if (!draggedTracks.includes(file)) {
+          draggedTracks.forEach((element) => {
             console.log(element);
-            playlist.splice(playlist.indexOf(file) + 1, 0, element[1]);
-            selectedTracks.push(element[1]);
+            playlist.splice(playlist.indexOf(element), 1);
+            playlist.splice(playlist.indexOf(file) + 1, 0, element);
+            selectedTracks.push(element);
           });
         }
-        createTrackList();
-        track.classList.remove(
-          "pb-4",
-          "bg-fifth",
-          "border-b",
-          "border-double",
-          "border-black"
-        );
-      });
-      // Changement de style des tracks selon si elles sont selected ou loaded
-      if (selectedTracks.includes(file) && file !== loadedTrack)
-        track.classList.add("bg-fifth", "text-primary");
-      if (loadedTrack === file) {
-        track.innerHTML =
-          '<img src="./src/assets/icons/playwhite.png" class="h-2 w-2"></img>';
-        track.classList.add("bg-secondary", "text-fourth", "font-semibold");
+      } else {
+        Object.entries(e.dataTransfer.files).forEach((element) => {
+          console.log(element);
+          playlist.splice(playlist.indexOf(file) + 1, 0, element[1]);
+          selectedTracks.push(element[1]);
+        });
       }
-      trackbutton.innerText = `${file.trackNumber} - ${file.name}`;
-      track.appendChild(trackbutton);
-      tracklist.appendChild(track);
-      index++;
+      createTrackList();
+      track.classList.remove(
+        "pb-4",
+        "bg-fifth",
+        "border-b",
+        "border-double",
+        "border-black"
+      );
+    });
+    // Changement de style des tracks selon si elles sont selected ou loaded
+    if (selectedTracks.includes(file) && file !== loadedTrack)
+      track.classList.add("bg-fifth", "text-primary");
+    if (loadedTrack === file) {
+      track.innerHTML =
+        '<img src="./src/assets/icons/playwhite.png" class="h-2 w-2"></img>';
+      track.classList.add("bg-secondary", "text-fourth", "font-semibold");
     }
+    trackbutton.innerText = `${file.trackNumber} - ${file.name}`;
+    track.appendChild(trackbutton);
+    tracklist.appendChild(track);
+    index++;
   });
 
   for (const [i, value] of playlist.entries()) {
@@ -195,7 +197,9 @@ dropzone.addEventListener("drop", (e) => {
   // Au drop, la playlist est de nouveau générée intégralement et transmise au preload pour la gestion
   if (e.target === dropzone) {
     Object.entries(e.dataTransfer.files).forEach((file) => {
-      playlist.push(file[1]);
+      if (file[1].type.includes("video")) {
+        playlist.push(file[1]);
+      }
     });
     createTrackList();
   }
