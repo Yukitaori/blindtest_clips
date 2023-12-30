@@ -147,9 +147,11 @@ timeControl.addEventListener("change", () => {
   window.player.changeTime(timeControl.value);
 });
 volumeControl.addEventListener("change", () => {
-  // TODO Mettre en place un changement progressif du volume lors du clic maintenu
   // TODO Mettre un fond de couleur différente à gauche et à droite du curseur
   window.player.changeVolume(volumeControl.value);
+});
+volumeControl.addEventListener("input", (e) => {
+  window.player.changeVolume(e.currentTarget.value);
 });
 
 //////////////////////// PARTIE TEAMLIST ////////////////////////
