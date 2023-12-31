@@ -366,7 +366,6 @@ nextButton.addEventListener("click", () => {
 
 // Gestion de l'input relative aux temps de la loadedTrack
 timeControl.addEventListener("change", () => {
-  // TODO Mettre un fond de couleur différente à gauche et à droite du curseur
   window.player.changeTime(timeControl.value);
   window.player.displaySlidingBackgroundColor(timeControl, "primary", "third");
 });
@@ -378,7 +377,6 @@ timeControl.addEventListener("input", (e) => {
 
 // Gestion de l'input relative au volume de la video
 volumeControl.addEventListener("change", () => {
-  // TODO Mettre un fond de couleur différente à gauche et à droite du curseur
   window.player.changeVolume(volumeControl.value);
   window.player.displaySlidingBackgroundColor(volumeControl, "fifth", "third");
 });

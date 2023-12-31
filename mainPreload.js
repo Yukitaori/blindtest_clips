@@ -29,19 +29,10 @@ const getReadableTime = (rawTime) => {
   return readableTime;
 };
 
+// Cette fonction permet de gérer le changement de couleur de fond des inputs de type range lorsque l'on change la valeur
 const displaySlidingBackgroundColor = (input, firstColor, secondColor) => {
   let value = (input.value - input.min) / (input.max - input.min);
-  console.log(value);
-  input.style.backgroundImage = [
-    "-webkit-gradient(",
-    "linear, ",
-    "left top, ",
-    "right top, ",
-    "color-stop(" + value + ", var(--" + firstColor + ")), ",
-    "color-stop(" + value + ", var(--" + secondColor + "))",
-    ")",
-  ].join("");
-  console.log(input.style.backgroundImage);
+  input.style.backgroundImage = `-webkit-gradient(linear, left top, right top, color-stop(${value}, var(--${firstColor})), color-stop(${value}, var(--${secondColor})))`;
 };
 
 // Cette fonction permet d'envoyer la track sélectionnée pour la lecture à la secondaryWindow
@@ -156,6 +147,7 @@ contextBridge.exposeInMainWorld("player", {
     durationTime.innerText = getReadableTime(0);
     playButton.classList.remove("bg-green-800");
     pauseButton.classList.remove("bg-orange-800");
+    displaySlidingBackgroundColor(timeControl, "primary", "third");
   },
 
   changeTime: (time) => {
@@ -271,4 +263,5 @@ ipcRenderer.on("videoover", () => {
   durationTime.innerText = getReadableTime(0);
   playButton.classList.remove("bg-green-800");
   pauseButton.classList.remove("bg-orange-800");
+  displaySlidingBackgroundColor(timeControl, "primary", "third");
 });
