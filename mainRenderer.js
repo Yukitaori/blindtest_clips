@@ -82,7 +82,7 @@ const addListenersToGhostTrack = (ghostTrack, type, file) => {
 
 // Cette fonction permet la génération de la Tracklist au sein de la dropzone
 const createTrackList = () => {
-  selectedTracks.sort((a, b) => b.id - a.id);
+  selectedTracks.sort((a, b) => a.id - b.id);
   // la tracklist précédente est effacée
   tracklist.innerHTML = "";
   let index = 0;
@@ -129,8 +129,11 @@ const createTrackList = () => {
       loadedTrack = file;
       createTrackList();
     });
+
     // Le clic simple permet juste de sélectionner une piste
     track.addEventListener("click", (e) => {
+      // Si shift + clic : l'ensemble de tracks entre la première selectedTrack et la track cliquée deviennent les selectedTracks
+      // TODO : réfléchir à quelle selectedTrack soit être le point de départ si plusieurs sont selectionnées
       if (e.shiftKey) {
         let newSelectedTracks = [];
         for (
@@ -142,8 +145,10 @@ const createTrackList = () => {
         }
         selectedTracks = newSelectedTracks;
       } else if (e.ctrlKey) {
+        // Si control + clic : ajout de la track cliquée aux selectedTracks
         selectedTracks.push(file);
       } else {
+        // CLic simple = sélection unique
         selectedTracks = [file];
       }
       createTrackList();
@@ -177,6 +182,7 @@ const createTrackList = () => {
     if (selectedTracks.includes(file)) {
       track.setAttribute("draggable", "true");
       track.addEventListener("drag", () => {
+        selectedTracks.sort((a, b) => b.id - a.id);
         draggedTracks = selectedTracks.slice(0);
       });
       track.addEventListener("dragend", () => {
