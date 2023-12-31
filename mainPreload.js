@@ -29,6 +29,21 @@ const getReadableTime = (rawTime) => {
   return readableTime;
 };
 
+const displaySlidingBackgroundColor = (input, firstColor, secondColor) => {
+  let value = (input.value - input.min) / (input.max - input.min);
+  console.log(value);
+  input.style.backgroundImage = [
+    "-webkit-gradient(",
+    "linear, ",
+    "left top, ",
+    "right top, ",
+    "color-stop(" + value + ", var(--" + firstColor + ")), ",
+    "color-stop(" + value + ", var(--" + secondColor + "))",
+    ")",
+  ].join("");
+  console.log(input.style.backgroundImage);
+};
+
 // Cette fonction permet d'envoyer la track sélectionnée pour la lecture à la secondaryWindow
 // et gère la mise à jour du state et tous les effets liés aux styles des boutons
 const playTrack = (track) => {
@@ -159,6 +174,10 @@ contextBridge.exposeInMainWorld("player", {
     );
   },
 
+  displaySlidingBackgroundColor: (input, firstColor, secondColor) => {
+    displaySlidingBackgroundColor(input, firstColor, secondColor);
+  },
+
   mute: () => {
     const muteButton = document.getElementById("playermute");
 
@@ -236,6 +255,7 @@ ipcRenderer.on("getCurrent", (event, current) => {
 
   currentTime.innerText = getReadableTime(current).toString();
   timeControl.value = getTimeControlPosition(current);
+  displaySlidingBackgroundColor(timeControl, "primary", "third");
 });
 
 // Ecoute du message videoover, qui permet de remettre à zéro tous les affichages en fin de video

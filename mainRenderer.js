@@ -368,20 +368,26 @@ nextButton.addEventListener("click", () => {
 timeControl.addEventListener("change", () => {
   // TODO Mettre un fond de couleur différente à gauche et à droite du curseur
   window.player.changeTime(timeControl.value);
+  window.player.displaySlidingBackgroundColor(timeControl, "primary", "third");
 });
 timeControl.addEventListener("input", (e) => {
   window.player.stopGetCurrent();
   window.player.displaySlidingInputValue(e.currentTarget.value);
+  window.player.displaySlidingBackgroundColor(timeControl, "primary", "third");
 });
 
 // Gestion de l'input relative au volume de la video
 volumeControl.addEventListener("change", () => {
   // TODO Mettre un fond de couleur différente à gauche et à droite du curseur
   window.player.changeVolume(volumeControl.value);
+  window.player.displaySlidingBackgroundColor(volumeControl, "fifth", "third");
 });
+
 volumeControl.addEventListener("input", (e) => {
   window.player.changeVolume(e.currentTarget.value);
+  window.player.displaySlidingBackgroundColor(volumeControl, "fifth", "third");
 });
+window.player.displaySlidingBackgroundColor(volumeControl, "fifth", "third");
 
 //////////////////////// PARTIE TEAMLIST ////////////////////////
 
