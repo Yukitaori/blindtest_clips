@@ -56,6 +56,10 @@ const createWindows = (screens) => {
     mainWindow.webContents.send("getCurrent", current);
   });
 
+  ipcMain.on("stopGetCurrent", () => {
+    secondaryWindow.webContents.send("stopGetCurrent");
+  });
+
   ipcMain.on("changeTime", (event, time) => {
     secondaryWindow.webContents.send("changeTime", time);
   });

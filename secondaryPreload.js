@@ -7,6 +7,11 @@ const getCurrentTime = () => {
   ipcRenderer.send("current", currentTime.toFixed());
 };
 
+// Lors du slide de l'input dans la mainWindow, on stoppe l'intervalle
+ipcRenderer.on("stopGetCurrent", () => {
+  clearInterval(intervals[0]);
+});
+
 // Ecoute de l'événement "playFile" et lancement de la video selon le chemin spécifié dans la mainWindow
 ipcRenderer.on("playFile", (event, path) => {
   let videoPlayer = document.getElementById("videoplayer");

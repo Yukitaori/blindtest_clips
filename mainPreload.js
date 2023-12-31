@@ -29,6 +29,12 @@ const getReadableTime = (rawTime) => {
   return readableTime;
 };
 
+// Cette fonction permet de gérer le changement de couleur de fond des inputs de type range lorsque l'on change la valeur
+const displaySlidingBackgroundColor = (input, firstColor, secondColor) => {
+  let value = (input.value - input.min) / (input.max - input.min);
+  input.style.backgroundImage = `-webkit-gradient(linear, left top, right top, color-stop(${value}, var(--${firstColor})), color-stop(${value}, var(--${secondColor})))`;
+};
+
 // Cette fonction permet d'envoyer la track sélectionnée pour la lecture à la secondaryWindow
 // et gère la mise à jour du state et tous les effets liés aux styles des boutons
 const playTrack = (track) => {
@@ -141,6 +147,7 @@ contextBridge.exposeInMainWorld("player", {
     durationTime.innerText = getReadableTime(0);
     playButton.classList.remove("bg-green-800");
     pauseButton.classList.remove("bg-orange-800");
+    displaySlidingBackgroundColor(timeControl, "primary", "third");
   },
 
   changeTime: (time) => {
@@ -150,6 +157,17 @@ contextBridge.exposeInMainWorld("player", {
     currentTime.innerText = getReadableTime(
       (time / 1000) * playerState.fileDuration
     );
+  },
+
+  displaySlidingInputValue: (time) => {
+    const currentTime = document.getElementById("current");
+    currentTime.innerText = getReadableTime(
+      (time / 1000) * playerState.fileDuration
+    );
+  },
+
+  displaySlidingBackgroundColor: (input, firstColor, secondColor) => {
+    displaySlidingBackgroundColor(input, firstColor, secondColor);
   },
 
   mute: () => {
@@ -196,6 +214,10 @@ contextBridge.exposeInMainWorld("player", {
       playTrack(trackToPlay);
     }
   },
+
+  stopGetCurrent: () => {
+    ipcRenderer.send("stopGetCurrent");
+  },
 });
 
 contextBridge.exposeInMainWorld("display", {
@@ -225,6 +247,7 @@ ipcRenderer.on("getCurrent", (event, current) => {
 
   currentTime.innerText = getReadableTime(current).toString();
   timeControl.value = getTimeControlPosition(current);
+  displaySlidingBackgroundColor(timeControl, "primary", "third");
 });
 
 // Ecoute du message videoover, qui permet de remettre à zéro tous les affichages en fin de video
@@ -240,4 +263,5 @@ ipcRenderer.on("videoover", () => {
   durationTime.innerText = getReadableTime(0);
   playButton.classList.remove("bg-green-800");
   pauseButton.classList.remove("bg-orange-800");
+  displaySlidingBackgroundColor(timeControl, "primary", "third");
 });

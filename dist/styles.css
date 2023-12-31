@@ -870,7 +870,8 @@ video {
   border-width: 2px;
 }
 
-.border-b {
+.border-y {
+  border-top-width: 1px;
   border-bottom-width: 1px;
 }
 

@@ -6,6 +6,7 @@ let selectedTracks = [];
 let loadedTrack;
 // La playlist permet  l'enregistrement des tracks dans leur oredre de diffusion
 const playlist = [];
+let draggedTracks = [];
 let textFocus = false;
 const tracklist = document.getElementById("tracklist");
 const dropzone = document.getElementById("dropzone");
@@ -18,12 +19,72 @@ const previousButton = document.getElementById("playerprev");
 const nextButton = document.getElementById("playernext");
 const volumeControl = document.getElementById("volumecontrol");
 
+// Cette fonction récupère les positions et hauteur des éléments de la playlist pour la localisation du drop
+const getPosition = (element) => {
+  const rect = element.getBoundingClientRect();
+  return {
+    x: rect.left,
+    y: rect.top,
+    height: rect.height,
+  };
+};
+
+// Cette fonction ajoute des listeners d'event sur les ghostTracks créées lors des drag dans la playlist
+const addListenersToGhostTrack = (ghostTrack, type, file) => {
+  if (type === "ghostTrackBefore") {
+    ghostTrack.addEventListener("drop", (e) => {
+      console.log("before");
+      e.preventDefault();
+      selectedTracks = [];
+      if (draggedTracks.length > 0) {
+        if (!draggedTracks.includes(file)) {
+          draggedTracks.forEach((element) => {
+            playlist.splice(playlist.indexOf(element), 1);
+            playlist.splice(playlist.indexOf(file), 0, element);
+            selectedTracks.push(element);
+          });
+        }
+      } else {
+        Object.entries(e.dataTransfer.files).forEach((element) => {
+          playlist.splice(playlist.indexOf(file) + 1, 0, element[1]);
+          selectedTracks.push(element[1]);
+        });
+      }
+      tracklist.removeChild(ghostTrack);
+      createTrackList();
+    });
+  }
+
+  if (type === "ghostTrackAfter") {
+    ghostTrack.addEventListener("drop", (e) => {
+      console.log("after");
+      e.preventDefault();
+      selectedTracks = [];
+      if (draggedTracks.length > 0) {
+        if (!draggedTracks.includes(file)) {
+          draggedTracks.forEach((element) => {
+            playlist.splice(playlist.indexOf(element), 1);
+            playlist.splice(playlist.indexOf(file) + 1, 0, element);
+            selectedTracks.push(element);
+          });
+        }
+      } else {
+        Object.entries(e.dataTransfer.files).forEach((element) => {
+          playlist.splice(playlist.indexOf(file) + 1, 0, element[1]);
+          selectedTracks.push(element[1]);
+        });
+      }
+      tracklist.removeChild(ghostTrack);
+      createTrackList();
+    });
+  }
+};
+
 // Cette fonction permet la génération de la Tracklist au sein de la dropzone
 const createTrackList = () => {
-  selectedTracks.sort((a, b) => b.id - a.id);
+  selectedTracks.sort((a, b) => a.id - b.id);
   // la tracklist précédente est effacée
   tracklist.innerHTML = "";
-  let draggedTracks = [];
   let index = 0;
   if (document.getElementById("playlistInstruction")) {
     document
@@ -48,7 +109,7 @@ const createTrackList = () => {
     );
     trackbutton.classList.add("text-left");
     // Si une track est survolée, et qu'elle n'est ni selected ni loaded, elle change de style
-    // Le style est supprimé lorsquel la track n'est plus survolée
+    // Le style est supprimé lorsque la track n'est plus survolée
     track.addEventListener("mouseover", () => {
       if (
         file !== loadedTrack &&
@@ -68,8 +129,11 @@ const createTrackList = () => {
       loadedTrack = file;
       createTrackList();
     });
+
     // Le clic simple permet juste de sélectionner une piste
     track.addEventListener("click", (e) => {
+      // Si shift + clic : l'ensemble de tracks entre la première selectedTrack et la track cliquée deviennent les selectedTracks
+      // TODO : réfléchir à quelle selectedTrack soit être le point de départ si plusieurs sont selectionnées
       if (e.shiftKey) {
         let newSelectedTracks = [];
         for (
@@ -81,20 +145,25 @@ const createTrackList = () => {
         }
         selectedTracks = newSelectedTracks;
       } else if (e.ctrlKey) {
+        // Si control + clic : ajout de la track cliquée aux selectedTracks
         selectedTracks.push(file);
       } else {
+        // CLic simple = sélection unique
         selectedTracks = [file];
       }
       createTrackList();
     });
-    // Lors de l'appui sur Suppr, les pistes sélectionnées (selectedTracks) sont supprimées
+
+    // Gestion des appuis sur les touches pour édition de la playlist
     document.addEventListener("keydown", (e) => {
       if (!textFocus) {
+        // Lors de l'appui sur Suppr, les pistes sélectionnées (selectedTracks) sont supprimées
         if (e.key === "Delete" && selectedTracks.includes(file)) {
           playlist.splice(playlist.indexOf(file), selectedTracks.length);
           selectedTracks = [];
           createTrackList();
         }
+        // Lors de l'appui sur la barre espace, si une seule track est sélectionnée, elle est chargée et lancée
         if (
           e.key === " " &&
           selectedTracks.length === 1 &&
@@ -107,9 +176,13 @@ const createTrackList = () => {
         }
       }
     });
+
+    // Si une track est sélectionnée, elle devient draggable
+    // Si elle est draggée, elle est inclue dans les draggedTracks
     if (selectedTracks.includes(file)) {
       track.setAttribute("draggable", "true");
       track.addEventListener("drag", () => {
+        selectedTracks.sort((a, b) => b.id - a.id);
         draggedTracks = selectedTracks.slice(0);
       });
       track.addEventListener("dragend", () => {
@@ -117,59 +190,96 @@ const createTrackList = () => {
       });
     }
 
-    // Création du témoin de localisation de l'endroit où les pistes vont être insérées lors que l'on drag les fichiers par-dessus
-    track.addEventListener("dragenter", (e) => {
+    // Création du témoin (ghostTrack) de localisation de l'endroit où les pistes vont être insérées lors que l'on drag les fichiers par-dessus
+    track.addEventListener("dragover", (e) => {
       e.preventDefault();
-      track.classList.add(
+      let ghostTrack = document.createElement("li");
+      ghostTrack.classList.add(
         "pb-4",
         "bg-fifth",
-        "border-b",
+        "border-y",
         "border-double",
         "border-black"
       );
+      if (
+        // Si le drag est effectuée sur la moitié du haut de la track visée, la ghostTrack est générée avant la piste
+        e.clientY >= getPosition(track).y &&
+        e.clientY < getPosition(track).y + getPosition(track).height / 2
+      ) {
+        if (!document.getElementById("ghostTrackBefore")) {
+          if (document.getElementById("ghostTrackAfter")) {
+            tracklist.removeChild(document.getElementById("ghostTrackAfter"));
+          }
+          ghostTrack.setAttribute("id", "ghostTrackBefore");
+          addListenersToGhostTrack(ghostTrack, "ghostTrackBefore", file);
+          tracklist.insertBefore(ghostTrack, track);
+        }
+      } else {
+        // Si le drag est effectuée sur la moitié du bas de la track visée, la ghostTrack est générée après la piste
+        if (!document.getElementById("ghostTrackAfter")) {
+          if (document.getElementById("ghostTrackBefore")) {
+            tracklist.removeChild(document.getElementById("ghostTrackBefore"));
+          }
+          ghostTrack.setAttribute("id", "ghostTrackAfter");
+          addListenersToGhostTrack(ghostTrack, "ghostTrackAfter", file);
+          track.insertAdjacentElement("afterend", ghostTrack);
+        }
+      }
     });
-    // Suppression du témoin de localisation de l'endroit où les pistes vont être insérées lors que l'on drag les fichiers en-dehors
-    track.addEventListener("dragleave", (e) => {
+    // Suppression du témoin de localisation de l'endroit où les pistes vont être insérées lors que l'on arrête le drag
+    track.addEventListener("dragend", (e) => {
       e.preventDefault();
-      track.classList.remove(
-        "pb-4",
-        "bg-fifth",
-        "border-b",
-        "border-double",
-        "border-black"
-      );
+      let ghostTrack =
+        document.getElementById("ghostTrackAfter") ||
+        document.getElementById("ghostTrackBefore");
+      if (ghostTrack) tracklist.removeChild(ghostTrack);
     });
-    // Au drop sur une track existante, les fichiers déposés sont insérés dans la playlist à l'index suivant cette track
+
+    // Au drop sur une track existante, les fichiers déposés sont insérés dans la playlist à l'index ou l'index suivant cette track selon la position de la ghostTrack
     // Les tracks déposées deviennent les selectedTracks (si besoin de les supprimer immédiatement)
     track.addEventListener("drop", (e) => {
-      console.log(e.toElement);
       e.preventDefault();
       selectedTracks = [];
       if (draggedTracks.length > 0) {
-        if (!draggedTracks.includes(file)) {
-          draggedTracks.forEach((element) => {
-            console.log(element);
-            playlist.splice(playlist.indexOf(element), 1);
-            playlist.splice(playlist.indexOf(file) + 1, 0, element);
-            selectedTracks.push(element);
-          });
+        if (
+          e.clientY >= getPosition(track).y &&
+          e.clientY < getPosition(track).y + getPosition(track).height / 2
+        ) {
+          if (!draggedTracks.includes(file)) {
+            draggedTracks.forEach((element) => {
+              playlist.splice(playlist.indexOf(element), 1);
+              playlist.splice(playlist.indexOf(file), 0, element);
+              selectedTracks.push(element);
+            });
+          }
+        } else {
+          if (!draggedTracks.includes(file)) {
+            draggedTracks.forEach((element) => {
+              playlist.splice(playlist.indexOf(element), 1);
+              playlist.splice(playlist.indexOf(file) + 1, 0, element);
+              selectedTracks.push(element);
+            });
+          }
         }
       } else {
-        Object.entries(e.dataTransfer.files).forEach((element) => {
-          console.log(element);
-          playlist.splice(playlist.indexOf(file) + 1, 0, element[1]);
-          selectedTracks.push(element[1]);
-        });
+        if (
+          e.clientY >= getPosition(track).y &&
+          e.clientY < getPosition(track).y + getPosition(track).height / 2
+        ) {
+          Object.entries(e.dataTransfer.files).forEach((element) => {
+            playlist.splice(playlist.indexOf(file), 0, element[1]);
+            selectedTracks.push(element[1]);
+          });
+        } else {
+          Object.entries(e.dataTransfer.files).forEach((element) => {
+            playlist.splice(playlist.indexOf(file) + 1, 0, element[1]);
+            selectedTracks.push(element[1]);
+          });
+        }
       }
       createTrackList();
-      track.classList.remove(
-        "pb-4",
-        "bg-fifth",
-        "border-b",
-        "border-double",
-        "border-black"
-      );
     });
+
     // Changement de style des tracks selon si elles sont selected ou loaded
     if (selectedTracks.includes(file) && file !== loadedTrack)
       track.classList.add("bg-fifth", "text-primary");
@@ -217,7 +327,7 @@ dropzone.addEventListener("dragover", (e) => {
 // Gestion des animations lors du drag au-dessus de la dropzone
 dropzone.addEventListener("dragenter", (e) => {
   e.preventDefault();
-  dropzone.classList.add("bg-fifth");
+  if (draggedTracks.length === 0) dropzone.classList.add("bg-fifth");
 });
 dropzone.addEventListener("dragleave", (e) => {
   e.preventDefault();
@@ -253,16 +363,29 @@ nextButton.addEventListener("click", () => {
   }
   createTrackList();
 });
+
+// Gestion de l'input relative aux temps de la loadedTrack
 timeControl.addEventListener("change", () => {
-  // TODO Mettre en place un message qui stoppe le getCurrent pendant la modification de l'input
-  // TODO Mettre un fond de couleur différente à gauche et à droite du curseur
   window.player.changeTime(timeControl.value);
+  window.player.displaySlidingBackgroundColor(timeControl, "primary", "third");
 });
+timeControl.addEventListener("input", (e) => {
+  window.player.stopGetCurrent();
+  window.player.displaySlidingInputValue(e.currentTarget.value);
+  window.player.displaySlidingBackgroundColor(timeControl, "primary", "third");
+});
+
+// Gestion de l'input relative au volume de la video
 volumeControl.addEventListener("change", () => {
-  // TODO Mettre en place un changement progressif du volume lors du clic maintenu
-  // TODO Mettre un fond de couleur différente à gauche et à droite du curseur
   window.player.changeVolume(volumeControl.value);
+  window.player.displaySlidingBackgroundColor(volumeControl, "fifth", "third");
 });
+
+volumeControl.addEventListener("input", (e) => {
+  window.player.changeVolume(e.currentTarget.value);
+  window.player.displaySlidingBackgroundColor(volumeControl, "fifth", "third");
+});
+window.player.displaySlidingBackgroundColor(volumeControl, "fifth", "third");
 
 //////////////////////// PARTIE TEAMLIST ////////////////////////
 
