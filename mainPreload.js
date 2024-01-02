@@ -41,6 +41,9 @@ const playTrack = (track) => {
   const playButton = document.getElementById("playerplay");
   const pauseButton = document.getElementById("playerpause");
   const muteButton = document.getElementById("playermute");
+  const imageList = document.getElementById("imageList");
+  ipcRenderer.send("displayImage", null);
+  imageList.value = "video";
 
   ipcRenderer.send("playFile", track.path);
   playerState.selectedTrack = track;
