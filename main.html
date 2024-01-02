@@ -14,8 +14,11 @@
     <title>Main window</title>
   </head>
   <body class="bg-third">
-    <div class="flex justify-between flex-wrap gap-[2%] text-fourth">
-      <div id="videoside" class="w-[49%]">
+    <div class="flex justify-between flex-wrap gap-4 text-fourth">
+      <div
+        id="videoside"
+        class="w-[49%] p-2 border-2 border-black border-solid"
+      >
         <div id="playlist">
           <p class="text-2xl font-bold text-center">Liste de lecture</p>
           <div>
@@ -140,7 +143,10 @@
           </div>
         </div>
       </div>
-      <div id="scoreside" class="w-[49%]">
+      <div
+        id="scoreside"
+        class="w-[49%] p-2 border-2 border-black border-solid"
+      >
         <p class="text-2xl font-bold text-center">Contrôle des scores</p>
         <div
           id="teams"
@@ -203,6 +209,48 @@
           </div>
         </div>
       </div>
+      <div
+        id="pictureside"
+        class="w-[49%] p-2 border-2 border-black border-solid px-5"
+      >
+        <p class="text-2xl font-bold text-center">Cartons</p>
+        <div class="p-2 flex justify-between">
+          <form id="addImageForm" class="mt-2 flex flex-col items-center gap-4">
+            <p class="font-bold underline">Ajoute les images à la liste :</p>
+            <input
+              name="image"
+              type="file"
+              multiple="multiple"
+              id="addImageInput"
+            />
+            <button
+              type="submit"
+              class="w-40 p-1 border-2 border-solid border-fourth shadow-buttonShadow rounded-sm transition-all hover:font-bold"
+              id="addImageButton"
+            >
+              Ajouter l'image
+            </button>
+          </form>
+          <div class="mt-2 flex flex-col items-center gap-4">
+            <p class="font-bold underline">Sélectionne l'image à afficher :</p>
+            <select
+              class="h-8 w-40 border border-solid border-black bg-third"
+              id="imageList"
+            >
+              <option value="video">Video</option>
+            </select>
+            <button
+              id="clearImageList"
+              class="h-10 w-10 border border-solid border-black shadow-buttonShadow rounded-3xl group"
+            >
+              <p class="group-hover:scale-125">🗑️</p>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- <div id="mediaside" class="w-[49%] p-2 border-2 border-black border-solid">
+        <p class="text-2xl font-bold text-center">Media</p>
+      </div> -->
     </div>
   </body>
   <script src="./mainRenderer.js"></script>

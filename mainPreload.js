@@ -230,6 +230,9 @@ contextBridge.exposeInMainWorld("display", {
   displayVideoAndPodium: (teams) => {
     ipcRenderer.send("displayVideoAndPodium", teams);
   },
+  displayImage: (path) => {
+    ipcRenderer.send("displayImage", path);
+  },
 });
 
 // Ecoute du message getDuration, qui permet de récupérer de la secondaryWindow la durée maximale de la loadedTrack et de l'afficher sur l'input range

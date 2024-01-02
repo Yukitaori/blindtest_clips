@@ -204,3 +204,31 @@ ipcRenderer.on("displayVideoAndPodium", (event, teams) => {
   );
   displayScreen.insertBefore(displayScores, videoPlayer);
 });
+
+ipcRenderer.on("displayImage", (event, path) => {
+  let displayScreen = document.getElementById("displayscreen");
+  let blackBackground = document.getElementById("blackBackground");
+  if (blackBackground) {
+    displayScreen.removeChild(blackBackground);
+  }
+  if (path) {
+    let blackBackground = document.createElement("div");
+    blackBackground.classList.add(
+      "bg-black",
+      "absolute",
+      "top-0",
+      "w-full",
+      "h-full",
+      "flex",
+      "justify-center",
+      "items-center",
+      "animate-right-come"
+    );
+    blackBackground.setAttribute("id", "blackBackground");
+    let imageToDisplay = document.createElement("img");
+    imageToDisplay.setAttribute("src", path);
+    imageToDisplay.classList.add("w-[90%]", "h-[90%]", "object-contain");
+    blackBackground.appendChild(imageToDisplay);
+    displayScreen.appendChild(blackBackground);
+  }
+});
