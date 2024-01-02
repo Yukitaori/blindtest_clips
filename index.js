@@ -84,6 +84,10 @@ const createWindows = (screens) => {
     secondaryWindow.webContents.send("displayVideoAndPodium", teams);
   });
 
+  ipcMain.on("displayImage", (event, path) => {
+    secondaryWindow.webContents.send("displayImage", path);
+  });
+
   // mainWindow.webContents.openDevTools();
   // secondaryWindow.webContents.openDevTools();
 };

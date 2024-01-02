@@ -33,7 +33,6 @@ const getPosition = (element) => {
 const addListenersToGhostTrack = (ghostTrack, type, file) => {
   if (type === "ghostTrackBefore") {
     ghostTrack.addEventListener("drop", (e) => {
-      console.log("before");
       e.preventDefault();
       selectedTracks = [];
       if (draggedTracks.length > 0) {
@@ -57,7 +56,6 @@ const addListenersToGhostTrack = (ghostTrack, type, file) => {
 
   if (type === "ghostTrackAfter") {
     ghostTrack.addEventListener("drop", (e) => {
-      console.log("after");
       e.preventDefault();
       selectedTracks = [];
       if (draggedTracks.length > 0) {
@@ -559,11 +557,14 @@ const addTeamLine = (teamToAdd) => {
     "border-black",
     "shadow-buttonShadow",
     "rounded-3xl",
-    "hover:scale-110"
+    "group"
   );
   teamName.classList.add("h-fit", "font-semibold", "text-xl");
   teamName.innerText = teamToAdd.name;
-  teamDeleteButton.innerText = "🗑️";
+  const teamDeletButtonImage = document.createElement("p");
+  teamDeletButtonImage.innerText = "🗑️";
+  teamDeletButtonImage.classList.add("group-hover:scale-125");
+  teamDeleteButton.appendChild(teamDeletButtonImage);
   teamScoreDecButton.innerText = "-1";
   teamScoreIncButton.innerText = "+1";
   teamScoreDisplay.innerText = teamToAdd.score;
@@ -671,6 +672,42 @@ videoAndPodiumDisplayButton.addEventListener("click", () => {
     window.display.displayVideoAndPodium(
       teams.sort((a, b) => b.score - a.score)
     );
+  }
+});
+
+//////////////////////// PARTIE MEDIA ////////////////////////
+
+const addImageForm = document.getElementById("addImageForm");
+const imageList = document.getElementById("imageList");
+const clearImageList = document.getElementById("clearImageList");
+
+addImageForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const addImageInput = document.getElementById("addImageInput");
+  Object.values(addImageInput.files).forEach((image) => {
+    let imageOption = document.createElement("option");
+    let existingOption = document.getElementById(image.name);
+    imageOption.setAttribute("id", image.name);
+    imageOption.innerText = image.name;
+    imageOption.value = image.path;
+    if (!existingOption) {
+      imageList.appendChild(imageOption);
+    }
+  });
+  addImageInput.value = null;
+});
+
+imageList.addEventListener("change", () => {
+  if (imageList.value === "video") {
+    window.display.displayImage(null);
+  } else {
+    window.display.displayImage(imageList.value);
+  }
+});
+
+clearImageList.addEventListener("click", () => {
+  while (imageList.children.length > 1) {
+    imageList.removeChild(imageList.lastChild);
   }
 });
 

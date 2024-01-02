@@ -621,6 +621,14 @@ video {
   height: 1rem;
 }
 
+.h-8 {
+  height: 2rem;
+}
+
+.h-\[90\%\] {
+  height: 90%;
+}
+
 .h-fit {
   height: -moz-fit-content;
   height: fit-content;
@@ -656,6 +664,10 @@ video {
 
 .w-4 {
   width: 1rem;
+}
+
+.w-40 {
+  width: 10rem;
 }
 
 .w-\[10\%\] {
@@ -830,10 +842,6 @@ video {
   gap: 2rem;
 }
 
-.gap-\[2\%\] {
-  gap: 2%;
-}
-
 .overflow-hidden {
   overflow: hidden;
 }
@@ -848,6 +856,10 @@ video {
 
 .rounded-3xl {
   border-radius: 1.5rem;
+}
+
+.rounded-sm {
+  border-radius: 0.125rem;
 }
 
 .rounded-teamSettings {
@@ -966,6 +978,11 @@ video {
   background-color: rgb(253 224 71 / var(--tw-bg-opacity));
 }
 
+.object-contain {
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
 .p-1 {
   padding: 0.25rem;
 }
@@ -981,6 +998,11 @@ video {
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+.px-5 {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
 }
 
 .pb-4 {
@@ -1044,6 +1066,10 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.underline {
+  text-decoration-line: underline;
 }
 
 .opacity-0 {
