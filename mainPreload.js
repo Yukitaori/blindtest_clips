@@ -35,12 +35,15 @@ const displaySlidingBackgroundColor = (input, firstColor, secondColor) => {
   input.style.backgroundImage = `-webkit-gradient(linear, left top, right top, color-stop(${value}, var(--${firstColor})), color-stop(${value}, var(--${secondColor})))`;
 };
 
-// Cette fonction permet d'envoyer la track sélectionnée pour la lecture à la secondaryWindow
-// et gère la mise à jour du state et tous les effets liés aux styles des boutons
+// Cette fonction permet d'envoyer la track sélectionnée pour la lecture à la secondaryWindow et gère la mise à jour du state et tous les effets liés aux styles des boutons
+// Suppression de l'image affichée s'il y en a une + remise à zéro du select des images
 const playTrack = (track) => {
   const playButton = document.getElementById("playerplay");
   const pauseButton = document.getElementById("playerpause");
   const muteButton = document.getElementById("playermute");
+  const imageList = document.getElementById("imageList");
+  ipcRenderer.send("displayImage", null);
+  imageList.value = "video";
 
   ipcRenderer.send("playFile", track.path);
   playerState.selectedTrack = track;

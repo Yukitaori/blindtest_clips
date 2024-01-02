@@ -409,9 +409,21 @@ const createTeamList = () => {
   if (sortTeamsState) handleSort(sortTeamsState);
   const teamList = document.getElementById("teamlist");
   teamList.innerHTML =
-    '<li class="w-full p-1 pl-4 flex justify-center"><button class="h-10 w-10 flex justify-center items-center font-bold border border-solid border-black shadow-buttonShadow rounded-3xl group hover:scale-110" id="addTeam"><img src="./src/assets/icons/add.png" class="h-2 w-2 group-hover:scale-110"></img></button></li>';
+    '<li class="w-full p-1 pl-4 flex justify-center gap-4"><button class="h-10 w-10 flex justify-center items-center font-bold border border-solid border-black shadow-buttonShadow rounded-3xl group" id="addTeam"><img src="./src/assets/icons/add.png" class="h-4 w-4 group-hover:scale-125"></img></button><button class="h-10 w-10 flex justify-center items-center font-bold border border-solid border-black shadow-buttonShadow rounded-3xl group" id="resetScores"><img src="./src/assets/icons/reset.png" class="h-4 w-4 group-hover:scale-125"></img></button></li>';
   const addTeamButton = document.getElementById("addTeam");
+  const resetScoresButton = document.getElementById("resetScores");
   addTeamButton.addEventListener("click", () => addTeamLine());
+  resetScoresButton.addEventListener("click", () => {
+    if (
+      teams.length > 0 &&
+      confirm("Souhaites-tu réellement remettre les scores à zéro ?")
+    ) {
+      for (let team of teams) {
+        team.score = 0;
+        createTeamList();
+      }
+    }
+  });
   for (let team of teams) {
     addTeamLine(team);
   }
@@ -706,8 +718,13 @@ imageList.addEventListener("change", () => {
 });
 
 clearImageList.addEventListener("click", () => {
-  while (imageList.children.length > 1) {
-    imageList.removeChild(imageList.lastChild);
+  if (
+    imageList.children.length > 1 &&
+    confirm("Souhaites-tu réellement effacer la liste ?")
+  ) {
+    while (imageList.children.length > 1) {
+      imageList.removeChild(imageList.lastChild);
+    }
   }
 });
 
