@@ -689,6 +689,10 @@ video {
   width: 10rem;
 }
 
+.w-8 {
+  width: 2rem;
+}
+
 .w-\[10\%\] {
   width: 10%;
 }
@@ -831,6 +835,10 @@ video {
 
 .flex-wrap {
   flex-wrap: wrap;
+}
+
+.items-end {
+  align-items: flex-end;
 }
 
 .items-center {
@@ -1088,6 +1096,11 @@ video {
 .text-primary {
   --tw-text-opacity: 1;
   color: rgb(221 161 94 / var(--tw-text-opacity));
+}
+
+.text-third {
+  --tw-text-opacity: 1;
+  color: rgb(254 250 224 / var(--tw-text-opacity));
 }
 
 .text-white {

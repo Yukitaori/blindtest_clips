@@ -21,14 +21,15 @@
       >
         <div id="playlist">
           <p class="text-2xl font-bold text-center">Liste de lecture</p>
-          <div class="flex justify-around items-center mt-5">
+          <div class="flex justify-around items-end mt-5">
             <label for="round"
-              ><p>Manche</p>
+              ><p>Définir la manche</p>
               <select
                 name="round"
                 class="h-8 w-40 border border-solid border-black bg-third"
                 id="roundSelect"
               >
+                <option value="">Manche</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -42,18 +43,25 @@
               </select>
             </label>
             <button
-              class="border border-fourth p-1 shadow-buttonShadow rounded-3xl transition-all"
+              class="h-8 w-8 border border-fourth shadow-buttonShadow rounded-3xl transition-all flex justify-center items-center group"
+              id="showTrackNumberButton"
+            >
+              <p class="text-center group-hover:scale-125">01</p>
+            </button>
+            <button
+              class="h-8 w-8 border border-fourth shadow-buttonShadow rounded-3xl transition-all flex justify-center items-center group"
               id="showCompletePlaylistButton"
             >
-              🔍
+              <p class="group-hover:scale-125">🔍</p>
             </button>
             <label for="category"
-              ><p>Categorie</p>
+              ><p>Définir comme categorie</p>
               <select
                 name="category"
                 class="h-8 w-40 border border-solid border-black bg-third"
                 id="categorySelect"
               >
+                <option value="">Catégorie</option>
                 <option value="false">Non</option>
                 <option value="true">Oui</option>
               </select>
@@ -266,7 +274,7 @@
               class="w-40 p-1 border-2 border-solid border-fourth shadow-buttonShadow rounded-sm transition-all hover:font-bold"
               id="addImageButton"
             >
-              Ajouter l'image
+              Ajouter les images
             </button>
           </form>
           <div class="mt-2 flex flex-col items-center gap-4">

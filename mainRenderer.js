@@ -6,9 +6,15 @@ let selectedTracks = [];
 let loadedTrack;
 // La playlist permet  l'enregistrement des tracks dans leur oredre de diffusion
 const playlist = [];
+// Les draggedTracks sont les tracks qui sont dragguées lors du drag'n'drop
 let draggedTracks = [];
+// Le textFocus sert à vérifier si une input de type texte est focus lorsqu'on appuie sur des touches qui sont des raccourcis (Suppr, Espace...)
 let textFocus = false;
+// Le displayTrackNumber permet de vérifier si le bouton d'affichage du numéro de piste a été coché ou non
+let displayTrackNumber = false;
+
 const roundSelect = document.getElementById("roundSelect");
+const showTrackNumberButton = document.getElementById("showTrackNumberButton");
 const showCompletePlaylistButton = document.getElementById(
   "showCompletePlaylistButton"
 );
@@ -24,7 +30,39 @@ const previousButton = document.getElementById("playerprev");
 const nextButton = document.getElementById("playernext");
 const volumeControl = document.getElementById("volumecontrol");
 
-// Cette fonction permet d'afficher une modale pour visualiser toute la playlist
+roundSelect.addEventListener("change", () => {
+  if (roundSelect.value !== "") {
+    for (let track of selectedTracks) {
+      track.round = roundSelect.value;
+    }
+    selectedTracks = [];
+    roundSelect.value = "";
+    createTrackList();
+  }
+});
+
+categorySelect.addEventListener("change", () => {
+  if (categorySelect.value !== "") {
+    for (let track of selectedTracks) {
+      track.category = categorySelect.value;
+    }
+    selectedTracks = [];
+    categorySelect.value = "";
+    createTrackList();
+  }
+});
+
+showTrackNumberButton.addEventListener("click", () => {
+  displayTrackNumber = !displayTrackNumber;
+  if (displayTrackNumber) {
+    showTrackNumberButton.classList.add("bg-fifth", "text-third");
+  } else {
+    showTrackNumberButton.classList.remove("bg-fifth", "text-third");
+  }
+  createTrackList();
+});
+
+// Cet événement permet d'afficher une modale pour visualiser toute la playlist
 showCompletePlaylistButton.addEventListener("click", () => {
   let modalBackground = document.createElement("div");
   modalBackground.classList.add(
@@ -51,7 +89,15 @@ showCompletePlaylistButton.addEventListener("click", () => {
   );
   modalBackground.appendChild(modal);
   let modalCloseButton = document.createElement("button");
-  modalCloseButton.innerText = "X";
+  let modalCloseButtonCross = document.createElement("img");
+  modalCloseButtonCross.classList.add(
+    "h-4",
+    "w-4",
+    "group-hover:scale-125",
+    "transition-all"
+  );
+  modalCloseButtonCross.setAttribute("src", "./src/assets/icons/close.png");
+  modalCloseButton.appendChild(modalCloseButtonCross);
   modalCloseButton.classList.add(
     "absolute",
     "top-2",
@@ -66,7 +112,8 @@ showCompletePlaylistButton.addEventListener("click", () => {
     "border-solid",
     "border-black",
     "rounded-3xl",
-    "transition-all"
+    "transition-all",
+    "group"
   );
   modalCloseButton.addEventListener("click", () => {
     document.body.removeChild(modalBackground);
@@ -76,6 +123,10 @@ showCompletePlaylistButton.addEventListener("click", () => {
     modalCloseButton.classList.add("translate-x-[3px]", "translate-y-[3px]");
   });
   modalCloseButton.addEventListener("mouseup", () => {
+    modalCloseButton.classList.add("shadow-buttonShadow");
+    modalCloseButton.classList.remove("translate-x-[3px]", "translate-y-[3px]");
+  });
+  modalCloseButton.addEventListener("mouseleave", () => {
     modalCloseButton.classList.add("shadow-buttonShadow");
     modalCloseButton.classList.remove("translate-x-[3px]", "translate-y-[3px]");
   });
@@ -92,11 +143,14 @@ showCompletePlaylistButton.addEventListener("click", () => {
   );
   for (let track of playlist) {
     const trackToDisplay = document.createElement("p");
-    trackToDisplay.innerText = `${track.round
-      ?.toString()
-      .padStart(2, "0")} - ${track.trackNumber.toString().padStart(2, "0")} - ${
-      track.name
-    }`;
+    if (track.category === "true") {
+      trackToDisplay.classList.add("font-bold");
+    }
+    trackToDisplay.innerText = displayTrackNumber
+      ? `${track.round?.toString().padStart(2, "0")} - ${track.trackNumber
+          .toString()
+          .padStart(2, "0")} - ${track.name}`
+      : `${track.round?.toString().padStart(2, "0")} - ${track.name}`;
     completePlaylist.appendChild(trackToDisplay);
   }
   modal.appendChild(completePlaylist);
@@ -188,7 +242,10 @@ const createTrackList = () => {
       "items-center",
       "gap-2"
     );
-    trackbutton.classList.add("text-left");
+    trackbutton.classList.add("track", "text-left");
+    if (file.category === "true") {
+      trackbutton.classList.add("font-bold");
+    }
     // Si une track est survolée, et qu'elle n'est ni selected ni loaded, elle change de style
     // Le style est supprimé lorsque la track n'est plus survolée
     track.addEventListener("mouseover", () => {
@@ -375,11 +432,11 @@ const createTrackList = () => {
         '<img src="./src/assets/icons/playwhite.png" class="h-2 w-2"></img>';
       track.classList.add("bg-secondary", "text-fourth", "font-semibold");
     }
-    trackbutton.innerText = `${file.round
-      ?.toString()
-      .padStart(2, "0")} - ${file.trackNumber.toString().padStart(2, "0")} - ${
-      file.name
-    }`;
+    trackbutton.innerText = displayTrackNumber
+      ? `${file.round?.toString().padStart(2, "0")} - ${file.trackNumber
+          .toString()
+          .padStart(2, "0")} - ${file.name}`
+      : `${file.round?.toString().padStart(2, "0")} - ${file.name}`;
     track.appendChild(trackbutton);
     tracklist.appendChild(track);
     index++;
@@ -827,18 +884,24 @@ clearImageList.addEventListener("click", () => {
 
 //////////////////////// GENERAL ////////////////////////
 
-// Animation des boutons
+// Animation des boutons sauf les tracks de la tracklist
 function animateButtons() {
   const buttons = document.getElementsByTagName("button");
   for (let button of buttons) {
-    button.addEventListener("mousedown", () => {
-      button.classList.remove("shadow-buttonShadow");
-      button.classList.add("translate-x-[3px]", "translate-y-[3px]");
-    });
-    button.addEventListener("mouseup", () => {
-      button.classList.add("shadow-buttonShadow");
-      button.classList.remove("translate-x-[3px]", "translate-y-[3px]");
-    });
+    if (!button.classList.contains("track")) {
+      button.addEventListener("mousedown", () => {
+        button.classList.remove("shadow-buttonShadow");
+        button.classList.add("translate-x-[3px]", "translate-y-[3px]");
+      });
+      button.addEventListener("mouseup", () => {
+        button.classList.add("shadow-buttonShadow");
+        button.classList.remove("translate-x-[3px]", "translate-y-[3px]");
+      });
+      button.addEventListener("mouseleave", () => {
+        button.classList.add("shadow-buttonShadow");
+        button.classList.remove("translate-x-[3px]", "translate-y-[3px]");
+      });
+    }
   }
 }
 animateButtons();
