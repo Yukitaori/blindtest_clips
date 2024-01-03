@@ -8,6 +8,11 @@ let loadedTrack;
 const playlist = [];
 let draggedTracks = [];
 let textFocus = false;
+const roundSelect = document.getElementById("roundSelect");
+const showCompletePlaylistButton = document.getElementById(
+  "showCompletePlaylistButton"
+);
+const categorySelect = document.getElementById("categorySelect");
 const tracklist = document.getElementById("tracklist");
 const dropzone = document.getElementById("dropzone");
 const timeControl = document.getElementById("timecontrol");
@@ -18,6 +23,84 @@ const muteButton = document.getElementById("playermute");
 const previousButton = document.getElementById("playerprev");
 const nextButton = document.getElementById("playernext");
 const volumeControl = document.getElementById("volumecontrol");
+
+// Cette fonction permet d'afficher une modale pour visualiser toute la playlist
+showCompletePlaylistButton.addEventListener("click", () => {
+  let modalBackground = document.createElement("div");
+  modalBackground.classList.add(
+    "bg-transparentDisplay",
+    "absolute",
+    "top-0",
+    "w-[100vw]",
+    "h-[100vh]",
+    "flex",
+    "justify-center",
+    "items-center",
+    "overflow-hidden"
+  );
+  document.body.appendChild(modalBackground);
+  let modal = document.createElement("div");
+  modal.classList.add(
+    "m-4",
+    "w-[90%]",
+    "h-[90%]",
+    "flex",
+    "bg-third",
+    "rounded-3xl",
+    "relative"
+  );
+  modalBackground.appendChild(modal);
+  let modalCloseButton = document.createElement("button");
+  modalCloseButton.innerText = "X";
+  modalCloseButton.classList.add(
+    "absolute",
+    "top-2",
+    "right-2",
+    "h-10",
+    "w-10",
+    "shadow-buttonShadow",
+    "flex",
+    "justify-center",
+    "items-center",
+    "border",
+    "border-solid",
+    "border-black",
+    "rounded-3xl",
+    "transition-all"
+  );
+  modalCloseButton.addEventListener("click", () => {
+    document.body.removeChild(modalBackground);
+  });
+  modalCloseButton.addEventListener("mousedown", () => {
+    modalCloseButton.classList.remove("shadow-buttonShadow");
+    modalCloseButton.classList.add("translate-x-[3px]", "translate-y-[3px]");
+  });
+  modalCloseButton.addEventListener("mouseup", () => {
+    modalCloseButton.classList.add("shadow-buttonShadow");
+    modalCloseButton.classList.remove("translate-x-[3px]", "translate-y-[3px]");
+  });
+  modal.appendChild(modalCloseButton);
+  let completePlaylist = document.createElement("div");
+  completePlaylist.classList.add(
+    "relative",
+    "m-16",
+    "flex",
+    "flex-col",
+    "flex-wrap",
+    "gap-2",
+    "overflow-auto"
+  );
+  for (let track of playlist) {
+    const trackToDisplay = document.createElement("p");
+    trackToDisplay.innerText = `${track.round
+      ?.toString()
+      .padStart(2, "0")} - ${track.trackNumber.toString().padStart(2, "0")} - ${
+      track.name
+    }`;
+    completePlaylist.appendChild(trackToDisplay);
+  }
+  modal.appendChild(completePlaylist);
+});
 
 // Cette fonction récupère les positions et hauteur des éléments de la playlist pour la localisation du drop
 const getPosition = (element) => {
@@ -265,13 +348,19 @@ const createTrackList = () => {
           e.clientY < getPosition(track).y + getPosition(track).height / 2
         ) {
           Object.entries(e.dataTransfer.files).forEach((element) => {
-            playlist.splice(playlist.indexOf(file), 0, element[1]);
-            selectedTracks.push(element[1]);
+            let elementCopy = element[1];
+            elementCopy.round = 1;
+            elementCopy.category = false;
+            playlist.splice(playlist.indexOf(file), 0, elementCopy);
+            selectedTracks.push(elementCopy);
           });
         } else {
           Object.entries(e.dataTransfer.files).forEach((element) => {
-            playlist.splice(playlist.indexOf(file) + 1, 0, element[1]);
-            selectedTracks.push(element[1]);
+            let elementCopy = element[1];
+            elementCopy.round = 1;
+            elementCopy.category = false;
+            playlist.splice(playlist.indexOf(file) + 1, 0, elementCopy);
+            selectedTracks.push(elementCopy);
           });
         }
       }
@@ -286,7 +375,11 @@ const createTrackList = () => {
         '<img src="./src/assets/icons/playwhite.png" class="h-2 w-2"></img>';
       track.classList.add("bg-secondary", "text-fourth", "font-semibold");
     }
-    trackbutton.innerText = `${file.trackNumber} - ${file.name}`;
+    trackbutton.innerText = `${file.round
+      ?.toString()
+      .padStart(2, "0")} - ${file.trackNumber.toString().padStart(2, "0")} - ${
+      file.name
+    }`;
     track.appendChild(trackbutton);
     tracklist.appendChild(track);
     index++;
@@ -304,9 +397,13 @@ dropzone.addEventListener("drop", (e) => {
   e.preventDefault();
   // Au drop, la playlist est de nouveau générée intégralement et transmise au preload pour la gestion
   if (e.target === dropzone) {
-    Object.entries(e.dataTransfer.files).forEach((file) => {
-      if (file[1].type.includes("video")) {
-        playlist.push(file[1]);
+    Object.entries(e.dataTransfer.files).forEach((element) => {
+      if (element[1].type.includes("video")) {
+        let elementCopy = element[1];
+        elementCopy.round = 1;
+        elementCopy.category = false;
+        playlist.splice(playlist.indexOf(element), 0, elementCopy);
+        selectedTracks.push(elementCopy);
       }
     });
     createTrackList();
@@ -736,13 +833,11 @@ function animateButtons() {
   for (let button of buttons) {
     button.addEventListener("mousedown", () => {
       button.classList.remove("shadow-buttonShadow");
-      button.classList.add("translate-x-[3px]");
-      button.classList.add("translate-y-[3px]");
+      button.classList.add("translate-x-[3px]", "translate-y-[3px]");
     });
     button.addEventListener("mouseup", () => {
       button.classList.add("shadow-buttonShadow");
-      button.classList.remove("translate-x-[3px]");
-      button.classList.remove("translate-y-[3px]");
+      button.classList.remove("translate-x-[3px]", "translate-y-[3px]");
     });
   }
 }
