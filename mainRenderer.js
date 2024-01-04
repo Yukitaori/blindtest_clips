@@ -14,8 +14,14 @@ let textFocus = false;
 let displayTrackNumber = false;
 // Le displayInfo permet de savoir si le carton d'info est actuellement affiché ou non sur la secondaryWindow
 let displayInfo = false;
-// le displayRoundsState permet la gestion de l'affichage ou non des différents horaires des manches
+// Le displayRoundsState permet la gestion de l'affichage ou non des différents horaires des manches
 let displayRoundsState = { first: null, second: null, isDisplay: false };
+// La songsLibrary contient les liens et infos de chaque musique jouable dans l'audioplayer
+let songsLibrary = [
+  { id: "song1", title: "Love Boat", src: "./src/assets/music/" },
+  { id: "song2", title: "Rocky", src: "./src/assets/music/" },
+  { id: "song3", title: "Anniversaire", src: "./src/assets/music/" },
+];
 
 const roundSelect = document.getElementById("roundSelect");
 const showTrackNumberButton = document.getElementById("showTrackNumberButton");
@@ -34,6 +40,7 @@ const previousButton = document.getElementById("playerprev");
 const nextButton = document.getElementById("playernext");
 const volumeControl = document.getElementById("volumecontrol");
 
+// Le roundSelect permet de changer la manche de chaque piste sélectionnée (affichage du numéro de manche en début de piste)
 roundSelect.addEventListener("change", () => {
   if (selectedTracks.length > 0 && roundSelect.value !== "") {
     for (let track of selectedTracks) {
@@ -45,6 +52,7 @@ roundSelect.addEventListener("change", () => {
   roundSelect.value = "";
 });
 
+// Le categorySelect permet de changer la catégorie de chaque piste sélectionnée (la piste apparaît en gras)
 categorySelect.addEventListener("change", () => {
   if (selectedTracks.length > 0 && categorySelect.value !== "") {
     for (let track of selectedTracks) {
@@ -56,6 +64,7 @@ categorySelect.addEventListener("change", () => {
   categorySelect.value = "";
 });
 
+// Le showTrackNumberButton permet d'afficher ou non le numéro de piste de chaque track
 showTrackNumberButton.addEventListener("click", () => {
   displayTrackNumber = !displayTrackNumber;
   if (displayTrackNumber) {
@@ -471,13 +480,14 @@ dropzone.addEventListener("drop", (e) => {
   }
 });
 
+// Si on drag des pistes au-dessus de la dropzone, le texte d'information est supprimé au drop des premières pistes
 dropzone.addEventListener("dragover", (e) => {
   e.preventDefault();
-  // Le texte d'information est supprimé au drop des premières pistes
-  if (document.getElementById("playlistInstruction"))
+  if (document.getElementById("playlistInstruction")) {
     document
       .getElementById("dropzone")
       .removeChild(document.getElementById("playlistInstruction"));
+  }
 });
 
 // Gestion des animations lors du drag au-dessus de la dropzone
@@ -536,7 +546,6 @@ volumeControl.addEventListener("change", () => {
   window.player.changeVolume(volumeControl.value);
   window.player.displaySlidingBackgroundColor(volumeControl, "fifth", "third");
 });
-
 volumeControl.addEventListener("input", (e) => {
   window.player.changeVolume(e.currentTarget.value);
   window.player.displaySlidingBackgroundColor(volumeControl, "fifth", "third");
@@ -545,6 +554,7 @@ window.player.displaySlidingBackgroundColor(volumeControl, "fifth", "third");
 
 //////////////////////// PARTIE TEAMLIST ////////////////////////
 
+// Teams stocke les informations relative à chaque équipe (nom, score)
 const teams = [];
 let sortTeamsState = null;
 const sortAscAlphaButton = document.getElementById("sortAscAlpha");
@@ -552,6 +562,7 @@ const sortDescAlphaButton = document.getElementById("sortDescAlpha");
 const sortAscNumButton = document.getElementById("sortAscNum");
 const sortDescNumButton = document.getElementById("sortDescNum");
 const videoOnlyDisplayButton = document.getElementById("videoDisplay");
+
 videoOnlyDisplayButton.classList.add(
   "bg-yellow-300",
   "font-bold",
@@ -640,6 +651,7 @@ const resetDisplayButtonsStyle = (clickedButton) => {
   );
 };
 
+// Cette fonction permet la réinitialisation du style de toues les boutons de tri sauf celui qui a été cliqué
 const resetSortButtonsStyle = (clickedButton) => {
   for (let button of [
     sortAscAlphaButton,
@@ -795,6 +807,8 @@ const addTeamLine = (teamToAdd) => {
     createTeamList();
   });
 };
+
+// Au chargement de la fenêtre, la teamList est initialisée
 createTeamList();
 
 sortAscAlphaButton.addEventListener("click", () => {
@@ -850,6 +864,7 @@ const addImageForm = document.getElementById("addImageForm");
 const imageList = document.getElementById("imageList");
 const clearImageList = document.getElementById("clearImageList");
 
+// addImageForm permet de sélectionner les images dont on veut récupérer le chemin d'accès
 addImageForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const addImageInput = document.getElementById("addImageInput");
@@ -866,6 +881,7 @@ addImageForm.addEventListener("submit", (e) => {
   addImageInput.value = null;
 });
 
+// L'imageList est chargée lorsque l'utilisateur a soumis le formulaire addImageForm
 imageList.addEventListener("change", () => {
   if (imageList.value === "video") {
     window.display.displayImage(null);
@@ -874,6 +890,7 @@ imageList.addEventListener("change", () => {
   }
 });
 
+// Le clearImageList permet de vider la liste des images chargées
 clearImageList.addEventListener("click", () => {
   if (
     imageList.children.length > 1 &&
@@ -892,11 +909,15 @@ const displayInfoButton = document.getElementById("displayInfoButton");
 const firstRoundInput = document.getElementById("firstRoundInput");
 const secondRoundInput = document.getElementById("secondRoundInput");
 const displayRoundsInput = document.getElementById("displayRoundsInput");
+const audioplayer = document.getElementById("audioplayer");
+const songTitleDisplay = document.getElementById("songTitleDisplay");
 
+// Lorsqu'une option est sélectionnée, le gif est affiché sur la secondaryWindow
 gifList.addEventListener("change", () => {
   window.display.displayGif(gifList.value);
 });
 
+// le displayInfoButton permet d'afficher le carton des informations (par défaut, sans les informations de manches)
 displayInfoButton.addEventListener("click", () => {
   displayInfo = !displayInfo;
   window.display.displayInfo(displayInfo, displayRoundsState);
@@ -907,6 +928,7 @@ displayInfoButton.addEventListener("click", () => {
   }
 });
 
+// Les inputs ci-dessous permettent d'indiquer une heure de début pour chaque manche
 firstRoundInput.addEventListener("change", () => {
   displayRoundsState.first = firstRoundInput.value;
   console.log(displayRoundsState);
@@ -915,6 +937,8 @@ secondRoundInput.addEventListener("change", () => {
   displayRoundsState.second = secondRoundInput.value;
   console.log(displayRoundsState);
 });
+
+// Lorsque la displayRoundsInput est cochée, les informations de manches s'affichent sur le carton d'informations
 displayRoundsInput.addEventListener("change", () => {
   if (displayRoundsInput.checked) {
     displayRoundsState.isDisplay = true;
@@ -922,6 +946,15 @@ displayRoundsInput.addEventListener("change", () => {
     displayRoundsState.isDisplay = false;
   }
 });
+
+// Cette boucle permet d'initialiser les boutons de la songList en fonction des informations de la songLibrary
+for (let song of songsLibrary) {
+  let trackbutton = document.getElementById(song.id);
+  trackbutton.addEventListener("click", () => {
+    audioplayer.src = song.src;
+    songTitleDisplay.innerText = song.title;
+  });
+}
 
 //////////////////////// GENERAL ////////////////////////
 

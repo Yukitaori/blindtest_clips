@@ -600,6 +600,11 @@ video {
   margin-right: auto;
 }
 
+.my-2 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .mb-10 {
   margin-bottom: 2.5rem;
 }
@@ -691,6 +696,10 @@ video {
 
 .h-full {
   height: 100%;
+}
+
+.max-h-\[150px\] {
+  max-height: 150px;
 }
 
 .max-h-\[400px\] {
@@ -1306,6 +1315,10 @@ video {
   --tw-scale-x: 1.25;
   --tw-scale-y: 1.25;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.group:hover .group-hover\:font-bold {
+  font-weight: 700;
 }
 
 @media (min-width: 1536px) {

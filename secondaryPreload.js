@@ -1,4 +1,5 @@
 const { ipcRenderer } = require("electron");
+// Le tableau d'intervales permet de stocker les différentes intervales, puis de les supprimer lorsque l'on n'en a plus besoin
 const intervals = [];
 
 const getCurrentTime = () => {
@@ -12,7 +13,7 @@ ipcRenderer.on("stopGetCurrent", () => {
   clearInterval(intervals[0]);
 });
 
-// Ecoute de l'événement "playFile" et lancement de la video selon le chemin spécifié dans la mainWindow
+// Ecoute du message "playFile" et lancement de la video selon le chemin spécifié dans la mainWindow
 ipcRenderer.on("playFile", (event, path) => {
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.setAttribute("src", path);
@@ -35,7 +36,7 @@ ipcRenderer.on("playFile", (event, path) => {
   });
 });
 
-// Ecoute de l'événement "play" et reprise de la video
+// Ecoute du message "play" et reprise de la video
 ipcRenderer.on("play", () => {
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.play();
@@ -47,14 +48,14 @@ ipcRenderer.on("play", () => {
   ipcRenderer.send("duration", videoPlayer.duration.toFixed());
 });
 
-// Ecoute de l'événement "pause" et mise en pause de la video
+// Ecoute du message "pause" et mise en pause de la video
 ipcRenderer.on("pause", () => {
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.pause();
   clearInterval(intervals[0]);
 });
 
-// Ecoute de l'événement "stop" et arrêt de la video
+// Ecoute du message "stop" et arrêt de la video
 ipcRenderer.on("stop", () => {
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.load();
@@ -62,13 +63,13 @@ ipcRenderer.on("stop", () => {
   // TODO Mettre en place un écran noir lors de l'arrêt et supprimer la source
 });
 
-// Ecoute de l'événement "mute" et mise en silence de la video
+// Ecoute du message "mute" et mise en silence de la video
 ipcRenderer.on("mute", () => {
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.muted = !videoPlayer.muted;
 });
 
-// Ecoute de l'événement "changeTime" et changement dynamique du currentTime sélectionné via l'input range dans la primaryWindow
+// Ecoute du message "changeTime" et changement dynamique du currentTime sélectionné via l'input range dans la primaryWindow
 // On nettoie les intervalles pour éviter que plusieurs soient actifs en même temps
 ipcRenderer.on("changeTime", (event, time) => {
   let videoPlayer = document.getElementById("videoplayer");
@@ -78,12 +79,13 @@ ipcRenderer.on("changeTime", (event, time) => {
   intervals.push(setInterval(getCurrentTime, 1000));
 });
 
-// Ecoute de l'événement "changeVolume" et changement du volume sélectionné via l'input range dans la primaryWindow
+// Ecoute du message "changeVolume" et changement du volume sélectionné via l'input range dans la primaryWindow
 ipcRenderer.on("changeVolume", (event, volume) => {
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.volume = volume;
 });
 
+// Ecoute du message "displayVideoOnly" et affichage de la video sans les scores dans la secondaryWindow
 ipcRenderer.on("displayVideoOnly", () => {
   let displayScreen = document.getElementById("displayscreen");
   let displayScores = document.createElement("div");
@@ -92,6 +94,7 @@ ipcRenderer.on("displayVideoOnly", () => {
   displayScores.setAttribute("id", "displayscores");
 });
 
+// Ecoute du message "displayVideoAndScores" et affichage de la video avec les scores dans la secondaryWindow
 ipcRenderer.on("displayVideoAndScores", (event, teams) => {
   let displayScreen = document.getElementById("displayscreen");
   let videoPlayer = document.getElementById("videoplayer");
@@ -137,6 +140,7 @@ ipcRenderer.on("displayVideoAndScores", (event, teams) => {
   displayScreen.insertBefore(displayScores, videoPlayer);
 });
 
+// Ecoute du message "displayVideoAndPodium" et affichage de la video avec le podium dans la secondaryWindow
 ipcRenderer.on("displayVideoAndPodium", (event, teams) => {
   let displayScreen = document.getElementById("displayscreen");
   let videoPlayer = document.getElementById("videoplayer");
@@ -205,6 +209,7 @@ ipcRenderer.on("displayVideoAndPodium", (event, teams) => {
   displayScreen.insertBefore(displayScores, videoPlayer);
 });
 
+// Ecoute du message "displayImage" et affichage du carton sélectionné dans la primaryWindow
 ipcRenderer.on("displayImage", (event, path) => {
   let displayScreen = document.getElementById("displayscreen");
   let blackBackground = document.getElementById("blackBackground");
@@ -234,6 +239,7 @@ ipcRenderer.on("displayImage", (event, path) => {
   }
 });
 
+// Ecoute du message "displayGif" et affichage du gif sélectionné dans la primaryWindow
 ipcRenderer.on("displayGif", (event, path) => {
   let displayScreen = document.getElementById("displayscreen");
   let gifToRemove = document.getElementById("gifToDisplay");
@@ -259,6 +265,7 @@ ipcRenderer.on("displayGif", (event, path) => {
   }
 });
 
+// Ecoute du message "displayInfo" et affichage du carton d'info + les informations de manches le cas échéant
 ipcRenderer.on("displayInfo", (event, isDisplay, displayRoundsState) => {
   console.log(isDisplay);
   let infoBackground = document.getElementById("infoBackground");
