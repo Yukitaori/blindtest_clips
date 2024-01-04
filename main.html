@@ -312,15 +312,41 @@
             <option value="./src/assets/gifs/cheers.gif">Santé</option>
             <option value="./src/assets/gifs/surprised.gif">Surprise</option>
           </select>
-          <button
-            class="h-16 w-16 border border-fourth shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
-            id="displayInfoButton"
-          >
-            <img
-              src="./src/assets/images/DGC.png"
-              class="w-[70%] group-hover:scale-125"
-            />
-          </button>
+          <div class="flex flex-col items-center gap-2">
+            <div class="flex flex-col gap-2">
+              <p class="font-bold">Horaires des manches</p>
+              <label
+                >Manche 1 :
+                <input
+                  type="text"
+                  class="border border-solid border-black"
+                  id="firstRoundInput"
+              /></label>
+              <label
+                >Manche 2 :
+                <input
+                  type="text"
+                  class="border border-solid border-black"
+                  id="secondRoundInput"
+              /></label>
+              <label for="displayRounds"
+                >Afficher les manches ?
+                <input
+                  name="displayRounds"
+                  type="checkbox"
+                  id="displayRoundsInput"
+              /></label>
+            </div>
+            <button
+              class="h-16 w-16 border border-fourth shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
+              id="displayInfoButton"
+            >
+              <img
+                src="./src/assets/images/DGC.png"
+                class="w-[70%] group-hover:scale-125"
+              />
+            </button>
+          </div>
         </div>
       </div>
     </div>

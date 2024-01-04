@@ -92,8 +92,12 @@ const createWindows = (screens) => {
     secondaryWindow.webContents.send("displayGif", path);
   });
 
-  ipcMain.on("displayInfo", (event, isDisplay) => {
-    secondaryWindow.webContents.send("displayInfo", isDisplay);
+  ipcMain.on("displayInfo", (event, isDisplay, displayRoundsState) => {
+    secondaryWindow.webContents.send(
+      "displayInfo",
+      isDisplay,
+      displayRoundsState
+    );
   });
 
   // mainWindow.webContents.openDevTools();

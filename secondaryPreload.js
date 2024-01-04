@@ -124,7 +124,7 @@ ipcRenderer.on("displayVideoAndScores", (event, teams) => {
     "border-solid",
     "border-black",
     "text-white",
-    "z-10",
+    "z-20",
     "absolute",
     "right-0",
     "top-0",
@@ -259,14 +259,38 @@ ipcRenderer.on("displayGif", (event, path) => {
   }
 });
 
-ipcRenderer.on("displayInfo", (event, isDisplay) => {
+ipcRenderer.on("displayInfo", (event, isDisplay, displayRoundsState) => {
   console.log(isDisplay);
   let infoBackground = document.getElementById("infoBackground");
+  let roundsDisplay = document.getElementById("roundsDisplay");
+  let firstRoundDisplay = document.getElementById("firstRoundDisplay");
+  let secondRoundDisplay = document.getElementById("secondRoundDisplay");
+  firstRoundDisplay.innerText = ``;
+  secondRoundDisplay.innerText = ``;
   if (isDisplay) {
     infoBackground.classList.remove("hidden");
     infoBackground.classList.add("flex");
   } else {
     infoBackground.classList.remove("flex");
     infoBackground.classList.add("hidden");
+  }
+  if (
+    displayRoundsState.isDisplay &&
+    (displayRoundsState.first || displayRoundsState.second)
+  ) {
+    console.log(displayRoundsState);
+    if (displayRoundsState.first && displayRoundsState.second) {
+      roundsDisplay.classList.remove("hidden");
+      roundsDisplay.classList.add("flex");
+      firstRoundDisplay.innerText = `Première manche : ${displayRoundsState.first}`;
+      secondRoundDisplay.innerText = `Deuxième manche : ${displayRoundsState.second}`;
+    } else if (displayRoundsState.first) {
+      roundsDisplay.classList.remove("hidden");
+      roundsDisplay.classList.add("flex");
+      firstRoundDisplay.innerText = `Début de la manche : ${displayRoundsState.first}`;
+    }
+  } else {
+    roundsDisplay.classList.remove("flex");
+    roundsDisplay.classList.add("hidden");
   }
 });

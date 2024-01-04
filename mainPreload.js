@@ -239,8 +239,8 @@ contextBridge.exposeInMainWorld("display", {
   displayGif: (path) => {
     ipcRenderer.send("displayGif", path);
   },
-  displayInfo: (isDisplay) => {
-    ipcRenderer.send("displayInfo", isDisplay);
+  displayInfo: (isDisplay, displayRoundsState) => {
+    ipcRenderer.send("displayInfo", isDisplay, displayRoundsState);
   },
 });
 

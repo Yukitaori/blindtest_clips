@@ -14,6 +14,8 @@ let textFocus = false;
 let displayTrackNumber = false;
 // Le displayInfo permet de savoir si le carton d'info est actuellement affiché ou non sur la secondaryWindow
 let displayInfo = false;
+// le displayRoundsState permet la gestion de l'affichage ou non des différents horaires des manches
+let displayRoundsState = { first: null, second: null, isDisplay: false };
 
 const roundSelect = document.getElementById("roundSelect");
 const showTrackNumberButton = document.getElementById("showTrackNumberButton");
@@ -887,6 +889,9 @@ clearImageList.addEventListener("click", () => {
 
 const gifList = document.getElementById("gifList");
 const displayInfoButton = document.getElementById("displayInfoButton");
+const firstRoundInput = document.getElementById("firstRoundInput");
+const secondRoundInput = document.getElementById("secondRoundInput");
+const displayRoundsInput = document.getElementById("displayRoundsInput");
 
 gifList.addEventListener("change", () => {
   window.display.displayGif(gifList.value);
@@ -894,11 +899,27 @@ gifList.addEventListener("change", () => {
 
 displayInfoButton.addEventListener("click", () => {
   displayInfo = !displayInfo;
-  window.display.displayInfo(displayInfo);
+  window.display.displayInfo(displayInfo, displayRoundsState);
   if (displayInfo) {
     displayInfoButton.classList.add("bg-fifth");
   } else {
     displayInfoButton.classList.remove("bg-fifth");
+  }
+});
+
+firstRoundInput.addEventListener("change", () => {
+  displayRoundsState.first = firstRoundInput.value;
+  console.log(displayRoundsState);
+});
+secondRoundInput.addEventListener("change", () => {
+  displayRoundsState.second = secondRoundInput.value;
+  console.log(displayRoundsState);
+});
+displayRoundsInput.addEventListener("change", () => {
+  if (displayRoundsInput.checked) {
+    displayRoundsState.isDisplay = true;
+  } else {
+    displayRoundsState.isDisplay = false;
   }
 });
 

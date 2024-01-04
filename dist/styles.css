@@ -672,12 +672,12 @@ video {
   height: 40%;
 }
 
-.h-\[70\%\] {
-  height: 70%;
+.h-\[60\%\] {
+  height: 60%;
 }
 
-.h-\[80\%\] {
-  height: 80%;
+.h-\[70\%\] {
+  height: 70%;
 }
 
 .h-\[90\%\] {
@@ -1117,6 +1117,10 @@ video {
 
 .p-4 {
   padding: 1rem;
+}
+
+.p-8 {
+  padding: 2rem;
 }
 
 .px-4 {
