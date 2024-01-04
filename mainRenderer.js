@@ -745,7 +745,6 @@ const addTeamLine = (teamToAdd) => {
 
   // Lors du clic sur le nom de l'équipe, un ipnput remplace le paragraphe afin de permettre la modif (modif en temps réel au change => pas de validation requise)
   // Lorsque le focus n'est plus sur l'input, et celle-ci redevient un paragraphe
-  // TODO : ajouter un système de boutons pour valider ou annuler la modification du nom
   teamName.addEventListener("click", () => {
     const teamNameInput = document.createElement("input");
     teamNameInput.setAttribute("type", "text");
