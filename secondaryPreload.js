@@ -258,3 +258,15 @@ ipcRenderer.on("displayGif", (event, path) => {
     displayScreen.appendChild(gifToDisplay);
   }
 });
+
+ipcRenderer.on("displayInfo", (event, isDisplay) => {
+  console.log(isDisplay);
+  let infoBackground = document.getElementById("infoBackground");
+  if (isDisplay) {
+    infoBackground.classList.remove("hidden");
+    infoBackground.classList.add("flex");
+  } else {
+    infoBackground.classList.remove("flex");
+    infoBackground.classList.add("hidden");
+  }
+});

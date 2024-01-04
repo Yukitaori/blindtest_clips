@@ -239,6 +239,9 @@ contextBridge.exposeInMainWorld("display", {
   displayGif: (path) => {
     ipcRenderer.send("displayGif", path);
   },
+  displayInfo: (isDisplay) => {
+    ipcRenderer.send("displayInfo", isDisplay);
+  },
 });
 
 // Ecoute du message getDuration, qui permet de récupérer de la secondaryWindow la durée maximale de la loadedTrack et de l'afficher sur l'input range

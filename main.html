@@ -43,13 +43,13 @@
               </select>
             </label>
             <button
-              class="h-8 w-8 border border-fourth shadow-buttonShadow rounded-3xl transition-all flex justify-center items-center group"
+              class="h-8 w-8 border border-fourth shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
               id="showTrackNumberButton"
             >
               <p class="text-center group-hover:scale-125">01</p>
             </button>
             <button
-              class="h-8 w-8 border border-fourth shadow-buttonShadow rounded-3xl transition-all flex justify-center items-center group"
+              class="h-8 w-8 border border-fourth shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
               id="showCompletePlaylistButton"
             >
               <p class="group-hover:scale-125">🔍</p>
@@ -98,7 +98,7 @@
           <ul class="flex gap-2 items-center">
             <li>
               <button
-                class="border-2 border-fourth p-4 group shadow-buttonShadow rounded-3xl transition-all bg-blue-500"
+                class="border-2 border-fourth p-4 group shadow-buttonShadow rounded-full transition-all bg-blue-500"
                 id="playerprev"
               >
                 <img
@@ -146,7 +146,7 @@
             </li>
             <li>
               <button
-                class="border-2 border-fourth p-4 group shadow-buttonShadow rounded-3xl transition-all bg-blue-500"
+                class="border-2 border-fourth p-4 group shadow-buttonShadow rounded-full transition-all bg-blue-500"
                 id="playernext"
               >
                 <img
@@ -287,7 +287,7 @@
             </select>
             <button
               id="clearImageList"
-              class="h-10 w-10 border border-solid border-black shadow-buttonShadow rounded-3xl group"
+              class="h-10 w-10 border border-solid border-black shadow-buttonShadow rounded-full group"
             >
               <p class="group-hover:scale-125">🗑️</p>
             </button>
@@ -299,7 +299,7 @@
         class="w-[49%] p-2 border-2 border-black border-solid"
       >
         <p class="text-2xl font-bold text-center">Media</p>
-        <div>
+        <div class="flex justify-around items-center">
           <select
             class="h-8 w-40 border border-solid border-black bg-third"
             id="gifList"
@@ -312,6 +312,15 @@
             <option value="./src/assets/gifs/cheers.gif">Santé</option>
             <option value="./src/assets/gifs/surprised.gif">Surprise</option>
           </select>
+          <button
+            class="h-16 w-16 border border-fourth shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
+            id="displayInfoButton"
+          >
+            <img
+              src="./src/assets/images/DGC.png"
+              class="w-[70%] group-hover:scale-125"
+            />
+          </button>
         </div>
       </div>
     </div>

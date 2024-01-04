@@ -12,6 +12,8 @@ let draggedTracks = [];
 let textFocus = false;
 // Le displayTrackNumber permet de vérifier si le bouton d'affichage du numéro de piste a été coché ou non
 let displayTrackNumber = false;
+// Le displayInfo permet de savoir si le carton d'info est actuellement affiché ou non sur la secondaryWindow
+let displayInfo = false;
 
 const roundSelect = document.getElementById("roundSelect");
 const showTrackNumberButton = document.getElementById("showTrackNumberButton");
@@ -884,9 +886,20 @@ clearImageList.addEventListener("click", () => {
 //////////////////////// PARTIE MEDIA ////////////////////////
 
 const gifList = document.getElementById("gifList");
+const displayInfoButton = document.getElementById("displayInfoButton");
 
 gifList.addEventListener("change", () => {
   window.display.displayGif(gifList.value);
+});
+
+displayInfoButton.addEventListener("click", () => {
+  displayInfo = !displayInfo;
+  window.display.displayInfo(displayInfo);
+  if (displayInfo) {
+    displayInfoButton.classList.add("bg-fifth");
+  } else {
+    displayInfoButton.classList.remove("bg-fifth");
+  }
 });
 
 //////////////////////// GENERAL ////////////////////////

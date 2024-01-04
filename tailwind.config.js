@@ -9,6 +9,10 @@ module.exports = {
         third: "#FEFAE0",
         fourth: "#283618",
         fifth: "#606C38",
+        sixth: "#F0653F",
+      },
+      fontFamily: {
+        raleway: "Raleway",
       },
       boxShadow: {
         buttonShadow: "3px 3px black",
@@ -51,7 +55,7 @@ module.exports = {
         fadein0: "fadein 2s ease-in 5s forwards",
         fadein1: "fadein 2s ease-in 4s forwards",
         fadein2: "fadein 2s ease-in 3s forwards",
-        turn: "turn 1s ease-in-out",
+        turn: "turn 10s linear infinite",
       },
     },
   },
