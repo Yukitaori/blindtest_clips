@@ -31,25 +31,25 @@ const nextButton = document.getElementById("playernext");
 const volumeControl = document.getElementById("volumecontrol");
 
 roundSelect.addEventListener("change", () => {
-  if (roundSelect.value !== "") {
+  if (selectedTracks.length > 0 && roundSelect.value !== "") {
     for (let track of selectedTracks) {
       track.round = roundSelect.value;
     }
     selectedTracks = [];
-    roundSelect.value = "";
     createTrackList();
   }
+  roundSelect.value = "";
 });
 
 categorySelect.addEventListener("change", () => {
-  if (categorySelect.value !== "") {
+  if (selectedTracks.length > 0 && categorySelect.value !== "") {
     for (let track of selectedTracks) {
       track.category = categorySelect.value;
     }
     selectedTracks = [];
-    categorySelect.value = "";
     createTrackList();
   }
+  categorySelect.value = "";
 });
 
 showTrackNumberButton.addEventListener("click", () => {
