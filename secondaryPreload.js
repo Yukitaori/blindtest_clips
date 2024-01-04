@@ -194,7 +194,7 @@ ipcRenderer.on("displayVideoAndPodium", (event, teams) => {
     "border-solid",
     "border-black",
     "text-white",
-    "z-10",
+    "z-30",
     "absolute",
     "top-0",
     "flex",
@@ -222,7 +222,8 @@ ipcRenderer.on("displayImage", (event, path) => {
       "flex",
       "justify-center",
       "items-center",
-      "animate-right-come"
+      "animate-right-come",
+      "z-10"
     );
     blackBackground.setAttribute("id", "blackBackground");
     let imageToDisplay = document.createElement("img");
@@ -230,5 +231,30 @@ ipcRenderer.on("displayImage", (event, path) => {
     imageToDisplay.classList.add("w-[90%]", "h-[90%]", "object-contain");
     blackBackground.appendChild(imageToDisplay);
     displayScreen.appendChild(blackBackground);
+  }
+});
+
+ipcRenderer.on("displayGif", (event, path) => {
+  let displayScreen = document.getElementById("displayscreen");
+  let gifToRemove = document.getElementById("gifToDisplay");
+  if (gifToRemove) displayScreen.removeChild(gifToRemove);
+  if (path) {
+    let gifToDisplay = document.createElement("img");
+    gifToDisplay.setAttribute("id", "gifToDisplay");
+    gifToDisplay.setAttribute("src", path);
+    gifToDisplay.classList.add(
+      "bg-black",
+      "absolute",
+      "w-fit",
+      "h-fit",
+      "max-w-[50%]",
+      "max-h-[50%]",
+      "object-contain",
+      "left-0",
+      "bottom-0",
+      "animate-left-come",
+      "z-20"
+    );
+    displayScreen.appendChild(gifToDisplay);
   }
 });

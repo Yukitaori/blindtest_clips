@@ -30,6 +30,10 @@ module.exports = {
           "0%": { transform: "translateX(100%)" },
           "100%": { transform: "translateX(0px)" },
         },
+        "left-come": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(0px)" },
+        },
         fadein: {
           "0%": { opacity: 0 },
           "100%": { opacity: 1 },
@@ -42,6 +46,7 @@ module.exports = {
       animation: {
         "top-come": "top-come 1s ease",
         "right-come": "right-come 1s ease",
+        "left-come": "left-come 1s ease",
         fadein: "fadein 3s ease-in 3s forwards",
         fadein0: "fadein 2s ease-in 5s forwards",
         fadein1: "fadein 2s ease-in 4s forwards",

@@ -840,7 +840,7 @@ videoAndPodiumDisplayButton.addEventListener("click", () => {
   }
 });
 
-//////////////////////// PARTIE MEDIA ////////////////////////
+//////////////////////// PARTIE IMAGES ////////////////////////
 
 const addImageForm = document.getElementById("addImageForm");
 const imageList = document.getElementById("imageList");
@@ -879,6 +879,14 @@ clearImageList.addEventListener("click", () => {
       imageList.removeChild(imageList.lastChild);
     }
   }
+});
+
+//////////////////////// PARTIE MEDIA ////////////////////////
+
+const gifList = document.getElementById("gifList");
+
+gifList.addEventListener("change", () => {
+  window.display.displayGif(gifList.value);
 });
 
 //////////////////////// GENERAL ////////////////////////
