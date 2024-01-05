@@ -26,7 +26,7 @@ const createWindows = (screens) => {
     secondaryWindow.setFullScreen(true);
   }
 
-  // Ecoute de l'événement "playFile" et envoi de l'adresse du fichier à ouvrir à la fenêtre secondaire
+  // Gestion des messages liés au player
   ipcMain.on("playFile", (event, path) => {
     console.log(path);
     secondaryWindow.webContents.send("playFile", path);
@@ -72,6 +72,7 @@ const createWindows = (screens) => {
     mainWindow.webContents.send("videoover");
   });
 
+  // Gestion des messages liés au display
   ipcMain.on("displayVideoOnly", () => {
     secondaryWindow.webContents.send("displayVideoOnly");
   });
@@ -88,8 +89,17 @@ const createWindows = (screens) => {
     secondaryWindow.webContents.send("displayImage", path);
   });
 
-  // mainWindow.webContents.openDevTools();
-  // secondaryWindow.webContents.openDevTools();
+  ipcMain.on("displayGif", (event, path) => {
+    secondaryWindow.webContents.send("displayGif", path);
+  });
+
+  ipcMain.on("displayInfo", (event, isDisplay, displayRoundsState) => {
+    secondaryWindow.webContents.send(
+      "displayInfo",
+      isDisplay,
+      displayRoundsState
+    );
+  });
 };
 
 app.whenReady().then(() => {

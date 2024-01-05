@@ -9,6 +9,10 @@ module.exports = {
         third: "#FEFAE0",
         fourth: "#283618",
         fifth: "#606C38",
+        sixth: "#F0653F",
+      },
+      fontFamily: {
+        raleway: "Raleway",
       },
       boxShadow: {
         buttonShadow: "3px 3px black",
@@ -30,6 +34,10 @@ module.exports = {
           "0%": { transform: "translateX(100%)" },
           "100%": { transform: "translateX(0px)" },
         },
+        "left-come": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(0px)" },
+        },
         fadein: {
           "0%": { opacity: 0 },
           "100%": { opacity: 1 },
@@ -42,11 +50,12 @@ module.exports = {
       animation: {
         "top-come": "top-come 1s ease",
         "right-come": "right-come 1s ease",
+        "left-come": "left-come 1s ease",
         fadein: "fadein 3s ease-in 3s forwards",
         fadein0: "fadein 2s ease-in 5s forwards",
         fadein1: "fadein 2s ease-in 4s forwards",
         fadein2: "fadein 2s ease-in 3s forwards",
-        turn: "turn 1s ease-in-out",
+        turn: "turn 10s linear infinite",
       },
     },
   },
