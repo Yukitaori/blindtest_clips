@@ -1377,6 +1377,11 @@ select[data-open] {
     width: 5rem;
   }
 
+  .\32xl\:w-fit {
+    width: -moz-fit-content;
+    width: fit-content;
+  }
+
   .\32xl\:text-9xl {
     font-size: 8rem;
     line-height: 1;

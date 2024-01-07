@@ -1024,13 +1024,16 @@ addImageForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const addImageInput = document.getElementById("addImageInput");
   Object.values(addImageInput.files).forEach((image) => {
-    let imageOption = document.createElement("option");
-    let existingOption = document.getElementById(image.name);
-    imageOption.setAttribute("id", image.name);
-    imageOption.innerText = image.name;
-    imageOption.value = image.path;
-    if (!existingOption) {
-      imageList.appendChild(imageOption);
+    console.log(image);
+    if (image.type.includes("image")) {
+      let imageOption = document.createElement("option");
+      let existingOption = document.getElementById(image.name);
+      imageOption.setAttribute("id", image.name);
+      imageOption.innerText = image.name;
+      imageOption.value = image.path;
+      if (!existingOption) {
+        imageList.appendChild(imageOption);
+      }
     }
   });
   addImageInput.value = null;
@@ -1054,6 +1057,7 @@ clearImageList.addEventListener("click", () => {
     while (imageList.children.length > 1) {
       imageList.removeChild(imageList.lastChild);
     }
+    window.display.displayImage(null);
   }
 });
 
