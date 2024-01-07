@@ -379,7 +379,7 @@ const createTrackList = () => {
         ) {
           window.player.mute();
         }
-        // L'appui sur la touche M active/désactive le mute sur la video
+        // L'appui sur la touche V remet le volume à 100%
         if (
           e.key === "v" &&
           (keyDownState[e.key] === false || !keyDownState[e.key])
@@ -392,6 +392,7 @@ const createTrackList = () => {
             "third"
           );
         }
+        // L'appui sur la flèche du haut augmente le volume de 25%
         if (
           e.key === "ArrowUp" &&
           (keyDownState[e.key] === false || !keyDownState[e.key])
@@ -404,6 +405,7 @@ const createTrackList = () => {
             "third"
           );
         }
+        // L'appui sur la flèche du bas baisse le volume de 25%
         if (
           e.key === "ArrowDown" &&
           (keyDownState[e.key] === false || !keyDownState[e.key])
@@ -416,6 +418,7 @@ const createTrackList = () => {
             "third"
           );
         }
+        // L'appui sur la flèche de gauche lance la piste précédente
         if (
           e.key === "ArrowLeft" &&
           (keyDownState[e.key] === false || !keyDownState[e.key])
@@ -427,6 +430,7 @@ const createTrackList = () => {
           }
           createTrackList();
         }
+        // L'appui sur la flèche de gauche lance la piste suivante
         if (
           e.key === "ArrowRight" &&
           (keyDownState[e.key] === false || !keyDownState[e.key])
@@ -442,6 +446,7 @@ const createTrackList = () => {
       keyDownState[e.key] = true;
     });
 
+    // Lorsque la touche est lâchée, le keyDownState correspondant est remis à false
     document.addEventListener("keyup", (e) => {
       keyDownState[e.key] = false;
     });
@@ -622,7 +627,6 @@ dropzone.addEventListener("dragleave", (e) => {
   dropzone.classList.remove("bg-fifth");
 });
 
-// TODO mettre en place des raccourcis clavier pour chaque action
 pauseButton.addEventListener("click", () => {
   window.player.pause();
 });
