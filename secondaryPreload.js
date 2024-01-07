@@ -117,7 +117,13 @@ ipcRenderer.on("displayVideoAndScores", (event, teams) => {
       "opacity-0",
       "animate-fadein"
     );
-    teamBlock.classList.add("flex", "justify-between", "gap-4", "flex-wrap");
+    teamBlock.classList.add(
+      "flex",
+      "justify-between",
+      "gap-4",
+      "flex-wrap",
+      "font-raleway"
+    );
     displayScores.appendChild(teamBlock);
   }
   displayScores.classList.add(
@@ -186,7 +192,8 @@ ipcRenderer.on("displayVideoAndPodium", (event, teams) => {
       "flex-col",
       "justify-between",
       "items-center",
-      "gap-4"
+      "gap-4",
+      "font-raleway"
     );
     displayScores.appendChild(teamBlock);
     if (displayScores.childNodes.length === 3) break;

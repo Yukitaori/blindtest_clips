@@ -14,19 +14,23 @@
     <title>Main window</title>
   </head>
   <body class="bg-third relative">
-    <div class="flex justify-between flex-wrap gap-4 text-fourth">
-      <div
+    <div class="flex justify-between flex-wrap text-fourth">
+      <section
         id="videoside"
-        class="w-[49%] p-2 border-2 border-black border-solid"
+        class="w-full xl:w-[50%] min-w-[600px] border-2 border-black border-solid"
       >
         <div id="playlist">
-          <p class="text-2xl font-bold text-center">Liste de lecture</p>
-          <div class="flex justify-around items-end mt-5">
+          <h1
+            class="text-2xl font-bold text-center border-b-2 border-black border-solid bg-fifth text-primary"
+          >
+            Liste de lecture
+          </h1>
+          <div class="flex justify-around items-end mt-2">
             <label for="round"
               ><p>Définir la manche</p>
               <select
                 name="round"
-                class="h-8 w-40 border border-solid border-black bg-third"
+                class="h-8 w-40 border border-solid border-black bg-third p-1 rounded-2xl"
                 id="roundSelect"
               >
                 <option value="">Manche</option>
@@ -58,7 +62,7 @@
               ><p>Définir comme categorie</p>
               <select
                 name="category"
-                class="h-8 w-40 border border-solid border-black bg-third"
+                class="h-8 w-40 border border-solid border-black bg-third p-1 rounded-2xl"
                 id="categorySelect"
               >
                 <option value="">Catégorie</option>
@@ -70,7 +74,7 @@
           <div>
             <div
               id="dropzone"
-              class="min-h-[200px] h-fit border-2 border-solid border-fourth mt-5 mb-10 mx-5 rounded-xl overflow-hidden"
+              class="h-[300px] border-2 border-solid border-fourth mt-5 mb-10 mx-5 rounded-xl overflow-hidden"
             >
               <p id="playlistInstruction" class="pl-2 text-center">
                 Droppe ici les videos à lire !
@@ -94,7 +98,7 @@
             <p id="duration" class="w-[10%] text-center">00:00</p>
           </div>
         </div>
-        <div class="flex flex-wrap justify-around gap-8 w-[90%] m-auto">
+        <div class="flex flex-wrap justify-around gap-8 w-[90%] m-auto my-2">
           <ul class="flex gap-2 items-center">
             <li>
               <button
@@ -188,46 +192,50 @@
             </div>
           </div>
         </div>
-      </div>
-      <div
+      </section>
+      <section
         id="scoreside"
-        class="w-[49%] p-2 border-2 border-black border-solid"
+        class="w-full xl:w-[50%] min-w-[600px] border-2 border-black border-solid"
       >
-        <p class="text-2xl font-bold text-center">Contrôle des scores</p>
+        <h1
+          class="text-2xl font-bold text-center border-b-2 border-black border-solid bg-fifth text-primary"
+        >
+          Contrôle des scores
+        </h1>
         <div
           id="teams"
-          class="min-h-[200px] h-fit border-2 border-solid border-fourth overflow-hidden mt-10 mx-5 rounded-xl"
+          class="h-[400px] border-2 border-solid border-fourth overflow-hidden mt-2 mx-5 rounded-xl"
         >
           <p id="teamlistInstruction" class="text-center mb-2">
             Inscris ici les équipes
           </p>
           <ul
             id="teamlist"
-            class="flex flex-col max-h-[400px] overflow-y-auto gap-1 p-2 mt-2 mb-10"
+            class="flex flex-col max-h-[350px] overflow-y-auto gap-1 p-2 mt-2"
           ></ul>
         </div>
-        <div class="flex justify-between gap-1 mt-4 mx-5">
+        <div class="flex justify-between gap-1 my-2 mx-5">
           <div class="flex gap-1 mb-10 h-20">
             <button
-              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-20 w-20 p-1 hover:font-bold transition-all"
+              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
               id="sortAscAlpha"
             >
               A-Z
             </button>
             <button
-              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-20 w-20 p-1 hover:font-bold transition-all"
+              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
               id="sortDescAlpha"
             >
               Z-A
             </button>
             <button
-              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-20 w-20 p-1 hover:font-bold transition-all"
+              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
               id="sortAscNum"
             >
               1-3
             </button>
             <button
-              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-20 w-20 p-1 hover:font-bold transition-all"
+              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
               id="sortDescNum"
             >
               3-1
@@ -235,43 +243,50 @@
           </div>
           <div class="flex gap-1">
             <button
-              class="border-2 border-solid bg-yellow-300 font-bold rounded-teamSettings rounded-teamSettingsSelected border-fourth shadow-buttonShadow h-20 w-20 p-1 hover:font-bold transition-all"
+              class="border-2 border-solid bg-yellow-300 font-bold rounded-teamSettings rounded-teamSettingsSelected border-fourth shadow-buttonShadow h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
               id="videoDisplay"
             >
               Video
             </button>
             <button
-              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-20 w-20 p-1 hover:font-bold transition-all"
+              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
               id="videoScoreDisplay"
             >
               Video + Scores
             </button>
             <button
-              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-20 w-20 p-1 hover:font-bold transition-all"
+              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
               id="videoPodiumDisplay"
             >
               Podium
             </button>
           </div>
         </div>
-      </div>
-      <div
+      </section>
+      <section
         id="pictureside"
-        class="w-[49%] p-2 border-2 border-black border-solid px-5"
+        class="w-full xl:w-[50%] min-w-[600px] border-2 border-black border-solid"
       >
-        <p class="text-2xl font-bold text-center">Cartons</p>
-        <div class="p-2 flex justify-between">
-          <form id="addImageForm" class="mt-2 flex flex-col items-center gap-4">
+        <h1
+          class="text-2xl font-bold text-center border-b-2 border-black border-solid bg-fifth text-primary"
+        >
+          Cartons
+        </h1>
+        <div
+          class="min-h-[307px] flex justify-around items-center flex-wrap my-2"
+        >
+          <form id="addImageForm" class="flex flex-col items-center gap-4">
             <p class="font-bold underline">Ajoute les images à la liste :</p>
             <input
               name="image"
               type="file"
               multiple="multiple"
               id="addImageInput"
+              class="w-[120px]"
             />
             <button
               type="submit"
-              class="w-40 p-1 border-2 border-solid border-fourth shadow-buttonShadow rounded-sm transition-all hover:font-bold"
+              class="w-40 p-1 rounded-2xl border border-solid border-fourth shadow-buttonShadow transition-all hover:font-bold"
               id="addImageButton"
             >
               Ajouter les images
@@ -280,7 +295,7 @@
           <div class="mt-2 flex flex-col items-center gap-4">
             <p class="font-bold underline">Sélectionne l'image à afficher :</p>
             <select
-              class="h-8 w-40 border border-solid border-black bg-third"
+              class="h-8 w-40 border border-solid border-black bg-third p-1 rounded-2xl"
               id="imageList"
             >
               <option value="video">Video</option>
@@ -292,95 +307,36 @@
               <p class="group-hover:scale-125">🗑️</p>
             </button>
           </div>
-        </div>
-      </div>
-      <div
-        id="mediaside"
-        class="w-[49%] p-2 border-2 border-black border-solid"
-      >
-        <p class="text-2xl font-bold text-center">Media</p>
-        <div class="flex justify-around items-center">
-          <div class="flex flex-col items-center">
-            <select
-              class="h-8 w-40 border border-solid border-black bg-third"
-              id="gifList"
-            >
-              <option value="">Gifs</option>
-              <option value="./src/assets/gifs/here we go.gif">
-                C'est parti
-              </option>
-              <option value="./src/assets/gifs/what now.gif">Quoi ?</option>
-              <option value="./src/assets/gifs/cheers.gif">Santé</option>
-              <option value="./src/assets/gifs/surprised.gif">Surprise</option>
-            </select>
-            <div>
-              <div
-                id="musicPart"
-                class="h-fit border border-solid border-fourth mt-5 mx-5 p-2 rounded-xl overflow-hidden"
-              >
-                <p class="text-center font-bold underline">Musique</p>
-                <ul
-                  id="songsList"
-                  class="h-fit max-h-[150px] flex flex-col items-center gap-4 overflow-y-auto p-1 mt-2"
-                >
-                  <li class="w-full flex justify-center group">
-                    <button
-                      class="w-[50%] border border-solid border-black shadow-buttonShadow p-1 group-hover:font-bold"
-                      id="song1"
-                    >
-                      Love Boat
-                    </button>
-                  </li>
-                  <li class="w-full flex justify-center group">
-                    <button
-                      class="w-[50%] border border-solid border-black shadow-buttonShadow p-1 group-hover:font-bold"
-                      id="song2"
-                    >
-                      Rocky
-                    </button>
-                  </li>
-                  <li class="w-full flex justify-center group">
-                    <button
-                      class="w-[50%] border border-solid border-black shadow-buttonShadow p-1 group-hover:font-bold"
-                      id="song3"
-                    >
-                      Anniversaire
-                    </button>
-                  </li>
-                </ul>
-                <p class="text-center font-bold my-2" id="songTitleDisplay">
-                  Sélectionne la musique
-                </p>
-                <audio id="audioplayer" controls></audio>
-              </div>
-            </div>
-          </div>
           <div class="flex flex-col items-center gap-2">
-            <div class="flex flex-col gap-2">
-              <p class="text-center font-bold underline">
-                Horaires des manches
-              </p>
-              <label
-                >Manche 1 :
-                <input
-                  type="text"
-                  class="border border-solid border-black"
-                  id="firstRoundInput"
-              /></label>
-              <label
-                >Manche 2 :
-                <input
-                  type="text"
-                  class="border border-solid border-black"
-                  id="secondRoundInput"
-              /></label>
-              <label for="displayRounds"
-                >Afficher les manches ?
-                <input
-                  name="displayRounds"
-                  type="checkbox"
-                  id="displayRoundsInput"
-              /></label>
+            <div
+              class="flex flex-col items-center gap-2 border border-black border-solid p-1 rounded-2xl"
+            >
+              <div class="flex flex-col gap-2">
+                <p class="text-center font-bold underline">
+                  Horaires des manches
+                </p>
+                <label class="flex flex-col items-center"
+                  >Manche 1 :
+                  <input
+                    type="text"
+                    class="w-[150px] border border-solid border-black"
+                    id="firstRoundInput"
+                /></label>
+                <label class="flex flex-col items-center"
+                  >Manche 2 :
+                  <input
+                    type="text"
+                    class="w-[150px] border border-solid border-black"
+                    id="secondRoundInput"
+                /></label>
+                <label class="flex flex-col items-center" for="displayRounds"
+                  >Afficher les manches ?
+                  <input
+                    name="displayRounds"
+                    type="checkbox"
+                    id="displayRoundsInput"
+                /></label>
+              </div>
             </div>
             <button
               class="h-16 w-16 border border-fourth shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
@@ -393,7 +349,77 @@
             </button>
           </div>
         </div>
-      </div>
+      </section>
+      <section
+        id="mediaside"
+        class="w-full xl:w-[50%] min-w-[600px] border-2 border-black border-solid"
+      >
+        <h1
+          class="text-2xl font-bold text-center border-b-2 border-black border-solid bg-fifth text-primary"
+        >
+          Media
+        </h1>
+        <div class="min-h-[307px] flex justify-around items-center my-2">
+          <div class="flex flex-col items-center">
+            <div
+              id="musicPart"
+              class="h-fit border border-solid border-fourth mx-5 p-2 rounded-xl overflow-hidden"
+            >
+              <p class="text-center font-bold underline">Musique</p>
+              <ul
+                id="songsList"
+                class="h-fit max-h-[150px] flex flex-col items-center gap-4 overflow-y-auto p-1 mt-2"
+              >
+                <li class="w-full flex justify-center group">
+                  <button
+                    class="w-[50%] border border-solid border-black shadow-buttonShadow p-1 rounded-2xl group-hover:font-bold"
+                    id="song1"
+                  >
+                    Love Boat
+                  </button>
+                </li>
+                <li class="w-full flex justify-center group">
+                  <button
+                    class="w-[50%] border border-solid border-black shadow-buttonShadow p-1 rounded-2xl group-hover:font-bold"
+                    id="song2"
+                  >
+                    Rocky
+                  </button>
+                </li>
+                <li class="w-full flex justify-center group">
+                  <button
+                    class="w-[50%] border border-solid border-black shadow-buttonShadow p-1 rounded-2xl group-hover:font-bold"
+                    id="song3"
+                  >
+                    Anniversaire
+                  </button>
+                </li>
+              </ul>
+              <p class="text-center font-bold my-2" id="songTitleDisplay">
+                Sélectionne la musique
+              </p>
+              <audio id="audioplayer" controls></audio>
+            </div>
+          </div>
+          <div class="flex flex-col items-center gap-2">
+            <p class="text-center font-bold underline">
+              Sélectionne le gif à afficher :
+            </p>
+            <select
+              class="h-8 w-40 border border-solid border-black bg-third p-1 rounded-2xl"
+              id="gifList"
+            >
+              <option value="">Gifs</option>
+              <option value="./src/assets/gifs/here we go.gif">
+                C'est parti
+              </option>
+              <option value="./src/assets/gifs/what now.gif">Quoi ?</option>
+              <option value="./src/assets/gifs/cheers.gif">Santé</option>
+              <option value="./src/assets/gifs/surprised.gif">Surprise</option>
+            </select>
+          </div>
+        </div>
+      </section>
     </div>
   </body>
   <script src="./mainRenderer.js"></script>
