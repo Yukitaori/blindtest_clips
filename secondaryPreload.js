@@ -259,15 +259,18 @@ ipcRenderer.on("displayGif", (event, path) => {
     gifToDisplay.classList.add(
       "bg-black",
       "absolute",
-      "w-fit",
       "h-fit",
-      "max-w-[50%]",
-      "max-h-[50%]",
+      "w-[30%]",
+      "max-h-[30%]",
       "object-contain",
       "left-0",
       "bottom-0",
       "animate-left-come",
-      "z-20"
+      "z-20",
+      "border-t-4",
+      "border-r-4",
+      "border-primary",
+      "border-solid"
     );
     displayScreen.appendChild(gifToDisplay);
   }

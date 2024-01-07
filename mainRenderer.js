@@ -45,12 +45,23 @@ let displayInfo = false;
 let displayRoundsState = { first: null, second: null, isDisplay: false };
 // La songsLibrary contient les liens et infos de chaque musique jouable dans l'audioplayer
 let songsLibrary = [
-  { id: "song1", title: "Love Boat", src: "./src/assets/music/Love Boat.mp3" },
-  { id: "song2", title: "Rocky", src: "./src/assets/music/Rocky.mp3" },
+  {
+    id: "song1",
+    title: "Love Boat",
+    src: "./src/assets/music/Love Boat.mp3",
+    start: 0,
+  },
+  {
+    id: "song2",
+    title: "Rocky - Win",
+    src: "./src/assets/music/Rocky.mp3",
+    start: 90,
+  },
   {
     id: "song3",
     title: "Anniversaire",
     src: "./src/assets/music/Joyeux Anniversaire.mp3",
+    start: 9.8,
   },
 ];
 
@@ -226,8 +237,11 @@ const addListenersToGhostTrack = (ghostTrack, type, file) => {
         }
       } else {
         Object.entries(e.dataTransfer.files).forEach((element) => {
-          playlist.splice(playlist.indexOf(file) + 1, 0, element[1]);
-          selectedTracks.push(element[1]);
+          let elementCopy = element[1];
+          elementCopy.round = 1;
+          elementCopy.category = false;
+          playlist.splice(playlist.indexOf(file), 0, elementCopy);
+          selectedTracks.push(elementCopy);
         });
       }
       tracklist.removeChild(ghostTrack);
@@ -249,8 +263,11 @@ const addListenersToGhostTrack = (ghostTrack, type, file) => {
         }
       } else {
         Object.entries(e.dataTransfer.files).forEach((element) => {
-          playlist.splice(playlist.indexOf(file) + 1, 0, element[1]);
-          selectedTracks.push(element[1]);
+          let elementCopy = element[1];
+          elementCopy.round = 1;
+          elementCopy.category = false;
+          playlist.splice(playlist.indexOf(file) + 1, 0, elementCopy);
+          selectedTracks.push(elementCopy);
         });
       }
       tracklist.removeChild(ghostTrack);
@@ -340,9 +357,9 @@ const createTrackList = () => {
     // Gestion des appuis sur les touches les raccourcis
     document.addEventListener("keydown", (e) => {
       if (!textFocus) {
-        e.preventDefault();
         // Lors de l'appui sur Suppr, les pistes sélectionnées (selectedTracks) sont supprimées
         if (e.key === "Delete" && selectedTracks.includes(file)) {
+          e.preventDefault();
           playlist.splice(playlist.indexOf(file), selectedTracks.length);
           selectedTracks = [];
           createTrackList();
@@ -353,6 +370,7 @@ const createTrackList = () => {
           selectedTracks.length === 1 &&
           selectedTracks.includes(file)
         ) {
+          e.preventDefault();
           selectedTracks = [];
           window.player.playFile(file);
           loadedTrack = file;
@@ -364,6 +382,7 @@ const createTrackList = () => {
           loadedTrack &&
           (keyDownState[e.key] === false || !keyDownState[e.key])
         ) {
+          e.preventDefault();
           if (loadedTrack.paused) {
             window.player.play();
             loadedTrack.paused = false;
@@ -397,6 +416,7 @@ const createTrackList = () => {
           e.key === "ArrowUp" &&
           (keyDownState[e.key] === false || !keyDownState[e.key])
         ) {
+          e.preventDefault();
           volumeControl.value = Number(volumeControl.value) + 0.25;
           window.player.changeVolume(volumeControl.value);
           window.player.displaySlidingBackgroundColor(
@@ -410,6 +430,7 @@ const createTrackList = () => {
           e.key === "ArrowDown" &&
           (keyDownState[e.key] === false || !keyDownState[e.key])
         ) {
+          e.preventDefault();
           volumeControl.value = Number(volumeControl.value) - 0.25;
           window.player.changeVolume(volumeControl.value);
           window.player.displaySlidingBackgroundColor(
@@ -423,6 +444,7 @@ const createTrackList = () => {
           e.key === "ArrowLeft" &&
           (keyDownState[e.key] === false || !keyDownState[e.key])
         ) {
+          e.preventDefault();
           window.player.previousTrack();
           if (parseInt(loadedTrack.id) - 1 >= 0) {
             selectedTracks = [];
@@ -435,6 +457,7 @@ const createTrackList = () => {
           e.key === "ArrowRight" &&
           (keyDownState[e.key] === false || !keyDownState[e.key])
         ) {
+          e.preventDefault();
           window.player.nextTrack();
           if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
             selectedTracks = [];
@@ -1082,6 +1105,7 @@ for (let song of songsLibrary) {
   let trackbutton = document.getElementById(song.id);
   trackbutton.addEventListener("click", () => {
     audioplayer.src = song.src;
+    audioplayer.currentTime = song.start;
     songTitleDisplay.innerText = song.title;
   });
 }
