@@ -1,3 +1,30 @@
+//////////////////////// GENERAL ////////////////////////
+
+// le keyDownState enregistre l'état appuyé ou non des différentes touches, afin d'éviter le repeat lors du keydown
+const keyDownState = {};
+
+// Animation des boutons sauf les tracks de la tracklist
+function animateButtons() {
+  const buttons = document.getElementsByTagName("button");
+  for (let button of buttons) {
+    if (!button.classList.contains("track")) {
+      button.addEventListener("mousedown", () => {
+        button.classList.remove("shadow-buttonShadow");
+        button.classList.add("translate-x-[3px]", "translate-y-[3px]");
+      });
+      button.addEventListener("mouseup", () => {
+        button.classList.add("shadow-buttonShadow");
+        button.classList.remove("translate-x-[3px]", "translate-y-[3px]");
+      });
+      button.addEventListener("mouseleave", () => {
+        button.classList.add("shadow-buttonShadow");
+        button.classList.remove("translate-x-[3px]", "translate-y-[3px]");
+      });
+    }
+  }
+}
+animateButtons();
+
 //////////////////////// PARTIE PLAYLIST ////////////////////////
 
 // Les selectedTracks sont les tracks sélectionnées dans la liste (pas celle qui est chargée dans le player)
@@ -282,6 +309,7 @@ const createTrackList = () => {
       selectedTracks = [];
       window.player.playFile(file, index);
       loadedTrack = file;
+      loadedTrack.paused = false;
       createTrackList();
     });
 
@@ -318,9 +346,9 @@ const createTrackList = () => {
           selectedTracks = [];
           createTrackList();
         }
-        // Lors de l'appui sur la barre espace, si une seule track est sélectionnée, elle est chargée et lancée
+        // Lors de l'appui sur la Entrée, si une seule track est sélectionnée, elle est chargée et lancée
         if (
-          e.key === "Enter" &&
+          e.key == "Enter" &&
           selectedTracks.length === 1 &&
           selectedTracks.includes(file)
         ) {
@@ -329,10 +357,35 @@ const createTrackList = () => {
           loadedTrack = file;
           createTrackList();
         }
-        if (e.key === " " && loadedTrack) {
-          // TODO Ajouter gestion du play/pause avec la touche Espace
+        // Lors de l'appui sur la barre espace, la pause est activée si la video est en cours de lecture, ou celle-ci reprend si elle est en pause
+        if (
+          e.key === " " &&
+          loadedTrack &&
+          (keyDownState[e.key] === false || !keyDownState[e.key])
+        ) {
+          e.preventDefault();
+
+          if (loadedTrack.paused) {
+            window.player.play();
+            loadedTrack.paused = false;
+          } else {
+            window.player.pause();
+            loadedTrack.paused = true;
+          }
+        }
+        // L'appui sur la touche M active/désactive le mute sur la video
+        if (
+          e.key === "m" &&
+          (keyDownState[e.key] === false || !keyDownState[e.key])
+        ) {
+          window.player.mute();
         }
       }
+      keyDownState[e.key] = true;
+    });
+
+    document.addEventListener("keyup", (e) => {
+      keyDownState[e.key] = false;
     });
 
     // Si une track est sélectionnée, elle devient draggable
@@ -948,11 +1001,9 @@ displayInfoButton.addEventListener("click", () => {
 // Les inputs ci-dessous permettent d'indiquer une heure de début pour chaque manche
 firstRoundInput.addEventListener("change", () => {
   displayRoundsState.first = firstRoundInput.value;
-  console.log(displayRoundsState);
 });
 secondRoundInput.addEventListener("change", () => {
   displayRoundsState.second = secondRoundInput.value;
-  console.log(displayRoundsState);
 });
 
 // Lorsque la displayRoundsInput est cochée, les informations de manches s'affichent sur le carton d'informations
@@ -972,27 +1023,3 @@ for (let song of songsLibrary) {
     songTitleDisplay.innerText = song.title;
   });
 }
-
-//////////////////////// GENERAL ////////////////////////
-
-// Animation des boutons sauf les tracks de la tracklist
-function animateButtons() {
-  const buttons = document.getElementsByTagName("button");
-  for (let button of buttons) {
-    if (!button.classList.contains("track")) {
-      button.addEventListener("mousedown", () => {
-        button.classList.remove("shadow-buttonShadow");
-        button.classList.add("translate-x-[3px]", "translate-y-[3px]");
-      });
-      button.addEventListener("mouseup", () => {
-        button.classList.add("shadow-buttonShadow");
-        button.classList.remove("translate-x-[3px]", "translate-y-[3px]");
-      });
-      button.addEventListener("mouseleave", () => {
-        button.classList.add("shadow-buttonShadow");
-        button.classList.remove("translate-x-[3px]", "translate-y-[3px]");
-      });
-    }
-  }
-}
-animateButtons();
