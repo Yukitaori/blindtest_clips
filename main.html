@@ -211,7 +211,7 @@
           </p>
           <ul
             id="teamlist"
-            class="flex flex-col max-h-[300px] overflow-y-auto gap-1 p-2 mt-2 mb-10"
+            class="flex flex-col max-h-[350px] overflow-y-auto gap-1 p-2 mt-2"
           ></ul>
         </div>
         <div class="flex justify-between gap-1 my-2 mx-5">
@@ -272,7 +272,9 @@
         >
           Cartons
         </h1>
-        <div class="flex justify-around items-center my-2">
+        <div
+          class="min-h-[307px] flex justify-around items-center flex-wrap my-2"
+        >
           <form id="addImageForm" class="flex flex-col items-center gap-4">
             <p class="font-bold underline">Ajoute les images à la liste :</p>
             <input
@@ -280,6 +282,7 @@
               type="file"
               multiple="multiple"
               id="addImageInput"
+              class="w-[120px]"
             />
             <button
               type="submit"
@@ -304,6 +307,47 @@
               <p class="group-hover:scale-125">🗑️</p>
             </button>
           </div>
+          <div class="flex flex-col items-center gap-2">
+            <div
+              class="flex flex-col items-center gap-2 border border-black border-solid p-1 rounded-2xl"
+            >
+              <div class="flex flex-col gap-2">
+                <p class="text-center font-bold underline">
+                  Horaires des manches
+                </p>
+                <label class="flex flex-col items-center"
+                  >Manche 1 :
+                  <input
+                    type="text"
+                    class="w-[150px] border border-solid border-black"
+                    id="firstRoundInput"
+                /></label>
+                <label class="flex flex-col items-center"
+                  >Manche 2 :
+                  <input
+                    type="text"
+                    class="w-[150px] border border-solid border-black"
+                    id="secondRoundInput"
+                /></label>
+                <label class="flex flex-col items-center" for="displayRounds"
+                  >Afficher les manches ?
+                  <input
+                    name="displayRounds"
+                    type="checkbox"
+                    id="displayRoundsInput"
+                /></label>
+              </div>
+            </div>
+            <button
+              class="h-16 w-16 border border-fourth shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
+              id="displayInfoButton"
+            >
+              <img
+                src="./src/assets/images/DGC.png"
+                class="w-[70%] group-hover:scale-125"
+              />
+            </button>
+          </div>
         </div>
       </section>
       <section
@@ -315,7 +359,7 @@
         >
           Media
         </h1>
-        <div class="flex justify-around items-center my-2">
+        <div class="min-h-[307px] flex justify-around items-center my-2">
           <div class="flex flex-col items-center">
             <div
               id="musicPart"
@@ -358,6 +402,9 @@
             </div>
           </div>
           <div class="flex flex-col items-center gap-2">
+            <p class="text-center font-bold underline">
+              Sélectionne le gif à afficher :
+            </p>
             <select
               class="h-8 w-40 border border-solid border-black bg-third p-1 rounded-2xl"
               id="gifList"
@@ -370,45 +417,6 @@
               <option value="./src/assets/gifs/cheers.gif">Santé</option>
               <option value="./src/assets/gifs/surprised.gif">Surprise</option>
             </select>
-            <div
-              class="flex flex-col items-center gap-2 border border-black border-solid p-1 rounded-2xl"
-            >
-              <div class="flex flex-col gap-2">
-                <p class="text-center font-bold underline">
-                  Horaires des manches
-                </p>
-                <label class="flex flex-col items-center"
-                  >Manche 1 :
-                  <input
-                    type="text"
-                    class="border border-solid border-black"
-                    id="firstRoundInput"
-                /></label>
-                <label class="flex flex-col items-center"
-                  >Manche 2 :
-                  <input
-                    type="text"
-                    class="border border-solid border-black"
-                    id="secondRoundInput"
-                /></label>
-                <label class="flex flex-col items-center" for="displayRounds"
-                  >Afficher les manches ?
-                  <input
-                    name="displayRounds"
-                    type="checkbox"
-                    id="displayRoundsInput"
-                /></label>
-              </div>
-            </div>
-            <button
-              class="h-16 w-16 border border-fourth shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
-              id="displayInfoButton"
-            >
-              <img
-                src="./src/assets/images/DGC.png"
-                class="w-[70%] group-hover:scale-125"
-              />
-            </button>
           </div>
         </div>
       </section>

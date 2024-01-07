@@ -18,9 +18,13 @@ let displayInfo = false;
 let displayRoundsState = { first: null, second: null, isDisplay: false };
 // La songsLibrary contient les liens et infos de chaque musique jouable dans l'audioplayer
 let songsLibrary = [
-  { id: "song1", title: "Love Boat", src: "./src/assets/music/" },
-  { id: "song2", title: "Rocky", src: "./src/assets/music/" },
-  { id: "song3", title: "Anniversaire", src: "./src/assets/music/" },
+  { id: "song1", title: "Love Boat", src: "./src/assets/music/Love Boat.mp3" },
+  { id: "song2", title: "Rocky", src: "./src/assets/music/Rocky.mp3" },
+  {
+    id: "song3",
+    title: "Anniversaire",
+    src: "./src/assets/music/Joyeux Anniversaire.mp3",
+  },
 ];
 
 const roundSelect = document.getElementById("roundSelect");
@@ -316,7 +320,7 @@ const createTrackList = () => {
         }
         // Lors de l'appui sur la barre espace, si une seule track est sélectionnée, elle est chargée et lancée
         if (
-          e.key === " " &&
+          e.key === "Enter" &&
           selectedTracks.length === 1 &&
           selectedTracks.includes(file)
         ) {
@@ -324,6 +328,9 @@ const createTrackList = () => {
           window.player.playFile(file);
           loadedTrack = file;
           createTrackList();
+        }
+        if (e.key === " " && loadedTrack) {
+          // TODO Ajouter gestion du play/pause avec la touche Espace
         }
       }
     });
@@ -459,6 +466,10 @@ const createTrackList = () => {
     value.trackNumber = i + 1;
   }
   window.player.getPlaylist(playlist);
+  if (playlist.length === 0) {
+    dropzone.innerHTML =
+      '<p id="playlistInstruction" class="pl-2 text-center">Droppe ici les videos à lire !</p><ul id="tracklist" class="max-h-[400px] overflow-y-auto"></ul>';
+  }
 };
 
 // Gestion du drag'n'drop sur la zone d'affichage des pistes video
@@ -700,7 +711,7 @@ const addTeamLine = (teamToAdd) => {
     "h-10",
     "px-4"
   );
-  teamScore.classList.add("flex", "gap-4", "h-10");
+  teamScore.classList.add("flex", "gap-2", "h-10", "w-[180px]");
   teamScoreDecButton.classList.add(
     "h-10",
     "w-10",
@@ -741,7 +752,13 @@ const addTeamLine = (teamToAdd) => {
     "rounded-3xl",
     "group"
   );
-  teamName.classList.add("h-fit", "font-semibold", "text-xl");
+  teamName.classList.add(
+    "h-fit",
+    "font-semibold",
+    "text-xl",
+    "w-[320px]",
+    "overflow-auto"
+  );
   teamName.innerText = teamToAdd.name;
   const teamDeletButtonImage = document.createElement("p");
   teamDeletButtonImage.innerText = "🗑️";
