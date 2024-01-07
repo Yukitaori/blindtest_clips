@@ -83,6 +83,7 @@ ipcRenderer.on("changeTime", (event, time) => {
 ipcRenderer.on("changeVolume", (event, volume) => {
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.volume = volume;
+  console.log(videoPlayer.volume);
 });
 
 // Ecoute du message "displayVideoOnly" et affichage de la video sans les scores dans la secondaryWindow

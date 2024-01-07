@@ -337,9 +337,10 @@ const createTrackList = () => {
       createTrackList();
     });
 
-    // Gestion des appuis sur les touches pour édition de la playlist
+    // Gestion des appuis sur les touches les raccourcis
     document.addEventListener("keydown", (e) => {
       if (!textFocus) {
+        e.preventDefault();
         // Lors de l'appui sur Suppr, les pistes sélectionnées (selectedTracks) sont supprimées
         if (e.key === "Delete" && selectedTracks.includes(file)) {
           playlist.splice(playlist.indexOf(file), selectedTracks.length);
@@ -363,8 +364,6 @@ const createTrackList = () => {
           loadedTrack &&
           (keyDownState[e.key] === false || !keyDownState[e.key])
         ) {
-          e.preventDefault();
-
           if (loadedTrack.paused) {
             window.player.play();
             loadedTrack.paused = false;
@@ -379,6 +378,65 @@ const createTrackList = () => {
           (keyDownState[e.key] === false || !keyDownState[e.key])
         ) {
           window.player.mute();
+        }
+        // L'appui sur la touche M active/désactive le mute sur la video
+        if (
+          e.key === "v" &&
+          (keyDownState[e.key] === false || !keyDownState[e.key])
+        ) {
+          volumeControl.value = 1;
+          window.player.changeVolume(volumeControl.value);
+          window.player.displaySlidingBackgroundColor(
+            volumeControl,
+            "fifth",
+            "third"
+          );
+        }
+        if (
+          e.key === "ArrowUp" &&
+          (keyDownState[e.key] === false || !keyDownState[e.key])
+        ) {
+          volumeControl.value = Number(volumeControl.value) + 0.25;
+          window.player.changeVolume(volumeControl.value);
+          window.player.displaySlidingBackgroundColor(
+            volumeControl,
+            "fifth",
+            "third"
+          );
+        }
+        if (
+          e.key === "ArrowDown" &&
+          (keyDownState[e.key] === false || !keyDownState[e.key])
+        ) {
+          volumeControl.value = Number(volumeControl.value) - 0.25;
+          window.player.changeVolume(volumeControl.value);
+          window.player.displaySlidingBackgroundColor(
+            volumeControl,
+            "fifth",
+            "third"
+          );
+        }
+        if (
+          e.key === "ArrowLeft" &&
+          (keyDownState[e.key] === false || !keyDownState[e.key])
+        ) {
+          window.player.previousTrack();
+          if (parseInt(loadedTrack.id) - 1 >= 0) {
+            selectedTracks = [];
+            loadedTrack = playlist[parseInt(loadedTrack.id) - 1];
+          }
+          createTrackList();
+        }
+        if (
+          e.key === "ArrowRight" &&
+          (keyDownState[e.key] === false || !keyDownState[e.key])
+        ) {
+          window.player.nextTrack();
+          if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
+            selectedTracks = [];
+            loadedTrack = playlist[parseInt(loadedTrack.id) + 1];
+          }
+          createTrackList();
         }
       }
       keyDownState[e.key] = true;
