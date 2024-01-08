@@ -32,7 +32,7 @@ let selectedTracks = [];
 // La loadedTrack est la track chargée dans le player
 let loadedTrack;
 // La playlist permet  l'enregistrement des tracks dans leur oredre de diffusion
-const playlist = [];
+const playlist = JSON.parse(window.localStorage.getItem("playlist")) || [];
 // Les draggedTracks sont les tracks qui sont dragguées lors du drag'n'drop
 let draggedTracks = [];
 // Le textFocus sert à vérifier si une input de type texte est focus lorsqu'on appuie sur des touches qui sont des raccourcis (Suppr, Espace...)
@@ -70,6 +70,7 @@ const showTrackNumberButton = document.getElementById("showTrackNumberButton");
 const showCompletePlaylistButton = document.getElementById(
   "showCompletePlaylistButton"
 );
+const clearTrackListButton = document.getElementById("clearTrackListButton");
 const categorySelect = document.getElementById("categorySelect");
 const tracklist = document.getElementById("tracklist");
 const dropzone = document.getElementById("dropzone");
@@ -204,11 +205,17 @@ showCompletePlaylistButton.addEventListener("click", () => {
     trackToDisplay.innerText = displayTrackNumber
       ? `${track.round?.toString().padStart(2, "0")} - ${track.trackNumber
           .toString()
-          .padStart(2, "0")} - ${track.name}`
-      : `${track.round?.toString().padStart(2, "0")} - ${track.name}`;
+          .padStart(2, "0")} - ${track.filename}`
+      : `${track.round?.toString().padStart(2, "0")} - ${track.filename}`;
     completePlaylist.appendChild(trackToDisplay);
   }
   modal.appendChild(completePlaylist);
+});
+
+clearTrackListButton.addEventListener("click", () => {
+  playlist.splice(0);
+  window.localStorage.setItem("playlist", JSON.stringify(playlist));
+  createTrackList();
 });
 
 // Cette fonction récupère les positions et hauteur des éléments de la playlist pour la localisation du drop
@@ -240,6 +247,8 @@ const addListenersToGhostTrack = (ghostTrack, type, file) => {
           let elementCopy = element[1];
           elementCopy.round = 1;
           elementCopy.category = false;
+          elementCopy.pathway = elementCopy.path.slice(0);
+          elementCopy.filename = elementCopy.name.slice(0);
           playlist.splice(playlist.indexOf(file), 0, elementCopy);
           selectedTracks.push(elementCopy);
         });
@@ -266,6 +275,8 @@ const addListenersToGhostTrack = (ghostTrack, type, file) => {
           let elementCopy = element[1];
           elementCopy.round = 1;
           elementCopy.category = false;
+          elementCopy.pathway = elementCopy.path.slice(0);
+          elementCopy.filename = elementCopy.name.slice(0);
           playlist.splice(playlist.indexOf(file) + 1, 0, elementCopy);
           selectedTracks.push(elementCopy);
         });
@@ -278,6 +289,7 @@ const addListenersToGhostTrack = (ghostTrack, type, file) => {
 
 // Cette fonction permet la génération de la Tracklist au sein de la dropzone
 const createTrackList = () => {
+  console.log(playlist);
   selectedTracks.sort((a, b) => a.id - b.id);
   // la tracklist précédente est effacée
   tracklist.innerHTML = "";
@@ -290,6 +302,7 @@ const createTrackList = () => {
 
   // Pour chaque track de la playlist, une entrée est générée dans la liste
   playlist.forEach((file) => {
+    console.log(file);
     file.id = index;
     file.trackNumber = index + 1;
     let track = document.createElement("li");
@@ -567,6 +580,8 @@ const createTrackList = () => {
             let elementCopy = element[1];
             elementCopy.round = 1;
             elementCopy.category = false;
+            elementCopy.pathway = elementCopy.path.slice(0);
+            elementCopy.filename = elementCopy.name.slice(0);
             playlist.splice(playlist.indexOf(file), 0, elementCopy);
             selectedTracks.push(elementCopy);
           });
@@ -575,6 +590,8 @@ const createTrackList = () => {
             let elementCopy = element[1];
             elementCopy.round = 1;
             elementCopy.category = false;
+            elementCopy.pathway = elementCopy.path.slice(0);
+            elementCopy.filename = elementCopy.name.slice(0);
             playlist.splice(playlist.indexOf(file) + 1, 0, elementCopy);
             selectedTracks.push(elementCopy);
           });
@@ -594,22 +611,22 @@ const createTrackList = () => {
     trackbutton.innerText = displayTrackNumber
       ? `${file.round?.toString().padStart(2, "0")} - ${file.trackNumber
           .toString()
-          .padStart(2, "0")} - ${file.name}`
-      : `${file.round?.toString().padStart(2, "0")} - ${file.name}`;
+          .padStart(2, "0")} - ${file.filename}`
+      : `${file.round?.toString().padStart(2, "0")} - ${file.filename}`;
     track.appendChild(trackbutton);
     tracklist.appendChild(track);
+    dropzone.appendChild(tracklist);
+    console.log(tracklist);
     index++;
   });
-
-  for (const [i, value] of playlist.entries()) {
-    value.trackNumber = i + 1;
-  }
   window.player.getPlaylist(playlist);
   if (playlist.length === 0) {
     dropzone.innerHTML =
-      '<p id="playlistInstruction" class="pl-2 text-center">Droppe ici les videos à lire !</p><ul id="tracklist" class="max-h-[400px] overflow-y-auto"></ul>';
+      '<p id="playlistInstruction" class="pl-2 text-center">Droppe ici les videos à lire !</p><ul id="tracklist" class="max-h-[200px] 2xl:max-h-[300px] overflow-y-auto pb-2"></ul>';
   }
+  window.localStorage.setItem("playlist", JSON.stringify(playlist));
 };
+createTrackList();
 
 // Gestion du drag'n'drop sur la zone d'affichage des pistes video
 dropzone.addEventListener("drop", (e) => {
@@ -622,12 +639,14 @@ dropzone.addEventListener("drop", (e) => {
         let elementCopy = element[1];
         elementCopy.round = 1;
         elementCopy.category = false;
-        playlist.splice(playlist.indexOf(element), 0, elementCopy);
+        elementCopy.pathway = elementCopy.path.slice(0);
+        elementCopy.filename = elementCopy.name.slice(0);
+        playlist.splice(playlist.length, 0, elementCopy);
         selectedTracks.push(elementCopy);
       }
     });
-    createTrackList();
   }
+  createTrackList();
 });
 
 // Si on drag des pistes au-dessus de la dropzone, le texte d'information est supprimé au drop des premières pistes
