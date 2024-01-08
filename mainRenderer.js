@@ -212,6 +212,29 @@ showCompletePlaylistButton.addEventListener("click", () => {
   modal.appendChild(completePlaylist);
 });
 
+function scrollParentToChild(parent, child) {
+  var parentRect = parent.getBoundingClientRect();
+  var parentViewableArea = {
+    height: parent.clientHeight,
+    width: parent.clientWidth,
+  };
+
+  var childRect = child.getBoundingClientRect();
+  var isViewable =
+    childRect.top >= parentRect.top &&
+    childRect.bottom <= parentRect.top + parentViewableArea.height;
+
+  if (!isViewable) {
+    const scrollTop = childRect.top - parentRect.top;
+    const scrollBot = childRect.bottom - parentRect.bottom;
+    if (Math.abs(scrollTop) < Math.abs(scrollBot)) {
+      parent.scrollTop += scrollTop;
+    } else {
+      parent.scrollTop += scrollBot;
+    }
+  }
+}
+
 clearTrackListButton.addEventListener("click", () => {
   playlist.splice(0);
   window.localStorage.setItem("playlist", JSON.stringify(playlist));
@@ -289,8 +312,7 @@ const addListenersToGhostTrack = (ghostTrack, type, file) => {
 
 // Cette fonction permet la génération de la Tracklist au sein de la dropzone
 const createTrackList = () => {
-  console.log(playlist);
-  selectedTracks.sort((a, b) => a.id - b.id);
+  // selectedTracks.sort((a, b) => a.id - b.id);
   // la tracklist précédente est effacée
   tracklist.innerHTML = "";
   let index = 0;
@@ -302,7 +324,6 @@ const createTrackList = () => {
 
   // Pour chaque track de la playlist, une entrée est générée dans la liste
   playlist.forEach((file) => {
-    console.log(file);
     file.id = index;
     file.trackNumber = index + 1;
     let track = document.createElement("li");
@@ -348,18 +369,27 @@ const createTrackList = () => {
       // Si shift + clic : l'ensemble de tracks entre la première selectedTrack et la track cliquée deviennent les selectedTracks
       // TODO : réfléchir à quelle selectedTrack soit être le point de départ si plusieurs sont selectionnées
       if (e.shiftKey) {
-        let newSelectedTracks = [];
+        let newSelectedTracks = [...selectedTracks];
         for (
-          let i = Math.min(selectedTracks[0]?.id, file.id);
-          i <= Math.max(selectedTracks[0]?.id, file.id);
+          let i = Math.min(
+            selectedTracks[selectedTracks.length - 1]?.id,
+            file.id
+          );
+          i <= Math.max(selectedTracks[selectedTracks.length - 1]?.id, file.id);
           i++
         ) {
-          newSelectedTracks.push(playlist[i]);
+          if (!newSelectedTracks.includes(playlist[i])) {
+            newSelectedTracks.push(playlist[i]);
+          }
         }
         selectedTracks = newSelectedTracks;
       } else if (e.ctrlKey) {
         // Si control + clic : ajout de la track cliquée aux selectedTracks
-        selectedTracks.push(file);
+        if (!selectedTracks.includes(file)) {
+          selectedTracks.push(file);
+        } else {
+          selectedTracks.splice(selectedTracks.indexOf(file), 1);
+        }
       } else {
         // CLic simple = sélection unique
         selectedTracks = [file];
@@ -491,6 +521,9 @@ const createTrackList = () => {
     // Si elle est draggée, elle est inclue dans les draggedTracks
     if (selectedTracks.includes(file)) {
       track.setAttribute("draggable", "true");
+      if (file.id === selectedTracks[selectedTracks.length - 1].id) {
+        track.setAttribute("id", "anchor");
+      }
       track.addEventListener("drag", () => {
         selectedTracks.sort((a, b) => b.id - a.id);
         draggedTracks = selectedTracks.slice(0);
@@ -616,7 +649,6 @@ const createTrackList = () => {
     track.appendChild(trackbutton);
     tracklist.appendChild(track);
     dropzone.appendChild(tracklist);
-    console.log(tracklist);
     index++;
   });
   window.player.getPlaylist(playlist);
@@ -625,6 +657,8 @@ const createTrackList = () => {
       '<p id="playlistInstruction" class="pl-2 text-center">Droppe ici les videos à lire !</p><ul id="tracklist" class="max-h-[200px] 2xl:max-h-[300px] overflow-y-auto pb-2"></ul>';
   }
   window.localStorage.setItem("playlist", JSON.stringify(playlist));
+  if (selectedTracks.length > 0)
+    scrollParentToChild(tracklist, document.getElementById("anchor"));
 };
 createTrackList();
 
@@ -1089,7 +1123,6 @@ addImageForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const addImageInput = document.getElementById("addImageInput");
   Object.values(addImageInput.files).forEach((image) => {
-    console.log(image);
     if (image.type.includes("image")) {
       let imageOption = document.createElement("option");
       let existingOption = document.getElementById(image.name);
