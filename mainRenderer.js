@@ -844,15 +844,15 @@ const addTeamLine = (teamToAdd) => {
   teamLine.classList.add(
     "flex",
     "justify-between",
-    "items-center",
+    "items-start",
     "gap-1",
-    "h-10",
+    "h-fit",
     "px-4"
   );
-  teamScore.classList.add("flex", "gap-2", "h-10", "w-[180px]");
+  teamScore.classList.add("flex", "gap-2", "h-8", "w-[180px]");
   teamScoreDecButton.classList.add(
-    "h-10",
-    "w-10",
+    "h-8",
+    "w-8",
     "p-1",
     "border",
     "border-black",
@@ -862,8 +862,8 @@ const addTeamLine = (teamToAdd) => {
     "hover:scale-110"
   );
   teamScoreIncButton.classList.add(
-    "h-10",
-    "w-10",
+    "h-8",
+    "w-8",
     "p-1",
     "border",
     "border-black",
@@ -873,16 +873,18 @@ const addTeamLine = (teamToAdd) => {
     "hover:scale-110"
   );
   teamScoreDisplay.classList.add(
-    "h-10",
-    "w-10",
-    "p-1",
+    "h-8",
+    "w-8",
     "text-center",
     "text-2xl",
-    "font-bold"
+    "font-bold",
+    "flex",
+    "items-center",
+    "justify-center"
   );
   teamDeleteButton.classList.add(
-    "h-10",
-    "w-10",
+    "h-8",
+    "w-8",
     "border",
     "border-solid",
     "border-black",
@@ -895,7 +897,10 @@ const addTeamLine = (teamToAdd) => {
     "font-semibold",
     "text-xl",
     "w-[320px]",
-    "overflow-auto"
+    "2xl:w-[500px]",
+    "line-clamp-1",
+    "hover:line-clamp-none",
+    "hover:overflow-auto"
   );
   teamName.innerText = teamToAdd.name;
   const teamDeletButtonImage = document.createElement("p");

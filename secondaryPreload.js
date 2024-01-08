@@ -101,6 +101,17 @@ ipcRenderer.on("displayVideoAndScores", (event, teams) => {
   let videoPlayer = document.getElementById("videoplayer");
   let displayScores = document.createElement("div");
   let nodeToRemove = document.getElementById("displayscores");
+  let scoreTitle = document.createElement("h1");
+  scoreTitle.innerText = "Le point points";
+  scoreTitle.classList.add(
+    "text-center",
+    "mb-8",
+    "text-4xl",
+    "text-primary",
+    "font-bold",
+    "underline"
+  );
+  displayScores.appendChild(scoreTitle);
   if (nodeToRemove) displayScreen.removeChild(nodeToRemove);
   displayScores.setAttribute("id", "displayscores");
   for (let team of teams) {
@@ -111,28 +122,41 @@ ipcRenderer.on("displayVideoAndScores", (event, teams) => {
     teamScore.innerText = team.score;
     teamBlock.appendChild(teamName);
     teamBlock.appendChild(teamScore);
-    teamName.classList.add("font-bold", "text-2xl");
+    teamName.classList.add(
+      "font-bold",
+      "text-2xl",
+      "2xl:text-4xl",
+      "break-normal",
+      "w-[80%]",
+      "line-clamp-1"
+    );
     teamScore.classList.add(
       "font-bold",
       "text-2xl",
+      "2xl:text-4xl",
       "opacity-0",
-      "animate-fadein"
+      "animate-fadein",
+      "text-primary"
     );
     teamBlock.classList.add(
       "flex",
       "justify-between",
       "gap-4",
       "flex-wrap",
-      "font-raleway"
+      "overflow-hidden",
+      "w-full",
+      "border-b-2",
+      "border-solid",
+      "border-primary"
     );
     displayScores.appendChild(teamBlock);
   }
   displayScores.classList.add(
     "h-full",
     "bg-transparentDisplay",
-    "border-b-4",
+    "border-l-4",
     "border-solid",
-    "border-black",
+    "border-primary",
     "text-white",
     "z-20",
     "absolute",
@@ -142,7 +166,9 @@ ipcRenderer.on("displayVideoAndScores", (event, teams) => {
     "flex-col",
     "gap-2",
     "animate-right-come",
-    "p-4"
+    "p-4",
+    "font-raleway",
+    "w-[30%]"
   );
   displayScreen.insertBefore(displayScores, videoPlayer);
 });
@@ -171,16 +197,28 @@ ipcRenderer.on("displayVideoAndPodium", (event, teams) => {
     teamBlock.appendChild(teamName);
     teamBlock.appendChild(teamTrophy);
     teamBlock.appendChild(teamScore);
-    teamName.classList.add("font-bold", "text-2xl");
+    teamName.classList.add(
+      "font-bold",
+      "text-2xl",
+      "2xl:text-4xl",
+      "text-center",
+      "break-normal",
+      "w-full",
+      "line-clamp-2"
+    );
     teamTrophy.classList.add(
       "opacity-0",
       `animate-fadein${i.toString()}`,
-      "w-[50%]"
+      "w-fit",
+      "max-w-[50%]",
+      "h-fit",
+      "max-h-[30%]"
     );
     teamScore.classList.add(
       "font-bold",
       "text-4xl",
-      "2xl:text-9xl",
+      "text-primary",
+      "2xl:text-6xl",
       "opacity-0",
       i === 0
         ? "animate-fadein0"
@@ -194,7 +232,11 @@ ipcRenderer.on("displayVideoAndPodium", (event, teams) => {
       "justify-between",
       "items-center",
       "gap-4",
-      "font-raleway"
+      "font-raleway",
+      "w-fit",
+      "max-w-[25%]",
+      "overflow-hidden",
+      "px-2"
     );
     displayScores.appendChild(teamBlock);
     if (displayScores.childNodes.length === 3) break;
@@ -204,7 +246,7 @@ ipcRenderer.on("displayVideoAndPodium", (event, teams) => {
     "bg-transparentDisplay",
     "border-b-4",
     "border-solid",
-    "border-black",
+    "border-primary",
     "text-white",
     "z-30",
     "absolute",
@@ -212,7 +254,8 @@ ipcRenderer.on("displayVideoAndPodium", (event, teams) => {
     "flex",
     "justify-between",
     "gap-2",
-    "animate-top-come"
+    "animate-top-come",
+    "pb-2"
   );
   displayScreen.insertBefore(displayScores, videoPlayer);
 });
