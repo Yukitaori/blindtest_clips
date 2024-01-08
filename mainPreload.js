@@ -240,7 +240,9 @@ contextBridge.exposeInMainWorld("display", {
     ipcRenderer.send("displayGif", path);
   },
   displayInfo: (isDisplay, displayRoundsState) => {
+    const displayInfoButton = document.getElementById("displayInfoButton");
     ipcRenderer.send("displayInfo", isDisplay, displayRoundsState);
+    displayInfoButton.classList.toggle("bg-fifth");
   },
 });
 

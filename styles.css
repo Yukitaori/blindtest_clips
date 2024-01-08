@@ -40,3 +40,8 @@
   border-radius: 25px;
   background-color: var(--fourth);
 }
+
+select[data-open] {
+  height: 50px;
+  overflow: auto;
+}

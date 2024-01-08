@@ -1,3 +1,30 @@
+//////////////////////// GENERAL ////////////////////////
+
+// le keyDownState enregistre l'état appuyé ou non des différentes touches, afin d'éviter le repeat lors du keydown
+const keyDownState = {};
+
+// Animation des boutons sauf les tracks de la tracklist
+function animateButtons() {
+  const buttons = document.getElementsByTagName("button");
+  for (let button of buttons) {
+    if (!button.classList.contains("track")) {
+      button.addEventListener("mousedown", () => {
+        button.classList.remove("shadow-buttonShadow");
+        button.classList.add("translate-x-[3px]", "translate-y-[3px]");
+      });
+      button.addEventListener("mouseup", () => {
+        button.classList.add("shadow-buttonShadow");
+        button.classList.remove("translate-x-[3px]", "translate-y-[3px]");
+      });
+      button.addEventListener("mouseleave", () => {
+        button.classList.add("shadow-buttonShadow");
+        button.classList.remove("translate-x-[3px]", "translate-y-[3px]");
+      });
+    }
+  }
+}
+animateButtons();
+
 //////////////////////// PARTIE PLAYLIST ////////////////////////
 
 // Les selectedTracks sont les tracks sélectionnées dans la liste (pas celle qui est chargée dans le player)
@@ -18,12 +45,23 @@ let displayInfo = false;
 let displayRoundsState = { first: null, second: null, isDisplay: false };
 // La songsLibrary contient les liens et infos de chaque musique jouable dans l'audioplayer
 let songsLibrary = [
-  { id: "song1", title: "Love Boat", src: "./src/assets/music/Love Boat.mp3" },
-  { id: "song2", title: "Rocky", src: "./src/assets/music/Rocky.mp3" },
+  {
+    id: "song1",
+    title: "Love Boat",
+    src: "./src/assets/music/Love Boat.mp3",
+    start: 0,
+  },
+  {
+    id: "song2",
+    title: "Rocky - Win",
+    src: "./src/assets/music/Rocky.mp3",
+    start: 90,
+  },
   {
     id: "song3",
     title: "Anniversaire",
     src: "./src/assets/music/Joyeux Anniversaire.mp3",
+    start: 9.8,
   },
 ];
 
@@ -199,8 +237,11 @@ const addListenersToGhostTrack = (ghostTrack, type, file) => {
         }
       } else {
         Object.entries(e.dataTransfer.files).forEach((element) => {
-          playlist.splice(playlist.indexOf(file) + 1, 0, element[1]);
-          selectedTracks.push(element[1]);
+          let elementCopy = element[1];
+          elementCopy.round = 1;
+          elementCopy.category = false;
+          playlist.splice(playlist.indexOf(file), 0, elementCopy);
+          selectedTracks.push(elementCopy);
         });
       }
       tracklist.removeChild(ghostTrack);
@@ -222,8 +263,11 @@ const addListenersToGhostTrack = (ghostTrack, type, file) => {
         }
       } else {
         Object.entries(e.dataTransfer.files).forEach((element) => {
-          playlist.splice(playlist.indexOf(file) + 1, 0, element[1]);
-          selectedTracks.push(element[1]);
+          let elementCopy = element[1];
+          elementCopy.round = 1;
+          elementCopy.category = false;
+          playlist.splice(playlist.indexOf(file) + 1, 0, elementCopy);
+          selectedTracks.push(elementCopy);
         });
       }
       tracklist.removeChild(ghostTrack);
@@ -282,6 +326,7 @@ const createTrackList = () => {
       selectedTracks = [];
       window.player.playFile(file, index);
       loadedTrack = file;
+      loadedTrack.paused = false;
       createTrackList();
     });
 
@@ -309,30 +354,124 @@ const createTrackList = () => {
       createTrackList();
     });
 
-    // Gestion des appuis sur les touches pour édition de la playlist
+    // Gestion des appuis sur les touches les raccourcis
     document.addEventListener("keydown", (e) => {
       if (!textFocus) {
         // Lors de l'appui sur Suppr, les pistes sélectionnées (selectedTracks) sont supprimées
         if (e.key === "Delete" && selectedTracks.includes(file)) {
+          e.preventDefault();
           playlist.splice(playlist.indexOf(file), selectedTracks.length);
           selectedTracks = [];
           createTrackList();
         }
-        // Lors de l'appui sur la barre espace, si une seule track est sélectionnée, elle est chargée et lancée
+        // Lors de l'appui sur la Entrée, si une seule track est sélectionnée, elle est chargée et lancée
         if (
-          e.key === "Enter" &&
+          e.key == "Enter" &&
           selectedTracks.length === 1 &&
           selectedTracks.includes(file)
         ) {
+          e.preventDefault();
           selectedTracks = [];
           window.player.playFile(file);
           loadedTrack = file;
           createTrackList();
         }
-        if (e.key === " " && loadedTrack) {
-          // TODO Ajouter gestion du play/pause avec la touche Espace
+        // Lors de l'appui sur la barre espace, la pause est activée si la video est en cours de lecture, ou celle-ci reprend si elle est en pause
+        if (
+          e.key === " " &&
+          loadedTrack &&
+          (keyDownState[e.key] === false || !keyDownState[e.key])
+        ) {
+          e.preventDefault();
+          if (loadedTrack.paused) {
+            window.player.play();
+            loadedTrack.paused = false;
+          } else {
+            window.player.pause();
+            loadedTrack.paused = true;
+          }
+        }
+        // L'appui sur la touche M active/désactive le mute sur la video
+        if (
+          e.key === "m" &&
+          (keyDownState[e.key] === false || !keyDownState[e.key])
+        ) {
+          window.player.mute();
+        }
+        // L'appui sur la touche V remet le volume à 100%
+        if (
+          e.key === "v" &&
+          (keyDownState[e.key] === false || !keyDownState[e.key])
+        ) {
+          volumeControl.value = 1;
+          window.player.changeVolume(volumeControl.value);
+          window.player.displaySlidingBackgroundColor(
+            volumeControl,
+            "fifth",
+            "third"
+          );
+        }
+        // L'appui sur la flèche du haut augmente le volume de 25%
+        if (
+          e.key === "ArrowUp" &&
+          (keyDownState[e.key] === false || !keyDownState[e.key])
+        ) {
+          e.preventDefault();
+          volumeControl.value = Number(volumeControl.value) + 0.25;
+          window.player.changeVolume(volumeControl.value);
+          window.player.displaySlidingBackgroundColor(
+            volumeControl,
+            "fifth",
+            "third"
+          );
+        }
+        // L'appui sur la flèche du bas baisse le volume de 25%
+        if (
+          e.key === "ArrowDown" &&
+          (keyDownState[e.key] === false || !keyDownState[e.key])
+        ) {
+          e.preventDefault();
+          volumeControl.value = Number(volumeControl.value) - 0.25;
+          window.player.changeVolume(volumeControl.value);
+          window.player.displaySlidingBackgroundColor(
+            volumeControl,
+            "fifth",
+            "third"
+          );
+        }
+        // L'appui sur la flèche de gauche lance la piste précédente
+        if (
+          e.key === "ArrowLeft" &&
+          (keyDownState[e.key] === false || !keyDownState[e.key])
+        ) {
+          e.preventDefault();
+          window.player.previousTrack();
+          if (parseInt(loadedTrack.id) - 1 >= 0) {
+            selectedTracks = [];
+            loadedTrack = playlist[parseInt(loadedTrack.id) - 1];
+          }
+          createTrackList();
+        }
+        // L'appui sur la flèche de gauche lance la piste suivante
+        if (
+          e.key === "ArrowRight" &&
+          (keyDownState[e.key] === false || !keyDownState[e.key])
+        ) {
+          e.preventDefault();
+          window.player.nextTrack();
+          if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
+            selectedTracks = [];
+            loadedTrack = playlist[parseInt(loadedTrack.id) + 1];
+          }
+          createTrackList();
         }
       }
+      keyDownState[e.key] = true;
+    });
+
+    // Lorsque la touche est lâchée, le keyDownState correspondant est remis à false
+    document.addEventListener("keyup", (e) => {
+      keyDownState[e.key] = false;
     });
 
     // Si une track est sélectionnée, elle devient draggable
@@ -511,7 +650,6 @@ dropzone.addEventListener("dragleave", (e) => {
   dropzone.classList.remove("bg-fifth");
 });
 
-// TODO mettre en place des raccourcis clavier pour chaque action
 pauseButton.addEventListener("click", () => {
   window.player.pause();
 });
@@ -706,15 +844,15 @@ const addTeamLine = (teamToAdd) => {
   teamLine.classList.add(
     "flex",
     "justify-between",
-    "items-center",
+    "items-start",
     "gap-1",
-    "h-10",
+    "h-fit",
     "px-4"
   );
-  teamScore.classList.add("flex", "gap-2", "h-10", "w-[180px]");
+  teamScore.classList.add("flex", "gap-2", "h-8", "w-[180px]");
   teamScoreDecButton.classList.add(
-    "h-10",
-    "w-10",
+    "h-8",
+    "w-8",
     "p-1",
     "border",
     "border-black",
@@ -724,8 +862,8 @@ const addTeamLine = (teamToAdd) => {
     "hover:scale-110"
   );
   teamScoreIncButton.classList.add(
-    "h-10",
-    "w-10",
+    "h-8",
+    "w-8",
     "p-1",
     "border",
     "border-black",
@@ -735,16 +873,18 @@ const addTeamLine = (teamToAdd) => {
     "hover:scale-110"
   );
   teamScoreDisplay.classList.add(
-    "h-10",
-    "w-10",
-    "p-1",
+    "h-8",
+    "w-8",
     "text-center",
     "text-2xl",
-    "font-bold"
+    "font-bold",
+    "flex",
+    "items-center",
+    "justify-center"
   );
   teamDeleteButton.classList.add(
-    "h-10",
-    "w-10",
+    "h-8",
+    "w-8",
     "border",
     "border-solid",
     "border-black",
@@ -757,7 +897,10 @@ const addTeamLine = (teamToAdd) => {
     "font-semibold",
     "text-xl",
     "w-[320px]",
-    "overflow-auto"
+    "2xl:w-[500px]",
+    "line-clamp-1",
+    "hover:line-clamp-none",
+    "hover:overflow-auto"
   );
   teamName.innerText = teamToAdd.name;
   const teamDeletButtonImage = document.createElement("p");
@@ -875,6 +1018,47 @@ videoAndPodiumDisplayButton.addEventListener("click", () => {
   }
 });
 
+document.addEventListener("keydown", (e) => {
+  // Lors de l'appui sur F1, le mode display passe sur video seule et réinitialise tous les éléments en display
+  if (
+    e.key === "F1" &&
+    (keyDownState[e.key] === false || !keyDownState[e.key])
+  ) {
+    resetDisplayButtonsStyle(videoOnlyDisplayButton);
+    window.display.displayVideoOnly();
+    imageList.value = "video";
+    window.display.displayImage(null);
+    gifList.value = "";
+    window.display.displayGif(gifList.value);
+    if (displayInfo) {
+      displayInfo = !displayInfo;
+      window.display.displayInfo(displayInfo, displayRoundsState);
+    }
+  }
+  // Lors de l'appui sur F2, le mode display passe sur video + scores
+  if (
+    e.key === "F2" &&
+    (keyDownState[e.key] === false || !keyDownState[e.key])
+  ) {
+    if (teams.length > 0) {
+      resetDisplayButtonsStyle(videoAndScoresDisplayButton);
+      window.display.displayVideoAndScores(teams);
+    }
+  }
+  // Lors de l'appui sur F3, le mode display passe sur video + podium
+  if (
+    e.key === "F3" &&
+    (keyDownState[e.key] === false || !keyDownState[e.key])
+  ) {
+    if (teams.length > 0) {
+      resetDisplayButtonsStyle(videoAndPodiumDisplayButton);
+      window.display.displayVideoAndPodium(
+        teams.sort((a, b) => b.score - a.score)
+      );
+    }
+  }
+});
+
 //////////////////////// PARTIE IMAGES ////////////////////////
 
 const addImageForm = document.getElementById("addImageForm");
@@ -886,13 +1070,16 @@ addImageForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const addImageInput = document.getElementById("addImageInput");
   Object.values(addImageInput.files).forEach((image) => {
-    let imageOption = document.createElement("option");
-    let existingOption = document.getElementById(image.name);
-    imageOption.setAttribute("id", image.name);
-    imageOption.innerText = image.name;
-    imageOption.value = image.path;
-    if (!existingOption) {
-      imageList.appendChild(imageOption);
+    console.log(image);
+    if (image.type.includes("image")) {
+      let imageOption = document.createElement("option");
+      let existingOption = document.getElementById(image.name);
+      imageOption.setAttribute("id", image.name);
+      imageOption.innerText = image.name;
+      imageOption.value = image.path;
+      if (!existingOption) {
+        imageList.appendChild(imageOption);
+      }
     }
   });
   addImageInput.value = null;
@@ -916,6 +1103,7 @@ clearImageList.addEventListener("click", () => {
     while (imageList.children.length > 1) {
       imageList.removeChild(imageList.lastChild);
     }
+    window.display.displayImage(null);
   }
 });
 
@@ -938,21 +1126,14 @@ gifList.addEventListener("change", () => {
 displayInfoButton.addEventListener("click", () => {
   displayInfo = !displayInfo;
   window.display.displayInfo(displayInfo, displayRoundsState);
-  if (displayInfo) {
-    displayInfoButton.classList.add("bg-fifth");
-  } else {
-    displayInfoButton.classList.remove("bg-fifth");
-  }
 });
 
 // Les inputs ci-dessous permettent d'indiquer une heure de début pour chaque manche
 firstRoundInput.addEventListener("change", () => {
   displayRoundsState.first = firstRoundInput.value;
-  console.log(displayRoundsState);
 });
 secondRoundInput.addEventListener("change", () => {
   displayRoundsState.second = secondRoundInput.value;
-  console.log(displayRoundsState);
 });
 
 // Lorsque la displayRoundsInput est cochée, les informations de manches s'affichent sur le carton d'informations
@@ -969,30 +1150,7 @@ for (let song of songsLibrary) {
   let trackbutton = document.getElementById(song.id);
   trackbutton.addEventListener("click", () => {
     audioplayer.src = song.src;
+    audioplayer.currentTime = song.start;
     songTitleDisplay.innerText = song.title;
   });
 }
-
-//////////////////////// GENERAL ////////////////////////
-
-// Animation des boutons sauf les tracks de la tracklist
-function animateButtons() {
-  const buttons = document.getElementsByTagName("button");
-  for (let button of buttons) {
-    if (!button.classList.contains("track")) {
-      button.addEventListener("mousedown", () => {
-        button.classList.remove("shadow-buttonShadow");
-        button.classList.add("translate-x-[3px]", "translate-y-[3px]");
-      });
-      button.addEventListener("mouseup", () => {
-        button.classList.add("shadow-buttonShadow");
-        button.classList.remove("translate-x-[3px]", "translate-y-[3px]");
-      });
-      button.addEventListener("mouseleave", () => {
-        button.classList.add("shadow-buttonShadow");
-        button.classList.remove("translate-x-[3px]", "translate-y-[3px]");
-      });
-    }
-  }
-}
-animateButtons();
