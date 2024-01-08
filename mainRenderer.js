@@ -1019,13 +1019,21 @@ videoAndPodiumDisplayButton.addEventListener("click", () => {
 });
 
 document.addEventListener("keydown", (e) => {
-  // Lors de l'appui sur F1, le mode display passe sur video seule
+  // Lors de l'appui sur F1, le mode display passe sur video seule et réinitialise tous les éléments en display
   if (
     e.key === "F1" &&
     (keyDownState[e.key] === false || !keyDownState[e.key])
   ) {
     resetDisplayButtonsStyle(videoOnlyDisplayButton);
     window.display.displayVideoOnly();
+    imageList.value = "video";
+    window.display.displayImage(null);
+    gifList.value = "";
+    window.display.displayGif(gifList.value);
+    if (displayInfo) {
+      displayInfo = !displayInfo;
+      window.display.displayInfo(displayInfo, displayRoundsState);
+    }
   }
   // Lors de l'appui sur F2, le mode display passe sur video + scores
   if (
@@ -1118,11 +1126,6 @@ gifList.addEventListener("change", () => {
 displayInfoButton.addEventListener("click", () => {
   displayInfo = !displayInfo;
   window.display.displayInfo(displayInfo, displayRoundsState);
-  if (displayInfo) {
-    displayInfoButton.classList.add("bg-fifth");
-  } else {
-    displayInfoButton.classList.remove("bg-fifth");
-  }
 });
 
 // Les inputs ci-dessous permettent d'indiquer une heure de début pour chaque manche
