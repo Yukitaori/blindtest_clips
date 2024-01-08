@@ -1018,6 +1018,39 @@ videoAndPodiumDisplayButton.addEventListener("click", () => {
   }
 });
 
+document.addEventListener("keydown", (e) => {
+  // Lors de l'appui sur F1, le mode display passe sur video seule
+  if (
+    e.key === "F1" &&
+    (keyDownState[e.key] === false || !keyDownState[e.key])
+  ) {
+    resetDisplayButtonsStyle(videoOnlyDisplayButton);
+    window.display.displayVideoOnly();
+  }
+  // Lors de l'appui sur F2, le mode display passe sur video + scores
+  if (
+    e.key === "F2" &&
+    (keyDownState[e.key] === false || !keyDownState[e.key])
+  ) {
+    if (teams.length > 0) {
+      resetDisplayButtonsStyle(videoAndScoresDisplayButton);
+      window.display.displayVideoAndScores(teams);
+    }
+  }
+  // Lors de l'appui sur F3, le mode display passe sur video + podium
+  if (
+    e.key === "F3" &&
+    (keyDownState[e.key] === false || !keyDownState[e.key])
+  ) {
+    if (teams.length > 0) {
+      resetDisplayButtonsStyle(videoAndPodiumDisplayButton);
+      window.display.displayVideoAndPodium(
+        teams.sort((a, b) => b.score - a.score)
+      );
+    }
+  }
+});
+
 //////////////////////// PARTIE IMAGES ////////////////////////
 
 const addImageForm = document.getElementById("addImageForm");
