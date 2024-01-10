@@ -5,8 +5,6 @@ const playerState = {
   playlist: null,
   mute: true,
   videoPlaying: false,
-  selectedTrack: null,
-  selectedTrackIndex: null,
   loadedTrack: null,
   fileDuration: null,
 };
@@ -38,28 +36,32 @@ const displaySlidingBackgroundColor = (input, firstColor, secondColor) => {
 // Cette fonction permet d'envoyer la track sélectionnée pour la lecture à la secondaryWindow et gère la mise à jour du state et tous les effets liés aux styles des boutons
 // Suppression de l'image affichée s'il y en a une + remise à zéro du select des images
 const playTrack = (track) => {
-  const playButton = document.getElementById("playerplay");
-  const pauseButton = document.getElementById("playerpause");
-  const muteButton = document.getElementById("playermute");
-  const imageList = document.getElementById("imageList");
-  ipcRenderer.send("displayImage", null);
-  imageList.value = "video";
+  console.log(track);
+  if (track) {
+    const playButton = document.getElementById("playerplay");
+    const pauseButton = document.getElementById("playerpause");
+    const muteButton = document.getElementById("playermute");
+    const imageList = document.getElementById("imageList");
+    ipcRenderer.send("displayImage", null);
+    imageList.value = "video";
 
-  ipcRenderer.send("playFile", track.path);
-  playerState.selectedTrack = track;
-  playerState.loadedTrack = track;
-  playerState.videoPlaying = true;
-  playerState.mute = true;
+    ipcRenderer.send("playFile", track.path);
+    playerState.loadedTrack = track;
+    playerState.videoPlaying = true;
+    playerState.mute = true;
 
-  playerState.mute
-    ? muteButton.classList.add("bg-fifth")
-    : muteButton.classList.remove("bg-fifth");
-  playerState.videoPlaying
-    ? playButton.classList.add("bg-green-800")
-    : playButton.classList.remove("bg-green-800");
-  playerState.videoPlaying
-    ? pauseButton.classList.remove("bg-orange-800")
-    : pauseButton.classList.add("bg-orange-800");
+    playerState.mute
+      ? muteButton.classList.add("bg-fifth")
+      : muteButton.classList.remove("bg-fifth");
+    playerState.videoPlaying
+      ? playButton.classList.add("bg-green-800")
+      : playButton.classList.remove("bg-green-800");
+    playerState.videoPlaying
+      ? pauseButton.classList.remove("bg-orange-800")
+      : pauseButton.classList.add("bg-orange-800");
+  } else {
+    ipcRenderer.send("playFile", null);
+  }
 };
 
 // Ce contextBridge contient toutes les méthodes du player
@@ -67,11 +69,14 @@ contextBridge.exposeInMainWorld("player", {
   getPlaylist: (list) => {
     playerState.playlist = list;
   },
+  getLoadedTrack: (track) => {
+    playTrack(track);
+    playerState.loadedTrack = track;
+  },
 
   playFile: (track) => playTrack(track),
 
   play: () => {
-    // play: (track) => {
     const muteButton = document.getElementById("playermute");
     const playButton = document.getElementById("playerplay");
     const pauseButton = document.getElementById("playerpause");
@@ -86,34 +91,6 @@ contextBridge.exposeInMainWorld("player", {
     playerState.videoPlaying
       ? pauseButton.classList.remove("bg-orange-800")
       : pauseButton.classList.add("bg-orange-800");
-    // if (playerState.loadedTrack.path !== track.path) {
-    //   ipcRenderer.send("playFile", track.path);
-    //   playerState.selectedTrack = track;
-    //   playerState.loadedTrack = track;
-    //   playerState.videoPlaying = true;
-    //   playerState.mute = true;
-    //   playerState.mute
-    //     ? muteButton.classList.add("bg-fifth")
-    //     : muteButton.classList.remove("bg-fifth");
-    //   playerState.videoPlaying
-    //     ? playButton.classList.add("bg-green-800")
-    //     : playButton.classList.remove("bg-green-800");
-    //   playerState.videoPlaying
-    //     ? pauseButton.classList.remove("bg-orange-800")
-    //     : pauseButton.classList.add("bg-orange-800");
-    // } else {
-    //   ipcRenderer.send("play");
-    //   playerState.videoPlaying = true;
-    //   playerState.mute
-    //     ? muteButton.classList.add("bg-fifth")
-    //     : muteButton.classList.remove("bg-fifth");
-    //   playerState.videoPlaying
-    //     ? playButton.classList.add("bg-green-800")
-    //     : playButton.classList.remove("bg-green-800");
-    //   playerState.videoPlaying
-    //     ? pauseButton.classList.remove("bg-orange-800")
-    //     : pauseButton.classList.add("bg-orange-800");
-    // }
   },
 
   pause: () => {
@@ -187,13 +164,10 @@ contextBridge.exposeInMainWorld("player", {
   changeVolume: (volume) => ipcRenderer.send("changeVolume", volume),
 
   previousTrack: () => {
-    if (playerState.playlist.indexOf(playerState.loadedTrack) - 1 >= 0) {
+    if (playerState.loadedTrack.id - 1 >= 0) {
       const currentTime = document.getElementById("current");
       const timeControl = document.getElementById("timecontrol");
-      const trackToPlay =
-        playerState.playlist[
-          playerState.playlist.indexOf(playerState.loadedTrack) - 1
-        ];
+      const trackToPlay = playerState.playlist[playerState.loadedTrack.id - 1];
 
       currentTime.innerText = getReadableTime(0).toString();
       timeControl.value = getTimeControlPosition(0);
@@ -202,16 +176,10 @@ contextBridge.exposeInMainWorld("player", {
   },
 
   nextTrack: () => {
-    if (
-      playerState.playlist.indexOf(playerState.loadedTrack) + 1 <
-      playerState.playlist.length
-    ) {
+    if (playerState.loadedTrack.id + 1 < playerState.playlist.length) {
       const currentTime = document.getElementById("current");
       const timeControl = document.getElementById("timecontrol");
-      let trackToPlay =
-        playerState.playlist[
-          playerState.playlist.indexOf(playerState.loadedTrack) + 1
-        ];
+      let trackToPlay = playerState.playlist[playerState.loadedTrack.id + 1];
       currentTime.innerText = getReadableTime(0).toString();
       timeControl.value = getTimeControlPosition(0);
       playTrack(trackToPlay);

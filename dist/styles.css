@@ -732,10 +732,6 @@ video {
   max-height: 350px;
 }
 
-.max-h-\[400px\] {
-  max-height: 400px;
-}
-
 .min-h-\[307px\] {
   min-height: 307px;
 }
@@ -1023,6 +1019,10 @@ video {
 
 .overflow-y-auto {
   overflow-y: auto;
+}
+
+.scroll-smooth {
+  scroll-behavior: smooth;
 }
 
 .break-normal {
@@ -1343,6 +1343,7 @@ video {
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
+  scroll-behavior: smooth;
 }
 
 #timecontrol::-webkit-slider-thumb {

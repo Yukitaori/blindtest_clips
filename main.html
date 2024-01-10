@@ -58,6 +58,12 @@
             >
               <p class="group-hover:scale-125">🔍</p>
             </button>
+            <button
+              id="clearTrackListButton"
+              class="h-8 w-8 border border-solid border-black shadow-buttonShadow rounded-full group"
+            >
+              <p class="group-hover:scale-125">🗑️</p>
+            </button>
             <label for="category"
               ><p>Définir comme categorie</p>
               <select
@@ -81,7 +87,7 @@
               </p>
               <ul
                 id="tracklist"
-                class="max-h-[200px] 2xl:max-h-[300px] overflow-y-auto pb-2"
+                class="max-h-[200px] 2xl:max-h-[300px] overflow-y-auto pb-2 scroll-smooth"
               ></ul>
             </div>
           </div>
