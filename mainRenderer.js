@@ -1434,3 +1434,7 @@ for (let song of songsLibrary) {
     songTitleDisplay.innerText = song.title;
   });
 }
+
+audioplayer.addEventListener("play", () => {
+  window.player.mute();
+});
