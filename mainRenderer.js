@@ -254,7 +254,6 @@ const getPosition = (element) => {
 
 // Cette fonction gère le changement de style des pistes en fonction de si elles sont sélectionnées ou chargées ou non
 const changeTrackBehavior = (track, file, type) => {
-  console.log(track);
   if (type === "selected") {
     track.classList.remove("bg-fourth", "text-white");
     track.setAttribute("draggable", "true");
@@ -390,8 +389,6 @@ const addListenersToGhostTrack = (ghostTrack, file, type) => {
 
 // Cette fonction permet la génération de la Tracklist au sein de la dropzone
 const createTrackList = () => {
-  console.log("selected", selectedTracks);
-  console.log("playlist", playlist);
   // la tracklist précédente est effacée
   tracklist.innerHTML = "";
   let index = 0;
@@ -403,12 +400,10 @@ const createTrackList = () => {
 
   // Pour chaque track de la playlist, une entrée est générée dans la liste
   playlist.forEach((file) => {
-    console.log(file);
     file.id = index;
     file.trackNumber = index + 1;
     let track = document.createElement("li");
     track.setAttribute("id", `${index}`);
-    console.log(track);
     let trackbutton = document.createElement("button");
     track.classList.add(
       "cursor-pointer",
@@ -444,7 +439,6 @@ const createTrackList = () => {
         changeTrackBehavior(trackListLine, selectedTrack, "unselected");
         selectedTracks.splice(selectedTracks[selectedTracks.indexOf(file)], 1);
       });
-      console.log(file);
       window.player.playFile(file);
       if (loadedTrack) {
         changeTrackBehavior(
