@@ -23,6 +23,7 @@ function animateButtons() {
     }
   }
 }
+
 animateButtons();
 
 //////////////////////// PARTIE PLAYLIST ////////////////////////
@@ -100,9 +101,25 @@ categorySelect.addEventListener("change", () => {
   if (selectedTracks.length > 0 && categorySelect.value !== "") {
     for (let track of selectedTracks) {
       track.category = categorySelect.value;
+      if (categorySelect.value === "true") {
+        changeTrackBehavior(
+          document.getElementById(`${track.id}`),
+          null,
+          "category"
+        );
+      } else {
+        changeTrackBehavior(
+          document.getElementById(`${track.id}`),
+          null,
+          "nonCategory"
+        );
+      }
     }
+    selectedTracks.forEach((selectedTrack) => {
+      let trackListLine = document.getElementById(`${selectedTrack.id}`);
+      changeTrackBehavior(trackListLine, selectedTrack, "unselected");
+    });
     selectedTracks = [];
-    createTrackList();
   }
   categorySelect.value = "";
 });
@@ -240,6 +257,8 @@ clearTrackListButton.addEventListener("click", () => {
   selectedTracks.splice(0);
   window.localStorage.setItem("playlist", JSON.stringify(playlist));
   createTrackList();
+  loadedTrack = null;
+  window.player.getLoadedTrack(null);
 });
 
 // Cette fonction récupère les positions et hauteur des éléments de la playlist pour la localisation du drop
@@ -291,6 +310,10 @@ const changeTrackBehavior = (track, file, type) => {
       "font-semibold",
       "loaded"
     );
+  } else if (type === "category") {
+    track.classList.add("font-bold");
+  } else if (type === "nonCategory") {
+    track.classList.remove("font-bold");
   }
 };
 
@@ -454,8 +477,6 @@ const createTrackList = () => {
 
     // Le clic simple permet juste de sélectionner une piste
     track.addEventListener("click", (e) => {
-      // Si shift + clic : l'ensemble de tracks entre la première selectedTrack et la track cliquée deviennent les selectedTracks
-      // TODO : réfléchir à quelle selectedTrack soit être le point de départ si plusieurs sont selectionnées
       if (e.shiftKey) {
         let newSelectedTracks = [...selectedTracks];
         for (
@@ -505,8 +526,10 @@ const createTrackList = () => {
         if (e.key === "Delete" && selectedTracks.length > 0) {
           e.preventDefault();
           selectedTracks.forEach((element) => {
-            playlist.splice(playlist.indexOf(element), 1);
-            selectedTracks.splice(selectedTracks.indexOf(element), 1);
+            if (element !== loadedTrack) {
+              playlist.splice(playlist.indexOf(element), 1);
+              selectedTracks.splice(selectedTracks.indexOf(element), 1);
+            }
           });
           createTrackList();
         }
@@ -802,6 +825,7 @@ const createTrackList = () => {
     }
     if (loadedTrack === file) {
       changeTrackBehavior(track, file, "loaded");
+      window.player.getLoadedTrack(file);
     }
     trackbutton.innerText = displayTrackNumber
       ? `${file.round?.toString().padStart(2, "0")} - ${file.trackNumber
@@ -814,10 +838,7 @@ const createTrackList = () => {
     index++;
   });
   window.player.getPlaylist(playlist);
-  if (playlist.length === 0) {
-    dropzone.innerHTML =
-      '<p id="playlistInstruction" class="pl-2 text-center">Droppe ici les videos à lire !</p><ul id="tracklist" class="max-h-[200px] 2xl:max-h-[300px] overflow-y-auto pb-2"></ul>';
-  }
+  window.player.getPlaylist(playlist);
   window.localStorage.setItem("playlist", JSON.stringify(playlist));
 };
 createTrackList();

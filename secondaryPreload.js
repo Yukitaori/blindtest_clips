@@ -32,6 +32,7 @@ ipcRenderer.on("playFile", (event, path) => {
     delete videoPlayer.src;
     clearInterval(intervals[0]);
     ipcRenderer.send("videoover");
+    videoPlayer.src = "";
     // TODO Mettre en place un écran noir lors de l'arrêt et supprimer la source
   });
 });
