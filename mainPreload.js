@@ -46,7 +46,7 @@ const playTrack = (track) => {
   ipcRenderer.send("displayImage", null);
   imageList.value = "video";
 
-  ipcRenderer.send("playFile", track.pathway);
+  ipcRenderer.send("playFile", track.path);
   playerState.selectedTrack = track;
   playerState.loadedTrack = track;
   playerState.videoPlaying = true;
