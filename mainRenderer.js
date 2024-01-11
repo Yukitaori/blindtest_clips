@@ -333,13 +333,8 @@ const addListenersToGhostTrack = (ghostTrack, file, type) => {
         let index = 0;
         if (!draggedTracks.includes(file)) {
           draggedTracks.forEach((element) => {
-            if (element.id < file.id) {
-              playlist.splice(playlist.indexOf(element), 1);
-              playlist.splice(playlist.indexOf(file) - index, 0, element);
-            } else {
-              playlist.splice(playlist.indexOf(element), 1);
-              playlist.splice(playlist.indexOf(file) - index, 0, element);
-            }
+            playlist.splice(playlist.indexOf(element), 1);
+            playlist.splice(playlist.indexOf(file) - index, 0, element);
             selectedTracks.push(element);
             index++;
           });
@@ -379,13 +374,8 @@ const addListenersToGhostTrack = (ghostTrack, file, type) => {
       if (draggedTracks.length > 0) {
         if (!draggedTracks.includes(file)) {
           draggedTracks.forEach((element) => {
-            if (element.id < file.id) {
-              playlist.splice(playlist.indexOf(element), 1);
-              playlist.splice(playlist.indexOf(file) + 1, 0, element);
-            } else {
-              playlist.splice(playlist.indexOf(element), 1);
-              playlist.splice(playlist.indexOf(file) + 1, 0, element);
-            }
+            playlist.splice(playlist.indexOf(element), 1);
+            playlist.splice(playlist.indexOf(file) + 1, 0, element);
             selectedTracks.push(element);
           });
         }
@@ -763,13 +753,8 @@ const createTrackList = () => {
           if (!draggedTracks.includes(file)) {
             let index = 0;
             draggedTracks.forEach((element) => {
-              if (element.id < file.id) {
-                playlist.splice(playlist.indexOf(element), 1);
-                playlist.splice(playlist.indexOf(file) - index, 0, element);
-              } else {
-                playlist.splice(playlist.indexOf(element), 1);
-                playlist.splice(playlist.indexOf(file) - index, 0, element);
-              }
+              playlist.splice(playlist.indexOf(element), 1);
+              playlist.splice(playlist.indexOf(file) - index, 0, element);
               selectedTracks.push(element);
               index++;
             });
@@ -778,13 +763,8 @@ const createTrackList = () => {
         } else {
           if (!draggedTracks.includes(file)) {
             draggedTracks.forEach((element) => {
-              if (element.id < file.id) {
-                playlist.splice(playlist.indexOf(element), 1);
-                playlist.splice(playlist.indexOf(file) + 1, 0, element);
-              } else {
-                playlist.splice(playlist.indexOf(element), 1);
-                playlist.splice(playlist.indexOf(file) + 1, 0, element);
-              }
+              playlist.splice(playlist.indexOf(element), 1);
+              playlist.splice(playlist.indexOf(file) + 1, 0, element);
               selectedTracks.push(element);
             });
           }
