@@ -407,7 +407,6 @@ const addListenersToGhostTrack = (ghostTrack, file, type) => {
 const createTrackList = () => {
   // la tracklist précédente est effacée
   tracklist.innerHTML = "";
-  tracklistLength.innerText = `${playlist.length} videos`;
   let index = 0;
   if (document.getElementById("playlistInstruction")) {
     document
@@ -466,6 +465,9 @@ const createTrackList = () => {
         );
       }
       loadedTrack = file;
+      loadedTrack
+        ? (tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`)
+        : (tracklistLength.innerText = `0 / ${playlist.length}`);
       changeTrackBehavior(track, file, "loaded");
       loadedTrack.paused = false;
     });
@@ -543,6 +545,9 @@ const createTrackList = () => {
           window.player.playFile(file);
           if (!mute) mute = true;
           loadedTrack = file;
+          loadedTrack
+            ? (tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`)
+            : (tracklistLength.innerText = `0 / ${playlist.length}`);
           changeTrackBehavior(
             document.getElementById(`${loadedTrack.id}`),
             playlist[loadedTrack.id],
@@ -831,6 +836,9 @@ const createTrackList = () => {
   window.player.getPlaylist(playlist);
   window.player.getPlaylist(playlist);
   window.localStorage.setItem("playlist", JSON.stringify(playlist));
+  loadedTrack
+    ? (tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`)
+    : (tracklistLength.innerText = `0 / ${playlist.length}`);
 };
 createTrackList();
 
