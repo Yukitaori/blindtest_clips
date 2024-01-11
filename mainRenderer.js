@@ -32,6 +32,8 @@ animateButtons();
 let selectedTracks = [];
 // La loadedTrack est la track chargée dans le player
 let loadedTrack;
+// mute permet de suivre l'état mute du videoplayer
+let mute = true;
 // La playlist permet  l'enregistrement des tracks dans leur oredre de diffusion
 let playlist = JSON.parse(window.localStorage.getItem("playlist")) || [];
 // Les draggedTracks sont les tracks qui sont dragguées lors du drag'n'drop
@@ -463,6 +465,7 @@ const createTrackList = () => {
         selectedTracks.splice(selectedTracks[selectedTracks.indexOf(file)], 1);
       });
       window.player.playFile(file);
+      if (!mute) mute = true;
       if (loadedTrack) {
         changeTrackBehavior(
           document.getElementById(`${loadedTrack.id}`),
@@ -546,6 +549,7 @@ const createTrackList = () => {
           });
           selectedTracks = [];
           window.player.playFile(file);
+          if (!mute) mute = true;
           loadedTrack = file;
           changeTrackBehavior(
             document.getElementById(`${loadedTrack.id}`),
@@ -575,7 +579,10 @@ const createTrackList = () => {
           e.key === "m" &&
           (keyDownState[e.key] === false || !keyDownState[e.key])
         ) {
-          window.player.mute();
+          if (loadedTrack) {
+            window.player.mute();
+            mute = !mute;
+          }
         }
         // L'appui sur la touche V remet le volume à 100%
         if (
@@ -625,6 +632,7 @@ const createTrackList = () => {
         ) {
           e.preventDefault();
           window.player.previousTrack();
+          if (!mute) mute = true;
           if (parseInt(loadedTrack.id) - 1 >= 0) {
             selectedTracks.forEach((selectedTrack) => {
               let trackListLine = document.getElementById(
@@ -657,6 +665,7 @@ const createTrackList = () => {
         ) {
           e.preventDefault();
           window.player.nextTrack();
+          if (!mute) mute = true;
           if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
             selectedTracks.forEach((selectedTrack) => {
               let trackListLine = document.getElementById(
@@ -907,10 +916,14 @@ stopButton.addEventListener("click", () => {
   window.player.stop();
 });
 muteButton.addEventListener("click", () => {
-  if (loadedTrack) window.player.mute();
+  if (loadedTrack) {
+    window.player.mute();
+    mute = !mute;
+  }
 });
 previousButton.addEventListener("click", () => {
   window.player.previousTrack();
+  if (!mute) mute = true;
   if (parseInt(loadedTrack.id) - 1 >= 0) {
     selectedTracks.forEach((selectedTrack) => {
       let trackListLine = document.getElementById(`${selectedTrack.id}`);
@@ -936,6 +949,7 @@ previousButton.addEventListener("click", () => {
 });
 nextButton.addEventListener("click", () => {
   window.player.nextTrack();
+  if (!mute) mute = true;
   if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
     selectedTracks.forEach((selectedTrack) => {
       let trackListLine = document.getElementById(`${selectedTrack.id}`);
@@ -1343,13 +1357,13 @@ document.addEventListener("keydown", (e) => {
 //////////////////////// PARTIE IMAGES ////////////////////////
 
 const addImageForm = document.getElementById("addImageForm");
+const addImageInput = document.getElementById("addImageInput");
 const imageList = document.getElementById("imageList");
 const clearImageList = document.getElementById("clearImageList");
 
 // addImageForm permet de sélectionner les images dont on veut récupérer le chemin d'accès
 addImageForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  const addImageInput = document.getElementById("addImageInput");
   Object.values(addImageInput.files).forEach((image) => {
     if (image.type.includes("image")) {
       let imageOption = document.createElement("option");
@@ -1396,6 +1410,7 @@ const secondRoundInput = document.getElementById("secondRoundInput");
 const displayRoundsInput = document.getElementById("displayRoundsInput");
 const audioplayer = document.getElementById("audioplayer");
 const songTitleDisplay = document.getElementById("songTitleDisplay");
+const fadeButton = document.getElementById("fadeButton");
 
 // Lorsqu'une option est sélectionnée, le gif est affiché sur la secondaryWindow
 gifList.addEventListener("change", () => {
@@ -1435,6 +1450,48 @@ for (let song of songsLibrary) {
   });
 }
 
+// Lorsque la chanson est jouée, le mute est fait automatiquement sur le clip
 audioplayer.addEventListener("play", () => {
-  window.player.mute();
+  audioplayer.volume = 1;
+  if (!mute) {
+    window.player.mute();
+    mute = !mute;
+  }
+});
+
+// Lorsque le bouton fade est cliqué alors qu'une musique est jouée dans l'audioplayer, un fondu automatique est effectué pour reprendre le volume initial de la video
+fadeButton.addEventListener("click", () => {
+  let initialVolume = volumeControl.value;
+  if (!audioplayer.paused) {
+    if (mute) {
+      window.player.mute();
+      mute = !mute;
+    }
+    volumeControl.value = 0;
+    window.player.changeVolume(volumeControl.value);
+    window.player.displaySlidingBackgroundColor(
+      volumeControl,
+      "fifth",
+      "third"
+    );
+    let fadeInterval = setInterval(() => {
+      if (Number(audioplayer.volume) > 0 && Number(audioplayer.volume) <= 1) {
+        audioplayer.volume = Math.floor((audioplayer.volume - 0.1) * 100) / 100;
+        if (volumeControl.value < initialVolume) {
+          volumeControl.value = Number(volumeControl.value) + 0.1;
+        }
+        window.player.changeVolume(volumeControl.value);
+        window.player.displaySlidingBackgroundColor(
+          volumeControl,
+          "fifth",
+          "third"
+        );
+      } else {
+        clearInterval(fadeInterval);
+        audioplayer.pause();
+        audioplayer.volume = 1;
+        audioplayer.src = null;
+      }
+    }, 500);
+  }
 });

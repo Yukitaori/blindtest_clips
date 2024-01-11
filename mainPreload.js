@@ -155,7 +155,6 @@ contextBridge.exposeInMainWorld("player", {
 
     ipcRenderer.send("mute");
     playerState.mute = !playerState.mute;
-    playerState.mute;
     playerState.mute
       ? muteButton.classList.add("bg-fifth")
       : muteButton.classList.remove("bg-fifth");
