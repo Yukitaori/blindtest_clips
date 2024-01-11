@@ -76,6 +76,7 @@ const showCompletePlaylistButton = document.getElementById(
 const clearTrackListButton = document.getElementById("clearTrackListButton");
 const categorySelect = document.getElementById("categorySelect");
 const tracklist = document.getElementById("tracklist");
+const tracklistLength = document.getElementById("tracklistLength");
 const dropzone = document.getElementById("dropzone");
 const timeControl = document.getElementById("timecontrol");
 const playButton = document.getElementById("playerplay");
@@ -406,6 +407,7 @@ const addListenersToGhostTrack = (ghostTrack, file, type) => {
 const createTrackList = () => {
   // la tracklist précédente est effacée
   tracklist.innerHTML = "";
+  tracklistLength.innerText = `${playlist.length} videos`;
   let index = 0;
   if (document.getElementById("playlistInstruction")) {
     document

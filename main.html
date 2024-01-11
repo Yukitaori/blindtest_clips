@@ -47,13 +47,13 @@
               </select>
             </label>
             <button
-              class="h-8 w-8 border border-fourth shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
+              class="h-8 w-8 border border-black shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
               id="showTrackNumberButton"
             >
               <p class="text-center group-hover:scale-125">01</p>
             </button>
             <button
-              class="h-8 w-8 border border-fourth shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
+              class="h-8 w-8 border border-black shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
               id="showCompletePlaylistButton"
             >
               <p class="group-hover:scale-125">🔍</p>
@@ -77,10 +77,10 @@
               </select>
             </label>
           </div>
-          <div>
+          <div class="relative">
             <div
               id="dropzone"
-              class="h-[200px] 2xl:h-[300px] border-2 border-solid border-fourth mt-5 mb-10 mx-5 rounded-xl overflow-hidden"
+              class="h-[200px] 2xl:h-[300px] border-2 border-solid border-black mt-5 mb-10 mx-5 rounded-xl overflow-hidden"
             >
               <p id="playlistInstruction" class="pl-2 text-center">
                 Droppe ici les videos à lire !
@@ -90,6 +90,9 @@
                 class="max-h-[200px] 2xl:max-h-[300px] overflow-y-auto pb-2 scroll-smooth"
               ></ul>
             </div>
+            <p class="absolute left-[30px] -bottom-[25px]" id="tracklistLength">
+              Test
+            </p>
           </div>
         </div>
         <div class="w-[80%] flex flex-col justify-between mb-6 mx-auto">
@@ -100,7 +103,7 @@
             max="1000"
             value="0"
             id="timecontrol"
-            class="appearance-none h-2 bg-third border-2 border-fourth border-solid shadow-slideShadow rounded-2xl relative"
+            class="appearance-none h-2 bg-third border-2 border-black border-solid shadow-slideShadow rounded-2xl relative"
           />
           <div class="flex justify-between items-center">
             <p id="current" class="w-[10%] text-center">00:00</p>
@@ -111,7 +114,7 @@
           <ul class="flex gap-2 items-center">
             <li>
               <button
-                class="border-2 border-fourth p-4 group shadow-buttonShadow rounded-full transition-all bg-blue-500"
+                class="border-2 border-black p-4 group shadow-buttonShadow rounded-full transition-all bg-blue-500"
                 id="playerprev"
               >
                 <img
@@ -123,7 +126,7 @@
             </li>
             <li>
               <button
-                class="border-2 border-fourth p-4 group shadow-buttonShadow transition-all bg-orange-500"
+                class="border-2 border-black p-4 group shadow-buttonShadow transition-all bg-orange-500"
                 id="playerpause"
               >
                 <img
@@ -135,7 +138,7 @@
             </li>
             <li>
               <button
-                class="border-2 border-fourth p-4 group shadow-buttonShadow transition-all bg-green-500"
+                class="border-2 border-black p-4 group shadow-buttonShadow transition-all bg-green-500"
                 id="playerplay"
               >
                 <img
@@ -147,7 +150,7 @@
             </li>
             <li>
               <button
-                class="border-2 border-fourth p-4 group shadow-buttonShadow transition-all bg-red-500"
+                class="border-2 border-black p-4 group shadow-buttonShadow transition-all bg-red-500"
                 id="playerstop"
               >
                 <img
@@ -159,7 +162,7 @@
             </li>
             <li>
               <button
-                class="border-2 border-fourth p-4 group shadow-buttonShadow rounded-full transition-all bg-blue-500"
+                class="border-2 border-black p-4 group shadow-buttonShadow rounded-full transition-all bg-blue-500"
                 id="playernext"
               >
                 <img
@@ -172,7 +175,7 @@
           </ul>
           <div class="flex items-center gap-4">
             <button
-              class="h-10 w-10 border-2 border-fourth group shadow-buttonShadow transition-all"
+              class="h-10 w-10 border-2 border-black group shadow-buttonShadow transition-all"
               id="playermute"
             >
               <img
@@ -192,7 +195,7 @@
                 value="1"
                 id="volumecontrol"
                 alt="Volume control"
-                class="appearance-none h-4 border-2 bg-third border-fourth border-solid shadow-slideShadow rounded-2xl"
+                class="appearance-none h-4 border-2 bg-third border-black border-solid shadow-slideShadow rounded-2xl"
               />
               <div class="flex justify-between gap-1">
                 <p>0%</p>
@@ -213,7 +216,7 @@
         </h1>
         <div
           id="teams"
-          class="h-[300px] 2xl:h-[400px] border-2 border-solid border-fourth overflow-hidden mt-2 mx-5 rounded-xl"
+          class="h-[300px] 2xl:h-[400px] border-2 border-solid border-black overflow-hidden mt-2 mx-5 rounded-xl"
         >
           <p id="teamlistInstruction" class="text-center mb-2">
             Inscris ici les équipes
@@ -226,25 +229,25 @@
         <div class="flex justify-between gap-1 my-2 mx-5">
           <div class="flex gap-1 mb-10 h-20">
             <button
-              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
+              class="border-2 border-solid border-black shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
               id="sortAscAlpha"
             >
               A-Z
             </button>
             <button
-              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
+              class="border-2 border-solid border-black shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
               id="sortDescAlpha"
             >
               Z-A
             </button>
             <button
-              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
+              class="border-2 border-solid border-black shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
               id="sortAscNum"
             >
               1-3
             </button>
             <button
-              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
+              class="border-2 border-solid border-black shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
               id="sortDescNum"
             >
               3-1
@@ -252,19 +255,19 @@
           </div>
           <div class="flex gap-1">
             <button
-              class="border-2 border-solid bg-yellow-300 font-bold rounded-teamSettings rounded-teamSettingsSelected border-fourth shadow-buttonShadow h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
+              class="border-2 border-solid bg-yellow-300 font-bold rounded-teamSettings rounded-teamSettingsSelected border-black shadow-buttonShadow h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
               id="videoDisplay"
             >
               Video
             </button>
             <button
-              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
+              class="border-2 border-solid border-black shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
               id="videoScoreDisplay"
             >
               Video + Scores
             </button>
             <button
-              class="border-2 border-solid border-fourth shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
+              class="border-2 border-solid border-black shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
               id="videoPodiumDisplay"
             >
               Podium
@@ -296,7 +299,7 @@
             />
             <button
               type="submit"
-              class="w-40 p-1 rounded-2xl border border-solid border-fourth shadow-buttonShadow transition-all hover:font-bold"
+              class="w-40 p-1 rounded-2xl border border-solid border-black shadow-buttonShadow transition-all hover:font-bold"
               id="addImageButton"
             >
               Ajouter les images
@@ -349,7 +352,7 @@
               </div>
             </div>
             <button
-              class="h-16 w-16 border border-fourth shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
+              class="h-16 w-16 border border-black shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
               id="displayInfoButton"
             >
               <img
@@ -373,7 +376,7 @@
           <div class="flex flex-col items-center">
             <div
               id="musicPart"
-              class="h-fit border border-solid border-fourth mx-5 p-2 rounded-xl overflow-hidden"
+              class="h-fit border border-solid border-black mx-5 p-2 rounded-xl overflow-hidden"
             >
               <p class="text-center font-bold underline">Musique</p>
               <ul
@@ -432,9 +435,9 @@
               <option value="./src/assets/gifs/here we go.gif">
                 C'est parti
               </option>
-              <option value="./src/assets/gifs/what now.gif">Quoi ?</option>
-              <option value="./src/assets/gifs/cheers.gif">Bien joué</option>
-              <option value="./src/assets/gifs/surprised.gif">Surprise</option>
+              <option value="./src/assets/gifs/what now.gif">Vraiment ?</option>
+              <option value="./src/assets/gifs/cheers.gif">Santé</option>
+              <option value="./src/assets/gifs/surprised.gif">Surpris</option>
               <option value="./src/assets/gifs/excited.gif">Chouette</option>
               <option value="./src/assets/gifs/fangirl.gif">Fangirl</option>
               <option value="./src/assets/gifs/nice.gif">Nice</option>
