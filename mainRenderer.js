@@ -653,6 +653,7 @@ const createTrackList = () => {
               tracklist,
               document.getElementById(`${loadedTrack.id}`)
             );
+            tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
           }
         }
         // L'appui sur la flèche de gauche lance la piste suivante
@@ -686,6 +687,7 @@ const createTrackList = () => {
               tracklist,
               document.getElementById(`${loadedTrack.id}`)
             );
+            tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
           }
         }
       }
@@ -935,6 +937,7 @@ previousButton.addEventListener("click", () => {
       tracklist,
       document.getElementById(`${loadedTrack.id}`)
     );
+    tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
   }
 });
 nextButton.addEventListener("click", () => {
@@ -961,6 +964,7 @@ nextButton.addEventListener("click", () => {
       tracklist,
       document.getElementById(`${loadedTrack.id}`)
     );
+    tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
   }
 });
 
@@ -1348,8 +1352,14 @@ document.addEventListener("keydown", (e) => {
 
 const addImageForm = document.getElementById("addImageForm");
 const addImageInput = document.getElementById("addImageInput");
+const displayImageBlock = document.getElementById("displayImageBlock");
+const displayInfoBlock = document.getElementById("displayInfoBlock");
 const imageList = document.getElementById("imageList");
 const clearImageList = document.getElementById("clearImageList");
+const displayInfoButton = document.getElementById("displayInfoButton");
+const firstRoundInput = document.getElementById("firstRoundInput");
+const secondRoundInput = document.getElementById("secondRoundInput");
+const displayRoundsInput = document.getElementById("displayRoundsInput");
 
 // addImageForm permet de sélectionner les images dont on veut récupérer le chemin d'accès
 addImageForm.addEventListener("submit", (e) => {
@@ -1367,14 +1377,21 @@ addImageForm.addEventListener("submit", (e) => {
     }
   });
   addImageInput.value = null;
+  addImageForm.classList.remove("bg-primary");
+});
+
+addImageInput.addEventListener("change", () => {
+  addImageForm.classList.add("bg-primary");
 });
 
 // L'imageList est chargée lorsque l'utilisateur a soumis le formulaire addImageForm
 imageList.addEventListener("change", () => {
   if (imageList.value === "video") {
     window.display.displayImage(null);
+    displayImageBlock.classList.remove("bg-primary");
   } else {
     window.display.displayImage(imageList.value);
+    displayImageBlock.classList.add("bg-primary");
   }
 });
 
@@ -1388,29 +1405,19 @@ clearImageList.addEventListener("click", () => {
       imageList.removeChild(imageList.lastChild);
     }
     window.display.displayImage(null);
+    displayImageBlock.classList.remove("bg-primary");
   }
-});
-
-//////////////////////// PARTIE MEDIA ////////////////////////
-
-const gifList = document.getElementById("gifList");
-const displayInfoButton = document.getElementById("displayInfoButton");
-const firstRoundInput = document.getElementById("firstRoundInput");
-const secondRoundInput = document.getElementById("secondRoundInput");
-const displayRoundsInput = document.getElementById("displayRoundsInput");
-const audioplayer = document.getElementById("audioplayer");
-const songTitleDisplay = document.getElementById("songTitleDisplay");
-const fadeButton = document.getElementById("fadeButton");
-
-// Lorsqu'une option est sélectionnée, le gif est affiché sur la secondaryWindow
-gifList.addEventListener("change", () => {
-  window.display.displayGif(gifList.value);
 });
 
 // le displayInfoButton permet d'afficher le carton des informations (par défaut, sans les informations de manches)
 displayInfoButton.addEventListener("click", () => {
   displayInfo = !displayInfo;
   window.display.displayInfo(displayInfo, displayRoundsState);
+  if (displayInfo) {
+    displayInfoBlock.classList.add("bg-primary");
+  } else {
+    displayInfoBlock.classList.remove("bg-primary");
+  }
 });
 
 // Les inputs ci-dessous permettent d'indiquer une heure de début pour chaque manche
@@ -1427,6 +1434,25 @@ displayRoundsInput.addEventListener("change", () => {
     displayRoundsState.isDisplay = true;
   } else {
     displayRoundsState.isDisplay = false;
+  }
+});
+
+//////////////////////// PARTIE MEDIA ////////////////////////
+
+const musicPart = document.getElementById("musicPart");
+const audioplayer = document.getElementById("audioplayer");
+const songTitleDisplay = document.getElementById("songTitleDisplay");
+const fadeButton = document.getElementById("fadeButton");
+const gifBlock = document.getElementById("gifBlock");
+const gifList = document.getElementById("gifList");
+
+// Lorsqu'une option est sélectionnée, le gif est affiché sur la secondaryWindow
+gifList.addEventListener("change", () => {
+  window.display.displayGif(gifList.value);
+  if (gifList.value !== "") {
+    gifBlock.classList.add("bg-primary");
+  } else {
+    gifBlock.classList.remove("bg-primary");
   }
 });
 
@@ -1447,6 +1473,11 @@ audioplayer.addEventListener("play", () => {
     window.player.mute();
     mute = !mute;
   }
+  musicPart.classList.add("bg-primary");
+});
+
+audioplayer.addEventListener("pause", () => {
+  musicPart.classList.remove("bg-primary");
 });
 
 // Lorsque le bouton fade est cliqué alors qu'une musique est jouée dans l'audioplayer, un fondu automatique est effectué pour reprendre le volume initial de la video
@@ -1481,6 +1512,7 @@ fadeButton.addEventListener("click", () => {
         audioplayer.pause();
         audioplayer.volume = 1;
         audioplayer.src = null;
+        musicPart.classList.remove("bg-primary");
       }
     }, 500);
   }

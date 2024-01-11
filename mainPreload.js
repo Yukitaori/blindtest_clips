@@ -36,6 +36,7 @@ const displaySlidingBackgroundColor = (input, firstColor, secondColor) => {
 // Cette fonction permet d'envoyer la track sélectionnée pour la lecture à la secondaryWindow et gère la mise à jour du state et tous les effets liés aux styles des boutons
 // Suppression de l'image affichée s'il y en a une + remise à zéro du select des images
 const playTrack = (track) => {
+  const displayImageBlock = document.getElementById("displayImageBlock");
   console.log(track);
   if (track) {
     const playButton = document.getElementById("playerplay");
@@ -44,6 +45,7 @@ const playTrack = (track) => {
     const imageList = document.getElementById("imageList");
     ipcRenderer.send("displayImage", null);
     imageList.value = "video";
+    displayImageBlock.classList.remove("bg-primary");
 
     ipcRenderer.send("playFile", track.path);
     playerState.loadedTrack = track;

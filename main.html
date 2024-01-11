@@ -285,9 +285,12 @@
           Cartons
         </h1>
         <div
-          class="min-h-[307px] flex justify-around items-center flex-wrap my-2"
+          class="min-h-[307px] flex justify-around items-center flex-wrap my-2 gap-4"
         >
-          <form id="addImageForm" class="flex flex-col items-center gap-4">
+          <form
+            id="addImageForm"
+            class="flex flex-col items-center gap-4 border border-black border-solid p-2 rounded-2xl transition-all"
+          >
             <p class="font-bold underline">Ajoute les images à la liste :</p>
             <input
               name="image"
@@ -295,17 +298,20 @@
               multiple="multiple"
               accept="image/*"
               id="addImageInput"
-              class="w-[120px] 2xl:w-fit"
+              class="w-[150px] 2xl:w-full p-1 text-transparent 2xl:text-black"
             />
             <button
               type="submit"
-              class="w-40 p-1 rounded-2xl border border-solid border-black shadow-buttonShadow transition-all hover:font-bold"
+              class="w-40 p-1 rounded-2xl border border-solid border-black shadow-buttonShadow transition-all hover:font-bold bg-third"
               id="addImageButton"
             >
               Ajouter les images
             </button>
           </form>
-          <div class="mt-2 flex flex-col items-center gap-4">
+          <div
+            class="flex flex-col items-center gap-2 border border-black border-solid p-2 rounded-2xl transition-all"
+            id="displayImageBlock"
+          >
             <p class="font-bold underline">Sélectionne l'image à afficher :</p>
             <select
               class="h-8 w-40 border border-solid border-black bg-third p-1 rounded-2xl"
@@ -320,10 +326,11 @@
               <p class="group-hover:scale-125">🗑️</p>
             </button>
           </div>
-          <div class="flex flex-col items-center gap-2">
-            <div
-              class="flex flex-col items-center gap-2 border border-black border-solid p-1 rounded-2xl"
-            >
+          <div
+            class="flex flex-col items-center gap-2 border border-black border-solid p-2 rounded-2xl transition-all"
+            id="displayInfoBlock"
+          >
+            <div class="flex flex-col items-center gap-2">
               <div class="flex flex-col gap-2">
                 <p class="text-center font-bold underline">
                   Horaires des manches
@@ -376,7 +383,7 @@
           <div class="flex flex-col items-center">
             <div
               id="musicPart"
-              class="h-fit border border-solid border-black mx-5 p-2 rounded-xl overflow-hidden"
+              class="h-fit border border-solid border-black mx-5 p-2 rounded-xl overflow-hidden transition-all"
             >
               <p class="text-center font-bold underline">Musique</p>
               <ul
@@ -423,7 +430,10 @@
               </button>
             </div>
           </div>
-          <div class="flex flex-col items-center gap-2">
+          <div
+            class="flex flex-col items-center gap-2 border border-black border-solid p-2 rounded-2xl transition-all"
+            id="gifBlock"
+          >
             <p class="text-center font-bold underline">
               Sélectionne le gif à afficher :
             </p>
