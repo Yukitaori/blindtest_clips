@@ -32,6 +32,8 @@ animateButtons();
 let selectedTracks = [];
 // La loadedTrack est la track chargée dans le player
 let loadedTrack;
+// mute permet de suivre l'état mute du videoplayer
+let mute = true;
 // La playlist permet  l'enregistrement des tracks dans leur oredre de diffusion
 let playlist = JSON.parse(window.localStorage.getItem("playlist")) || [];
 // Les draggedTracks sont les tracks qui sont dragguées lors du drag'n'drop
@@ -74,6 +76,7 @@ const showCompletePlaylistButton = document.getElementById(
 const clearTrackListButton = document.getElementById("clearTrackListButton");
 const categorySelect = document.getElementById("categorySelect");
 const tracklist = document.getElementById("tracklist");
+const tracklistLength = document.getElementById("tracklistLength");
 const dropzone = document.getElementById("dropzone");
 const timeControl = document.getElementById("timecontrol");
 const playButton = document.getElementById("playerplay");
@@ -331,13 +334,8 @@ const addListenersToGhostTrack = (ghostTrack, file, type) => {
         let index = 0;
         if (!draggedTracks.includes(file)) {
           draggedTracks.forEach((element) => {
-            if (element.id < file.id) {
-              playlist.splice(playlist.indexOf(element), 1);
-              playlist.splice(playlist.indexOf(file) - index, 0, element);
-            } else {
-              playlist.splice(playlist.indexOf(element), 1);
-              playlist.splice(playlist.indexOf(file) - index, 0, element);
-            }
+            playlist.splice(playlist.indexOf(element), 1);
+            playlist.splice(playlist.indexOf(file) - index, 0, element);
             selectedTracks.push(element);
             index++;
           });
@@ -377,13 +375,8 @@ const addListenersToGhostTrack = (ghostTrack, file, type) => {
       if (draggedTracks.length > 0) {
         if (!draggedTracks.includes(file)) {
           draggedTracks.forEach((element) => {
-            if (element.id < file.id) {
-              playlist.splice(playlist.indexOf(element), 1);
-              playlist.splice(playlist.indexOf(file) + 1, 0, element);
-            } else {
-              playlist.splice(playlist.indexOf(element), 1);
-              playlist.splice(playlist.indexOf(file) + 1, 0, element);
-            }
+            playlist.splice(playlist.indexOf(element), 1);
+            playlist.splice(playlist.indexOf(file) + 1, 0, element);
             selectedTracks.push(element);
           });
         }
@@ -463,6 +456,7 @@ const createTrackList = () => {
         selectedTracks.splice(selectedTracks[selectedTracks.indexOf(file)], 1);
       });
       window.player.playFile(file);
+      if (!mute) mute = true;
       if (loadedTrack) {
         changeTrackBehavior(
           document.getElementById(`${loadedTrack.id}`),
@@ -471,6 +465,9 @@ const createTrackList = () => {
         );
       }
       loadedTrack = file;
+      loadedTrack
+        ? (tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`)
+        : (tracklistLength.innerText = `0 / ${playlist.length}`);
       changeTrackBehavior(track, file, "loaded");
       loadedTrack.paused = false;
     });
@@ -546,7 +543,11 @@ const createTrackList = () => {
           });
           selectedTracks = [];
           window.player.playFile(file);
+          if (!mute) mute = true;
           loadedTrack = file;
+          loadedTrack
+            ? (tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`)
+            : (tracklistLength.innerText = `0 / ${playlist.length}`);
           changeTrackBehavior(
             document.getElementById(`${loadedTrack.id}`),
             playlist[loadedTrack.id],
@@ -575,7 +576,10 @@ const createTrackList = () => {
           e.key === "m" &&
           (keyDownState[e.key] === false || !keyDownState[e.key])
         ) {
-          window.player.mute();
+          if (loadedTrack) {
+            window.player.mute();
+            mute = !mute;
+          }
         }
         // L'appui sur la touche V remet le volume à 100%
         if (
@@ -625,6 +629,7 @@ const createTrackList = () => {
         ) {
           e.preventDefault();
           window.player.previousTrack();
+          if (!mute) mute = true;
           if (parseInt(loadedTrack.id) - 1 >= 0) {
             selectedTracks.forEach((selectedTrack) => {
               let trackListLine = document.getElementById(
@@ -648,6 +653,7 @@ const createTrackList = () => {
               tracklist,
               document.getElementById(`${loadedTrack.id}`)
             );
+            tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
           }
         }
         // L'appui sur la flèche de gauche lance la piste suivante
@@ -657,6 +663,7 @@ const createTrackList = () => {
         ) {
           e.preventDefault();
           window.player.nextTrack();
+          if (!mute) mute = true;
           if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
             selectedTracks.forEach((selectedTrack) => {
               let trackListLine = document.getElementById(
@@ -680,6 +687,7 @@ const createTrackList = () => {
               tracklist,
               document.getElementById(`${loadedTrack.id}`)
             );
+            tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
           }
         }
       }
@@ -754,13 +762,8 @@ const createTrackList = () => {
           if (!draggedTracks.includes(file)) {
             let index = 0;
             draggedTracks.forEach((element) => {
-              if (element.id < file.id) {
-                playlist.splice(playlist.indexOf(element), 1);
-                playlist.splice(playlist.indexOf(file) - index, 0, element);
-              } else {
-                playlist.splice(playlist.indexOf(element), 1);
-                playlist.splice(playlist.indexOf(file) - index, 0, element);
-              }
+              playlist.splice(playlist.indexOf(element), 1);
+              playlist.splice(playlist.indexOf(file) - index, 0, element);
               selectedTracks.push(element);
               index++;
             });
@@ -769,13 +772,8 @@ const createTrackList = () => {
         } else {
           if (!draggedTracks.includes(file)) {
             draggedTracks.forEach((element) => {
-              if (element.id < file.id) {
-                playlist.splice(playlist.indexOf(element), 1);
-                playlist.splice(playlist.indexOf(file) + 1, 0, element);
-              } else {
-                playlist.splice(playlist.indexOf(element), 1);
-                playlist.splice(playlist.indexOf(file) + 1, 0, element);
-              }
+              playlist.splice(playlist.indexOf(element), 1);
+              playlist.splice(playlist.indexOf(file) + 1, 0, element);
               selectedTracks.push(element);
             });
           }
@@ -840,6 +838,9 @@ const createTrackList = () => {
   window.player.getPlaylist(playlist);
   window.player.getPlaylist(playlist);
   window.localStorage.setItem("playlist", JSON.stringify(playlist));
+  loadedTrack
+    ? (tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`)
+    : (tracklistLength.innerText = `0 / ${playlist.length}`);
 };
 createTrackList();
 
@@ -907,10 +908,14 @@ stopButton.addEventListener("click", () => {
   window.player.stop();
 });
 muteButton.addEventListener("click", () => {
-  if (loadedTrack) window.player.mute();
+  if (loadedTrack) {
+    window.player.mute();
+    mute = !mute;
+  }
 });
 previousButton.addEventListener("click", () => {
   window.player.previousTrack();
+  if (!mute) mute = true;
   if (parseInt(loadedTrack.id) - 1 >= 0) {
     selectedTracks.forEach((selectedTrack) => {
       let trackListLine = document.getElementById(`${selectedTrack.id}`);
@@ -932,10 +937,12 @@ previousButton.addEventListener("click", () => {
       tracklist,
       document.getElementById(`${loadedTrack.id}`)
     );
+    tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
   }
 });
 nextButton.addEventListener("click", () => {
   window.player.nextTrack();
+  if (!mute) mute = true;
   if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
     selectedTracks.forEach((selectedTrack) => {
       let trackListLine = document.getElementById(`${selectedTrack.id}`);
@@ -957,6 +964,7 @@ nextButton.addEventListener("click", () => {
       tracklist,
       document.getElementById(`${loadedTrack.id}`)
     );
+    tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
   }
 });
 
@@ -1343,13 +1351,19 @@ document.addEventListener("keydown", (e) => {
 //////////////////////// PARTIE IMAGES ////////////////////////
 
 const addImageForm = document.getElementById("addImageForm");
+const addImageInput = document.getElementById("addImageInput");
+const displayImageBlock = document.getElementById("displayImageBlock");
+const displayInfoBlock = document.getElementById("displayInfoBlock");
 const imageList = document.getElementById("imageList");
 const clearImageList = document.getElementById("clearImageList");
+const displayInfoButton = document.getElementById("displayInfoButton");
+const firstRoundInput = document.getElementById("firstRoundInput");
+const secondRoundInput = document.getElementById("secondRoundInput");
+const displayRoundsInput = document.getElementById("displayRoundsInput");
 
 // addImageForm permet de sélectionner les images dont on veut récupérer le chemin d'accès
 addImageForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  const addImageInput = document.getElementById("addImageInput");
   Object.values(addImageInput.files).forEach((image) => {
     if (image.type.includes("image")) {
       let imageOption = document.createElement("option");
@@ -1363,14 +1377,21 @@ addImageForm.addEventListener("submit", (e) => {
     }
   });
   addImageInput.value = null;
+  addImageForm.classList.remove("bg-primary");
+});
+
+addImageInput.addEventListener("change", () => {
+  addImageForm.classList.add("bg-primary");
 });
 
 // L'imageList est chargée lorsque l'utilisateur a soumis le formulaire addImageForm
 imageList.addEventListener("change", () => {
   if (imageList.value === "video") {
     window.display.displayImage(null);
+    displayImageBlock.classList.remove("bg-primary");
   } else {
     window.display.displayImage(imageList.value);
+    displayImageBlock.classList.add("bg-primary");
   }
 });
 
@@ -1384,28 +1405,19 @@ clearImageList.addEventListener("click", () => {
       imageList.removeChild(imageList.lastChild);
     }
     window.display.displayImage(null);
+    displayImageBlock.classList.remove("bg-primary");
   }
-});
-
-//////////////////////// PARTIE MEDIA ////////////////////////
-
-const gifList = document.getElementById("gifList");
-const displayInfoButton = document.getElementById("displayInfoButton");
-const firstRoundInput = document.getElementById("firstRoundInput");
-const secondRoundInput = document.getElementById("secondRoundInput");
-const displayRoundsInput = document.getElementById("displayRoundsInput");
-const audioplayer = document.getElementById("audioplayer");
-const songTitleDisplay = document.getElementById("songTitleDisplay");
-
-// Lorsqu'une option est sélectionnée, le gif est affiché sur la secondaryWindow
-gifList.addEventListener("change", () => {
-  window.display.displayGif(gifList.value);
 });
 
 // le displayInfoButton permet d'afficher le carton des informations (par défaut, sans les informations de manches)
 displayInfoButton.addEventListener("click", () => {
   displayInfo = !displayInfo;
   window.display.displayInfo(displayInfo, displayRoundsState);
+  if (displayInfo) {
+    displayInfoBlock.classList.add("bg-primary");
+  } else {
+    displayInfoBlock.classList.remove("bg-primary");
+  }
 });
 
 // Les inputs ci-dessous permettent d'indiquer une heure de début pour chaque manche
@@ -1425,6 +1437,25 @@ displayRoundsInput.addEventListener("change", () => {
   }
 });
 
+//////////////////////// PARTIE MEDIA ////////////////////////
+
+const musicPart = document.getElementById("musicPart");
+const audioplayer = document.getElementById("audioplayer");
+const songTitleDisplay = document.getElementById("songTitleDisplay");
+const fadeButton = document.getElementById("fadeButton");
+const gifBlock = document.getElementById("gifBlock");
+const gifList = document.getElementById("gifList");
+
+// Lorsqu'une option est sélectionnée, le gif est affiché sur la secondaryWindow
+gifList.addEventListener("change", () => {
+  window.display.displayGif(gifList.value);
+  if (gifList.value !== "") {
+    gifBlock.classList.add("bg-primary");
+  } else {
+    gifBlock.classList.remove("bg-primary");
+  }
+});
+
 // Cette boucle permet d'initialiser les boutons de la songList en fonction des informations de la songLibrary
 for (let song of songsLibrary) {
   let trackbutton = document.getElementById(song.id);
@@ -1435,6 +1466,54 @@ for (let song of songsLibrary) {
   });
 }
 
+// Lorsque la chanson est jouée, le mute est fait automatiquement sur le clip
 audioplayer.addEventListener("play", () => {
-  window.player.mute();
+  audioplayer.volume = 1;
+  if (!mute) {
+    window.player.mute();
+    mute = !mute;
+  }
+  musicPart.classList.add("bg-primary");
+});
+
+audioplayer.addEventListener("pause", () => {
+  musicPart.classList.remove("bg-primary");
+});
+
+// Lorsque le bouton fade est cliqué alors qu'une musique est jouée dans l'audioplayer, un fondu automatique est effectué pour reprendre le volume initial de la video
+fadeButton.addEventListener("click", () => {
+  let initialVolume = volumeControl.value;
+  if (!audioplayer.paused) {
+    if (mute) {
+      window.player.mute();
+      mute = !mute;
+    }
+    volumeControl.value = 0;
+    window.player.changeVolume(volumeControl.value);
+    window.player.displaySlidingBackgroundColor(
+      volumeControl,
+      "fifth",
+      "third"
+    );
+    let fadeInterval = setInterval(() => {
+      if (Number(audioplayer.volume) > 0 && Number(audioplayer.volume) <= 1) {
+        audioplayer.volume = Math.floor((audioplayer.volume - 0.1) * 100) / 100;
+        if (volumeControl.value < initialVolume) {
+          volumeControl.value = Number(volumeControl.value) + 0.1;
+        }
+        window.player.changeVolume(volumeControl.value);
+        window.player.displaySlidingBackgroundColor(
+          volumeControl,
+          "fifth",
+          "third"
+        );
+      } else {
+        clearInterval(fadeInterval);
+        audioplayer.pause();
+        audioplayer.volume = 1;
+        audioplayer.src = null;
+        musicPart.classList.remove("bg-primary");
+      }
+    }, 500);
+  }
 });
