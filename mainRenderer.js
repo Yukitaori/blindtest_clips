@@ -573,7 +573,7 @@ const createTrackList = () => {
         }
         // L'appui sur la touche M active/désactive le mute sur la video
         if (
-          e.key === "m" &&
+          (e.key === "m" || e.key === "M") &&
           (keyDownState[e.key] === false || !keyDownState[e.key])
         ) {
           if (loadedTrack) {
@@ -583,7 +583,7 @@ const createTrackList = () => {
         }
         // L'appui sur la touche V remet le volume à 100%
         if (
-          e.key === "v" &&
+          (e.key === "v" || e.key === "V") &&
           (keyDownState[e.key] === false || !keyDownState[e.key])
         ) {
           volumeControl.value = 1;
@@ -689,6 +689,13 @@ const createTrackList = () => {
             );
             tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
           }
+        }
+        if (
+          (e.key === "F" || e.key === "f") &&
+          (keyDownState[e.key] === false || !keyDownState[e.key]) &&
+          e.ctrlKey
+        ) {
+          window.player.setFullScreen();
         }
       }
       keyDownState[e.key] = true;

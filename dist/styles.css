@@ -1409,12 +1409,6 @@ video {
   font-weight: 700;
 }
 
-@media (min-width: 640px) {
-  .sm\:justify-around {
-    justify-content: space-around;
-  }
-}
-
 @media (min-width: 1280px) {
   .xl\:w-\[50\%\] {
     width: 50%;

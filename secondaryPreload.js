@@ -1,4 +1,5 @@
-const { ipcRenderer } = require("electron");
+const { contextBridge, ipcRenderer } = require("electron");
+
 // Le tableau d'intervales permet de stocker les différentes intervales, puis de les supprimer lorsque l'on n'en a plus besoin
 const intervals = [];
 
@@ -355,4 +356,10 @@ ipcRenderer.on("displayInfo", (event, isDisplay, displayRoundsState) => {
     roundsDisplay.classList.remove("flex");
     roundsDisplay.classList.add("hidden");
   }
+});
+
+contextBridge.exposeInMainWorld("player", {
+  setFullScreen: () => {
+    ipcRenderer.send("fullscreen");
+  },
 });
