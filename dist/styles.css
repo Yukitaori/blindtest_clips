@@ -699,6 +699,10 @@ video {
   height: 300px;
 }
 
+.h-\[34px\] {
+  height: 34px;
+}
+
 .h-\[40\%\] {
   height: 40%;
 }
@@ -1294,10 +1298,6 @@ video {
   color: rgb(254 250 224 / var(--tw-text-opacity));
 }
 
-.text-transparent {
-  color: transparent;
-}
-
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
@@ -1462,10 +1462,5 @@ video {
   .\32xl\:text-base {
     font-size: 1rem;
     line-height: 1.5rem;
-  }
-
-  .\32xl\:text-black {
-    --tw-text-opacity: 1;
-    color: rgb(0 0 0 / var(--tw-text-opacity));
   }
 }

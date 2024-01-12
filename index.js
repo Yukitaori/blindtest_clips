@@ -104,7 +104,6 @@ const createWindows = (screens) => {
 
   // Gestion du FullScreen de la secondaryWindow (lors du double-click sur l'écran 2 ou ctl+f sur l'écran 1)
   ipcMain.on("fullscreen", () => {
-    console.log(secondaryWindow.fullScreen);
     if (secondaryWindow.fullScreen) {
       secondaryWindow.setFullScreen(false);
       secondaryWindow.setMenuBarVisibility(true);
