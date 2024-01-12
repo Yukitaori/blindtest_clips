@@ -13,7 +13,31 @@
     <link href="./dist/styles.css" rel="stylesheet" />
     <title>Main window</title>
   </head>
-  <body class="bg-third relative">
+  <body
+    class="bg-third relative w-full min-w-fit h-full min-h-fit overflow-auto"
+  >
+    <div
+      id="infoModal"
+      class="hidden bg-transparentDisplay absolute top-0 w-full h-full justify-center items-items overflow-hidden z-50"
+    >
+      <div
+        class="m-4 my-[5vh] w-[90vw] h-[90vh] max-h-[90%] flex bg-third rounded-3xl relative"
+      >
+        <button
+          class="absolute top-2 right-2 h-10 w-10 shadow-buttonShadow flex justify-center items-center border border-solid border-black rounded-3xl transition-all group"
+          id="infoModalCloseButton"
+        >
+          <img
+            src="./src/assets/icons/close.png"
+            class="h-4 w-4 group-hover:scale-125 transition-all"
+          />
+        </button>
+        <div class="p-4 mt-12" id="infoContent">
+          <h1>Bonjour,</h1>
+          <p>La section Info est en cours de rédaction.</p>
+        </div>
+      </div>
+    </div>
     <div class="flex justify-between flex-wrap text-fourth">
       <section
         id="videoside"
@@ -294,7 +318,7 @@
             <p class="font-bold underline">Ajoute les images à la liste :</p>
             <label
               for="addImageInput"
-              class="h-[34px] rounded-2xl border border-solid border-black shadow-buttonShadow transition-all bg-third w-[150px] 2xl:w-full flex justify-center items-center cursor-pointer p-1 group"
+              class="w-32 h-[34px] rounded-2xl border border-solid border-black shadow-buttonShadow transition-all bg-third w-[150px] 2xl:w-full flex justify-center items-center cursor-pointer p-1 group"
               id="addImageLabel"
             >
               <img

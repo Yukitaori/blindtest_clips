@@ -1,3 +1,13 @@
+//////////////////////// MENU ////////////////////////
+
+// la modale d'info sur l'appli est affichée lors du clic sur le menuItem "Info" dans le menu de l'app
+let infoModalCloseButton = document.getElementById("infoModalCloseButton");
+let infoModal = document.getElementById("infoModal");
+infoModalCloseButton.addEventListener("click", () => {
+  infoModal.classList.remove("flex");
+  infoModal.classList.add("hidden");
+});
+
 //////////////////////// GENERAL ////////////////////////
 
 // le keyDownState enregistre l'état appuyé ou non des différentes touches, afin d'éviter le repeat lors du keydown

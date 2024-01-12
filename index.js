@@ -1,5 +1,27 @@
-const { app, BrowserWindow, ipcMain, screen } = require("electron");
+const {
+  app,
+  Menu,
+  MenuItem,
+  BrowserWindow,
+  ipcMain,
+  screen,
+} = require("electron");
 const path = require("node:path");
+
+// Fonction de création du menu custom de l'appli
+const createMenu = (defaultMenu, win) => {
+  let newMenu = new Menu();
+  const info = new MenuItem({
+    label: "Info",
+    id: "info",
+    click: () => {
+      win.webContents.send("openInfoMenu");
+    },
+  });
+  defaultMenu.items.forEach((item) => newMenu.append(item));
+  newMenu.append(info);
+  return newMenu;
+};
 
 const createWindows = (screens) => {
   // Création de la fenêtre principale
@@ -112,11 +134,14 @@ const createWindows = (screens) => {
       secondaryWindow.setMenuBarVisibility(false);
     }
   });
+  return { mainWindow, secondaryWindow };
 };
 
 app.whenReady().then(() => {
   const displays = screen.getAllDisplays();
-  createWindows(displays);
+  let { mainWindow } = createWindows(displays);
+  const defaultMenu = Menu.getApplicationMenu();
+  mainWindow.setMenu(createMenu(defaultMenu, mainWindow));
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindows();

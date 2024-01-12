@@ -252,3 +252,10 @@ ipcRenderer.on("videoover", () => {
   pauseButton.classList.remove("bg-orange-800");
   displaySlidingBackgroundColor(timeControl, "primary", "third");
 });
+
+// Ecoute du message openInfoMenu, qui ouvre une modale contenant les informations liées à l'appli lors du clic sur le menuItem "Info" dans la barre de menu
+ipcRenderer.on("openInfoMenu", () => {
+  let infoModal = document.getElementById("infoModal");
+  infoModal.classList.remove("hidden");
+  infoModal.classList.add("flex");
+});
