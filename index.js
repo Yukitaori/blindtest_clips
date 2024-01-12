@@ -21,9 +21,11 @@ const createWindows = (screens) => {
     },
   });
   secondaryWindow.loadFile("secondary.html");
+
   if (screens[1]) {
     secondaryWindow.setPosition(screens[1].bounds.x, screens[1].bounds.y);
     secondaryWindow.setFullScreen(true);
+    secondaryWindow.setMenuBarVisibility(false);
   }
 
   // Gestion des messages liés au player
@@ -92,13 +94,23 @@ const createWindows = (screens) => {
   ipcMain.on("displayGif", (event, path) => {
     secondaryWindow.webContents.send("displayGif", path);
   });
-
   ipcMain.on("displayInfo", (event, isDisplay, displayRoundsState) => {
     secondaryWindow.webContents.send(
       "displayInfo",
       isDisplay,
       displayRoundsState
     );
+  });
+
+  // Gestion du FullScreen de la secondaryWindow (lors du double-click sur l'écran 2 ou ctl+f sur l'écran 1)
+  ipcMain.on("fullscreen", () => {
+    if (secondaryWindow.fullScreen) {
+      secondaryWindow.setFullScreen(false);
+      secondaryWindow.setMenuBarVisibility(true);
+    } else {
+      secondaryWindow.setFullScreen(true);
+      secondaryWindow.setMenuBarVisibility(false);
+    }
   });
 };
 

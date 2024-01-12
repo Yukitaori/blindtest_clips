@@ -190,6 +190,10 @@ contextBridge.exposeInMainWorld("player", {
   stopGetCurrent: () => {
     ipcRenderer.send("stopGetCurrent");
   },
+
+  setFullScreen: () => {
+    ipcRenderer.send("fullscreen");
+  },
 });
 
 contextBridge.exposeInMainWorld("display", {
