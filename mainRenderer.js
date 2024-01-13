@@ -134,7 +134,7 @@ categorySelect.addEventListener("change", () => {
 
 // Cette fonction permet d'effacer ou non le numéro en amont de chaque nom de fichier dans le nom de la track en fonction de l'état de eraseFileNameNumberPart
 const cleanFileName = (name) => {
-  let filenamePartToErase = new RegExp(/^[0-9]{0,}.{0,}-/g);
+  let filenamePartToErase = new RegExp(/^[0-9]{0,}\s{0,}-{0,1}_{0,1}/g);
   return eraseFileNameNumberPart ? name.replace(filenamePartToErase, "") : name;
 };
 
