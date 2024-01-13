@@ -17,7 +17,7 @@
     <div class="flex justify-between flex-wrap text-fourth">
       <section
         id="videoside"
-        class="w-full xl:w-[50%] min-w-[600px] border-2 border-black border-solid"
+        class="md:w-[50%] min-w-[550px] border-2 border-black border-solid flex-grow"
       >
         <div id="playlist">
           <h1
@@ -46,6 +46,12 @@
                 <option value="10">10</option>
               </select>
             </label>
+            <button
+              class="h-8 w-8 border border-black shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
+              id="eraseFileNamePartButton"
+            >
+              <p class="text-center group-hover:scale-125 line-through">01</p>
+            </button>
             <button
               class="h-8 w-8 border border-black shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
               id="showTrackNumberButton"
@@ -207,7 +213,7 @@
       </section>
       <section
         id="scoreside"
-        class="w-full xl:w-[50%] min-w-[600px] border-2 border-black border-solid"
+        class="md:w-[50%] min-w-[550px] border-2 border-black border-solid flex-grow"
       >
         <h1
           class="text-2xl font-bold text-center border-b-2 border-black border-solid bg-fifth text-primary"
@@ -277,7 +283,7 @@
       </section>
       <section
         id="pictureside"
-        class="w-full xl:w-[50%] min-w-[600px] border-2 border-black border-solid"
+        class="md:w-[50%] min-w-[550px] border-2 border-black border-solid flex-grow"
       >
         <h1
           class="text-2xl font-bold text-center border-b-2 border-black border-solid bg-fifth text-primary"
@@ -381,18 +387,20 @@
       </section>
       <section
         id="mediaside"
-        class="w-full xl:w-[50%] min-w-[600px] border-2 border-black border-solid"
+        class="md:w-[50%] min-w-[550px] border-2 border-black border-solid flex-grow"
       >
         <h1
           class="text-2xl font-bold text-center border-b-2 border-black border-solid bg-fifth text-primary"
         >
           Media
         </h1>
-        <div class="min-h-[307px] flex justify-around items-center my-2">
+        <div
+          class="min-h-[307px] flex justify-around items-center gap-2 flex-wrap m-2"
+        >
           <div class="flex flex-col items-center">
             <div
               id="musicPart"
-              class="h-fit border border-solid border-black mx-5 p-2 rounded-xl overflow-hidden transition-all"
+              class="h-fit border border-solid border-black p-2 rounded-xl overflow-hidden transition-all"
             >
               <p class="text-center font-bold underline">Musique</p>
               <ul

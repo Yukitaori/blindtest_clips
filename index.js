@@ -4,14 +4,15 @@ const path = require("node:path");
 const createWindows = (screens) => {
   // Création de la fenêtre principale
   const mainWindow = new BrowserWindow({
-    width: 1300,
-    height: 800,
+    width: 1280,
+    height: 720,
     webPreferences: {
       preload: path.join(__dirname, "mainPreload.js"),
     },
   });
   mainWindow.loadFile("main.html");
   mainWindow.setPosition(screens[0].bounds.x, screens[0].bounds.y);
+  mainWindow.setFullScreen(true);
 
   // Création de la fenêtre secondaire : si deux écrans ou plus sont branchés,
   // la fenêtre est automatiquement en fullscreen sur l'écran 2
