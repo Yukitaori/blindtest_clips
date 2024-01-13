@@ -1520,6 +1520,7 @@ fadeButton.addEventListener("click", () => {
         audioplayer.volume = 1;
         audioplayer.src = null;
         musicPart.classList.remove("bg-primary");
+        songTitleDisplay.innerText = "Sélectionne la musique";
       }
     }, 500);
   }
