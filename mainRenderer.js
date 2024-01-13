@@ -42,6 +42,8 @@ let draggedTracks = [];
 let textFocus = false;
 // Le displayTrackNumber permet de vérifier si le bouton d'affichage du numéro de piste a été coché ou non
 let displayTrackNumber = false;
+// Le displayTrackNumber permet de vérifier si le bouton d'affichage du numéro du nom de fichier a été coché ou non
+let eraseFileNameNumberPart = false;
 // Le displayInfo permet de savoir si le carton d'info est actuellement affiché ou non sur la secondaryWindow
 let displayInfo = false;
 // Le displayRoundsState permet la gestion de l'affichage ou non des différents horaires des manches
@@ -70,6 +72,9 @@ let songsLibrary = [
 
 const roundSelect = document.getElementById("roundSelect");
 const showTrackNumberButton = document.getElementById("showTrackNumberButton");
+const eraseFileNamePartButton = document.getElementById(
+  "eraseFileNamePartButton"
+);
 const showCompletePlaylistButton = document.getElementById(
   "showCompletePlaylistButton"
 );
@@ -127,6 +132,43 @@ categorySelect.addEventListener("change", () => {
   categorySelect.value = "";
 });
 
+// Cette fonction permet d'effacer ou non le numéro en amont de chaque nom de fichier dans le nom de la track en fonction de l'état de eraseFileNameNumberPart
+const cleanFileName = (name) => {
+  let filenamePartToErase = new RegExp(/^[0-9]{0,}.{0,}-/g);
+  return eraseFileNameNumberPart ? name.replace(filenamePartToErase, "") : name;
+};
+
+// Cette fonction boucle à travers les tracks de la tracklist pour modifier le nom de la track
+const changeTrackTitles = () => {
+  for (let i = 0; i < tracklist.children.length; i++) {
+    let trackToModify = tracklist.children.item(i);
+    trackToModify.querySelector("button").innerText = displayTrackNumber
+      ? `${playlist[trackToModify.id].round
+          ?.toString()
+          .padStart(2, "0")} - ${playlist[trackToModify.id].trackNumber
+          .toString()
+          .padStart(2, "0")} - ${cleanFileName(
+          playlist[trackToModify.id].name
+        )}`
+      : `${playlist[trackToModify.id].round
+          ?.toString()
+          .padStart(2, "0")} - ${cleanFileName(
+          playlist[trackToModify.id].name
+        )}`;
+  }
+};
+
+// Le eraseFileNamePartButton permet d'effacer ou non le numéro en amont de chaque nom de fichier dans le nom de la track
+eraseFileNamePartButton.addEventListener("click", () => {
+  eraseFileNameNumberPart = !eraseFileNameNumberPart;
+  if (eraseFileNameNumberPart) {
+    eraseFileNamePartButton.classList.add("bg-fifth", "text-third");
+  } else {
+    eraseFileNamePartButton.classList.remove("bg-fifth", "text-third");
+  }
+  changeTrackTitles();
+});
+
 // Le showTrackNumberButton permet d'afficher ou non le numéro de piste de chaque track
 showTrackNumberButton.addEventListener("click", () => {
   displayTrackNumber = !displayTrackNumber;
@@ -135,7 +177,7 @@ showTrackNumberButton.addEventListener("click", () => {
   } else {
     showTrackNumberButton.classList.remove("bg-fifth", "text-third");
   }
-  createTrackList();
+  changeTrackTitles();
 });
 
 // Cet événement permet d'afficher une modale pour visualiser toute la playlist
@@ -835,8 +877,10 @@ const createTrackList = () => {
     trackbutton.innerText = displayTrackNumber
       ? `${file.round?.toString().padStart(2, "0")} - ${file.trackNumber
           .toString()
-          .padStart(2, "0")} - ${file.name}`
-      : `${file.round?.toString().padStart(2, "0")} - ${file.name}`;
+          .padStart(2, "0")} - ${cleanFileName(file.name)}`
+      : `${file.round?.toString().padStart(2, "0")} - ${cleanFileName(
+          file.name
+        )}`;
     track.appendChild(trackbutton);
     tracklist.appendChild(track);
     dropzone.appendChild(tracklist);
@@ -1446,6 +1490,9 @@ displayRoundsInput.addEventListener("change", () => {
 
 //////////////////////// PARTIE MEDIA ////////////////////////
 
+// fadeRunning permet d'éviter les clics multiples sur le bouton fade lorsque le fade est en cours
+let fadeRunning = false;
+
 const musicPart = document.getElementById("musicPart");
 const audioplayer = document.getElementById("audioplayer");
 const songTitleDisplay = document.getElementById("songTitleDisplay");
@@ -1490,7 +1537,8 @@ audioplayer.addEventListener("pause", () => {
 // Lorsque le bouton fade est cliqué alors qu'une musique est jouée dans l'audioplayer, un fondu automatique est effectué pour reprendre le volume initial de la video
 fadeButton.addEventListener("click", () => {
   let initialVolume = volumeControl.value;
-  if (!audioplayer.paused) {
+  if (!audioplayer.paused && !fadeRunning) {
+    fadeRunning = true;
     if (mute) {
       window.player.mute();
       mute = !mute;
@@ -1521,6 +1569,7 @@ fadeButton.addEventListener("click", () => {
         audioplayer.src = null;
         musicPart.classList.remove("bg-primary");
         songTitleDisplay.innerText = "Sélectionne la musique";
+        fadeRunning = false;
       }
     }, 500);
   }
