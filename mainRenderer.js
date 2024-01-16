@@ -1044,7 +1044,7 @@ window.player.displaySlidingBackgroundColor(volumeControl, "fifth", "third");
 //////////////////////// PARTIE TEAMLIST ////////////////////////
 
 // Teams stocke les informations relative à chaque équipe (nom, score)
-const teams = [];
+const teams = JSON.parse(window.localStorage.getItem("teams")) || [];
 let sortTeamsState = null;
 const sortAscAlphaButton = document.getElementById("sortAscAlpha");
 const sortDescAlphaButton = document.getElementById("sortDescAlpha");
@@ -1085,6 +1085,7 @@ const createTeamList = () => {
   for (let team of teams) {
     addTeamLine(team);
   }
+  window.localStorage.setItem("teams", JSON.stringify(teams));
 };
 
 // Logique de modification du score lors du clic sur les boutons
@@ -1306,6 +1307,7 @@ const addTeamLine = (teamToAdd) => {
     handleSort(sortTeamsState);
     createTeamList();
   });
+  window.localStorage.setItem("teams", JSON.stringify(teams));
 };
 
 // Au chargement de la fenêtre, la teamList est initialisée
