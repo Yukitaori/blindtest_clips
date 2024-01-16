@@ -667,6 +667,7 @@ const createTrackList = () => {
             window.player.pause();
             loadedTrack.paused = true;
           }
+          keyDownState[e.key] = true;
         }
         // L'appui sur la touche M active/désactive le mute sur la video
         if (
@@ -677,6 +678,7 @@ const createTrackList = () => {
             window.player.mute();
             mute = !mute;
           }
+          keyDownState[e.key] = true;
         }
         // L'appui sur la touche V remet le volume à 100%
         if (
@@ -690,6 +692,7 @@ const createTrackList = () => {
             "fifth",
             "third"
           );
+          keyDownState[e.key] = true;
         }
         // L'appui sur la flèche du haut augmente le volume de 25%
         if (
@@ -704,6 +707,7 @@ const createTrackList = () => {
             "fifth",
             "third"
           );
+          keyDownState[e.key] = true;
         }
         // L'appui sur la flèche du bas baisse le volume de 25%
         if (
@@ -718,6 +722,7 @@ const createTrackList = () => {
             "fifth",
             "third"
           );
+          keyDownState[e.key] = true;
         }
         // L'appui sur la flèche de gauche lance la piste précédente
         if (
@@ -726,6 +731,7 @@ const createTrackList = () => {
         ) {
           e.preventDefault();
           handleChangeTrack("previous");
+          keyDownState[e.key] = true;
         }
         // L'appui sur la flèche de gauche lance la piste suivante
         if (
@@ -734,6 +740,7 @@ const createTrackList = () => {
         ) {
           e.preventDefault();
           handleChangeTrack("next");
+          keyDownState[e.key] = true;
         }
         if (
           (e.key === "F" || e.key === "f") &&
@@ -741,9 +748,9 @@ const createTrackList = () => {
           e.ctrlKey
         ) {
           window.player.setFullScreen();
+          keyDownState[e.key] = true;
         }
       }
-      keyDownState[e.key] = true;
     });
 
     // Lorsque la touche est lâchée, le keyDownState correspondant est remis à false
@@ -1338,29 +1345,35 @@ document.addEventListener("keydown", (e) => {
     e.key === "F1" &&
     (keyDownState[e.key] === false || !keyDownState[e.key])
   ) {
+    e.preventDefault();
     resetDisplay();
+    keyDownState[e.key] = true;
   }
   // Lors de l'appui sur F2, le mode display passe sur video + scores
   if (
     e.key === "F2" &&
     (keyDownState[e.key] === false || !keyDownState[e.key])
   ) {
+    e.preventDefault();
     if (teams.length > 0) {
       resetDisplayButtonsStyle(videoAndScoresDisplayButton);
       window.display.displayVideoAndScores(teams);
     }
+    keyDownState[e.key] = true;
   }
   // Lors de l'appui sur F3, le mode display passe sur video + podium
   if (
     e.key === "F3" &&
     (keyDownState[e.key] === false || !keyDownState[e.key])
   ) {
+    e.preventDefault();
     if (teams.length > 0) {
       resetDisplayButtonsStyle(videoAndPodiumDisplayButton);
       window.display.displayVideoAndPodium(
         teams.sort((a, b) => b.score - a.score)
       );
     }
+    keyDownState[e.key] = true;
   }
 });
 
