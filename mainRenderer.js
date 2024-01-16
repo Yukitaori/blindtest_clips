@@ -44,10 +44,6 @@ let textFocus = false;
 let displayTrackNumber = false;
 // Le displayTrackNumber permet de vérifier si le bouton d'affichage du numéro du nom de fichier a été coché ou non
 let eraseFileNameNumberPart = false;
-// Le displayInfo permet de savoir si le carton d'info est actuellement affiché ou non sur la secondaryWindow
-let displayInfo = false;
-// Le displayRoundsState permet la gestion de l'affichage ou non des différents horaires des manches
-let displayRoundsState = { first: null, second: null, isDisplay: false };
 // La songsLibrary contient les liens et infos de chaque musique jouable dans l'audioplayer
 let songsLibrary = [
   {
@@ -156,6 +152,64 @@ const changeTrackTitles = () => {
           playlist[trackToModify.id].name
         )}`;
   }
+};
+
+// Cette fonction gère le changement de track et réinitialise le display par la même occasion
+const handleChangeTrack = (action) => {
+  if (action === "next") {
+    window.player.nextTrack();
+    if (!mute) mute = true;
+    if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
+      selectedTracks.forEach((selectedTrack) => {
+        let trackListLine = document.getElementById(`${selectedTrack.id}`);
+        changeTrackBehavior(trackListLine, selectedTrack, "unselected");
+      });
+      selectedTracks = [];
+      changeTrackBehavior(
+        document.getElementById(`${loadedTrack.id}`),
+        playlist[loadedTrack.id],
+        "unloaded"
+      );
+      loadedTrack = playlist[parseInt(loadedTrack.id) + 1];
+      changeTrackBehavior(
+        document.getElementById(`${loadedTrack.id}`),
+        loadedTrack,
+        "loaded"
+      );
+      scrollParentToChild(
+        tracklist,
+        document.getElementById(`${loadedTrack.id}`)
+      );
+      tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
+    }
+  } else if (action === "previous") {
+    window.player.previousTrack();
+    if (!mute) mute = true;
+    if (parseInt(loadedTrack.id) - 1 >= 0) {
+      selectedTracks.forEach((selectedTrack) => {
+        let trackListLine = document.getElementById(`${selectedTrack.id}`);
+        changeTrackBehavior(trackListLine, selectedTrack, "unselected");
+      });
+      selectedTracks = [];
+      changeTrackBehavior(
+        document.getElementById(`${loadedTrack.id}`),
+        playlist[loadedTrack.id],
+        "unloaded"
+      );
+      loadedTrack = playlist[parseInt(loadedTrack.id) - 1];
+      changeTrackBehavior(
+        document.getElementById(`${loadedTrack.id}`),
+        loadedTrack,
+        "loaded"
+      );
+      scrollParentToChild(
+        tracklist,
+        document.getElementById(`${loadedTrack.id}`)
+      );
+      tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
+    }
+  }
+  resetDisplay();
 };
 
 // Le eraseFileNamePartButton permet d'effacer ou non le numéro en amont de chaque nom de fichier dans le nom de la track
@@ -512,6 +566,7 @@ const createTrackList = () => {
         : (tracklistLength.innerText = `0 / ${playlist.length}`);
       changeTrackBehavior(track, file, "loaded");
       loadedTrack.paused = false;
+      resetDisplay();
     });
 
     // Le clic simple permet juste de sélectionner une piste
@@ -670,33 +725,7 @@ const createTrackList = () => {
           (keyDownState[e.key] === false || !keyDownState[e.key])
         ) {
           e.preventDefault();
-          window.player.previousTrack();
-          if (!mute) mute = true;
-          if (parseInt(loadedTrack.id) - 1 >= 0) {
-            selectedTracks.forEach((selectedTrack) => {
-              let trackListLine = document.getElementById(
-                `${selectedTrack.id}`
-              );
-              changeTrackBehavior(trackListLine, selectedTrack, "unselected");
-            });
-            selectedTracks = [];
-            changeTrackBehavior(
-              document.getElementById(`${loadedTrack.id}`),
-              playlist[loadedTrack.id],
-              "unloaded"
-            );
-            loadedTrack = playlist[parseInt(loadedTrack.id) - 1];
-            changeTrackBehavior(
-              document.getElementById(`${loadedTrack.id}`),
-              loadedTrack,
-              "loaded"
-            );
-            scrollParentToChild(
-              tracklist,
-              document.getElementById(`${loadedTrack.id}`)
-            );
-            tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
-          }
+          handleChangeTrack("previous");
         }
         // L'appui sur la flèche de gauche lance la piste suivante
         if (
@@ -704,33 +733,7 @@ const createTrackList = () => {
           (keyDownState[e.key] === false || !keyDownState[e.key])
         ) {
           e.preventDefault();
-          window.player.nextTrack();
-          if (!mute) mute = true;
-          if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
-            selectedTracks.forEach((selectedTrack) => {
-              let trackListLine = document.getElementById(
-                `${selectedTrack.id}`
-              );
-              changeTrackBehavior(trackListLine, selectedTrack, "unselected");
-            });
-            selectedTracks = [];
-            changeTrackBehavior(
-              document.getElementById(`${loadedTrack.id}`),
-              playlist[loadedTrack.id],
-              "unloaded"
-            );
-            loadedTrack = playlist[parseInt(loadedTrack.id) + 1];
-            changeTrackBehavior(
-              document.getElementById(`${loadedTrack.id}`),
-              loadedTrack,
-              "loaded"
-            );
-            scrollParentToChild(
-              tracklist,
-              document.getElementById(`${loadedTrack.id}`)
-            );
-            tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
-          }
+          handleChangeTrack("next");
         }
         if (
           (e.key === "F" || e.key === "f") &&
@@ -965,58 +968,10 @@ muteButton.addEventListener("click", () => {
   }
 });
 previousButton.addEventListener("click", () => {
-  window.player.previousTrack();
-  if (!mute) mute = true;
-  if (parseInt(loadedTrack.id) - 1 >= 0) {
-    selectedTracks.forEach((selectedTrack) => {
-      let trackListLine = document.getElementById(`${selectedTrack.id}`);
-      changeTrackBehavior(trackListLine, selectedTrack, "unselected");
-    });
-    selectedTracks = [];
-    changeTrackBehavior(
-      document.getElementById(`${loadedTrack.id}`),
-      playlist[loadedTrack.id],
-      "unloaded"
-    );
-    loadedTrack = playlist[parseInt(loadedTrack.id) - 1];
-    changeTrackBehavior(
-      document.getElementById(`${loadedTrack.id}`),
-      loadedTrack,
-      "loaded"
-    );
-    scrollParentToChild(
-      tracklist,
-      document.getElementById(`${loadedTrack.id}`)
-    );
-    tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
-  }
+  handleChangeTrack("previous");
 });
 nextButton.addEventListener("click", () => {
-  window.player.nextTrack();
-  if (!mute) mute = true;
-  if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
-    selectedTracks.forEach((selectedTrack) => {
-      let trackListLine = document.getElementById(`${selectedTrack.id}`);
-      changeTrackBehavior(trackListLine, selectedTrack, "unselected");
-    });
-    selectedTracks = [];
-    changeTrackBehavior(
-      document.getElementById(`${loadedTrack.id}`),
-      playlist[loadedTrack.id],
-      "unloaded"
-    );
-    loadedTrack = playlist[parseInt(loadedTrack.id) + 1];
-    changeTrackBehavior(
-      document.getElementById(`${loadedTrack.id}`),
-      loadedTrack,
-      "loaded"
-    );
-    scrollParentToChild(
-      tracklist,
-      document.getElementById(`${loadedTrack.id}`)
-    );
-    tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
-  }
+  handleChangeTrack("next");
 });
 
 // Gestion de l'input relative aux temps de la loadedTrack
@@ -1161,6 +1116,23 @@ const resetSortButtonsStyle = (clickedButton) => {
     "font-bold",
     "rounded-teamSettingsSelected"
   );
+};
+
+// Cette fonction gère la réinitialisation du display complet de la secondaryWindow
+const resetDisplay = () => {
+  resetDisplayButtonsStyle(videoOnlyDisplayButton);
+  window.display.displayVideoOnly();
+  imageList.value = "video";
+  window.display.displayImage(null);
+  displayImageBlock.classList.remove("bg-primary");
+  gifList.value = "";
+  window.display.displayGif(gifList.value);
+  gifBlock.classList.remove("bg-primary");
+  if (displayInfo) {
+    displayInfo = !displayInfo;
+    window.display.displayInfo(displayInfo, displayRoundsState);
+    displayInfoBlock.classList.remove("bg-primary");
+  }
 };
 
 // Création d'une ligne d'équipe
@@ -1366,16 +1338,7 @@ document.addEventListener("keydown", (e) => {
     e.key === "F1" &&
     (keyDownState[e.key] === false || !keyDownState[e.key])
   ) {
-    resetDisplayButtonsStyle(videoOnlyDisplayButton);
-    window.display.displayVideoOnly();
-    imageList.value = "video";
-    window.display.displayImage(null);
-    gifList.value = "";
-    window.display.displayGif(gifList.value);
-    if (displayInfo) {
-      displayInfo = !displayInfo;
-      window.display.displayInfo(displayInfo, displayRoundsState);
-    }
+    resetDisplay();
   }
   // Lors de l'appui sur F2, le mode display passe sur video + scores
   if (
@@ -1402,6 +1365,11 @@ document.addEventListener("keydown", (e) => {
 });
 
 //////////////////////// PARTIE IMAGES ////////////////////////
+
+// Le displayInfo permet de savoir si le carton d'info est actuellement affiché ou non sur la secondaryWindow
+let displayInfo = false;
+// Le displayRoundsState permet la gestion de l'affichage ou non des différents horaires des manches
+let displayRoundsState = { first: null, second: null, isDisplay: false };
 
 const addImageForm = document.getElementById("addImageForm");
 const addImageInput = document.getElementById("addImageInput");
