@@ -30,11 +30,9 @@ ipcRenderer.on("playFile", (event, path) => {
     ipcRenderer.send("duration", videoPlayer.duration.toFixed());
   });
   videoPlayer.addEventListener("ended", () => {
-    delete videoPlayer.src;
     clearInterval(intervals[0]);
     ipcRenderer.send("videoover");
     videoPlayer.src = "";
-    // TODO Mettre en place un écran noir lors de l'arrêt et supprimer la source
   });
 });
 
@@ -60,9 +58,8 @@ ipcRenderer.on("pause", () => {
 // Ecoute du message "stop" et arrêt de la video
 ipcRenderer.on("stop", () => {
   let videoPlayer = document.getElementById("videoplayer");
-  videoPlayer.load();
   clearInterval(intervals[0]);
-  // TODO Mettre en place un écran noir lors de l'arrêt et supprimer la source
+  videoPlayer.src = "";
 });
 
 // Ecoute du message "mute" et mise en silence de la video

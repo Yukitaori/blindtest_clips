@@ -1500,6 +1500,7 @@ for (let song of songsLibrary) {
     audioplayer.src = song.src;
     audioplayer.currentTime = song.start;
     songTitleDisplay.innerText = song.title;
+    audioplayer.play();
   });
 }
 
