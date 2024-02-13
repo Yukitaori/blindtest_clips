@@ -49,19 +49,19 @@ let songsLibrary = [
   {
     id: "song1",
     title: "Love Boat",
-    src: "./src/assets/music/Love Boat.mp3",
+    src: "../src/assets/music/Love Boat.mp3",
     start: 0,
   },
   {
     id: "song2",
     title: "Rocky - Win",
-    src: "./src/assets/music/Rocky.mp3",
+    src: "../src/assets/music/Rocky.mp3",
     start: 90,
   },
   {
     id: "song3",
     title: "Anniversaire",
-    src: "./src/assets/music/Joyeux Anniversaire.mp3",
+    src: "../src/assets/music/Joyeux Anniversaire.mp3",
     start: 9.8,
   },
 ];
@@ -268,7 +268,7 @@ showCompletePlaylistButton.addEventListener("click", () => {
     "group-hover:scale-125",
     "transition-all"
   );
-  modalCloseButtonCross.setAttribute("src", "./src/assets/icons/close.png");
+  modalCloseButtonCross.setAttribute("src", "../src/assets/icons/close.png");
   modalCloseButton.appendChild(modalCloseButtonCross);
   modalCloseButton.classList.add(
     "absolute",
@@ -391,7 +391,7 @@ const changeTrackBehavior = (track, file, type) => {
   } else if (type === "loaded") {
     track.classList.remove("bg-fourth", "text-white");
     let playIcon = document.createElement("img");
-    playIcon.setAttribute("src", "./src/assets/icons/playwhite.png");
+    playIcon.setAttribute("src", "../src/assets/icons/playwhite.png");
     playIcon.classList.add("h-2", "w-2");
     track.insertBefore(playIcon, track.firstChild);
     track.classList.add(
@@ -1029,7 +1029,7 @@ const createTeamList = () => {
   if (sortTeamsState) handleSort(sortTeamsState);
   const teamList = document.getElementById("teamlist");
   teamList.innerHTML =
-    '<li class="w-full p-1 pl-4 flex justify-center gap-4"><button class="h-10 w-10 flex justify-center items-center font-bold border border-solid border-black shadow-buttonShadow rounded-3xl group" id="addTeam"><img src="./src/assets/icons/add.png" class="h-4 w-4 group-hover:scale-125"></img></button><button class="h-10 w-10 flex justify-center items-center font-bold border border-solid border-black shadow-buttonShadow rounded-3xl group" id="resetScores"><img src="./src/assets/icons/reset.png" class="h-4 w-4 group-hover:scale-125"></img></button></li>';
+    '<li class="w-full p-1 pl-4 flex justify-center gap-4"><button class="h-10 w-10 flex justify-center items-center font-bold border border-solid border-black shadow-buttonShadow rounded-3xl group" id="addTeam"><img src="../src/assets/icons/add.png" class="h-4 w-4 group-hover:scale-125"></img></button><button class="h-10 w-10 flex justify-center items-center font-bold border border-solid border-black shadow-buttonShadow rounded-3xl group" id="resetScores"><img src="../src/assets/icons/reset.png" class="h-4 w-4 group-hover:scale-125"></img></button></li>';
   const addTeamButton = document.getElementById("addTeam");
   const resetScoresButton = document.getElementById("resetScores");
   addTeamButton.addEventListener("click", () => addTeamLine());
