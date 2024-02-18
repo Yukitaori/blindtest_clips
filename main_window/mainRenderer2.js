@@ -66,26 +66,26 @@ let songsLibrary = [
   },
 ];
 
-// const roundSelect = document.getElementById("roundSelect");
-// const showTrackNumberButton = document.getElementById("showTrackNumberButton");
-// const eraseFileNamePartButton = document.getElementById(
-//   "eraseFileNamePartButton"
-// );
-// const showCompletePlaylistButton = document.getElementById(
-//   "showCompletePlaylistButton"
-// );
-// const clearTrackListButton = document.getElementById("clearTrackListButton");
-// const categorySelect = document.getElementById("categorySelect");
+const roundSelect = document.getElementById("roundSelect");
+const showTrackNumberButton = document.getElementById("showTrackNumberButton");
+const eraseFileNamePartButton = document.getElementById(
+  "eraseFileNamePartButton"
+);
+const showCompletePlaylistButton = document.getElementById(
+  "showCompletePlaylistButton"
+);
+const clearTrackListButton = document.getElementById("clearTrackListButton");
+const categorySelect = document.getElementById("categorySelect");
 const tracklist = document.getElementById("tracklist");
 const tracklistLength = document.getElementById("tracklistLength");
 const dropzone = document.getElementById("dropzone");
-// const timeControl = document.getElementById("timecontrol");
-// const playButton = document.getElementById("playerplay");
-// const pauseButton = document.getElementById("playerpause");
-// const stopButton = document.getElementById("playerstop");
-// const muteButton = document.getElementById("playermute");
-// const previousButton = document.getElementById("playerprev");
-// const nextButton = document.getElementById("playernext");
+const timeControl = document.getElementById("timecontrol");
+const playButton = document.getElementById("playerplay");
+const pauseButton = document.getElementById("playerpause");
+const stopButton = document.getElementById("playerstop");
+const muteButton = document.getElementById("playermute");
+const previousButton = document.getElementById("playerprev");
+const nextButton = document.getElementById("playernext");
 const volumeControl = document.getElementById("volumecontrol");
 
 class Track {
@@ -128,10 +128,7 @@ class Track {
       window.player.playFile(this);
 
       if (!mute) mute = true;
-
-      loadedTrack
-        ? (tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`)
-        : (tracklistLength.innerText = `0 / ${playlist.length}`);
+      updateTracklistLength();
       loadedTrack.paused = false;
     });
 
@@ -241,10 +238,21 @@ class Track {
       : `${this.round?.toString().padStart(2, "0")} - ${this.cleanFileTitle()}`;
     track.appendChild(trackbutton);
     this.addEventListenersToTracklistLine(track);
+    this.tracklistLine = track;
     return track;
   }
 
+  deleteTrack() {
+    this.unselectTrack();
+    let tracklistLineToRemove = this.tracklistLine;
+    tracklist.removeChild(tracklistLineToRemove);
+    this.updateTrackNumberAndId();
+    playlist.splice(playlist.indexOf(this), 1);
+    delete this;
+  }
+
   loadTrack() {
+    loadedTrack?.unloadTrack();
     this.isLoaded = true;
     loadedTrack = this;
     this.updateTracklistLine();
@@ -268,14 +276,32 @@ class Track {
     this.updateTracklistLine();
   }
 
+  updateTrackNumberAndId() {
+    this.id = playlist.indexOf(this);
+    this.trackNumber = playlist.indexOf(this) + 1;
+  }
+
   updateTracklistLine() {
+    let tracklistLineToReplace = this.tracklistLine;
+    this.updateTrackNumberAndId();
     let newTracklistLine = this.createTracklistLine();
-    tracklist.replaceChild(
-      newTracklistLine,
-      document.getElementById(`${this.id}`)
-    );
+    tracklist.replaceChild(newTracklistLine, tracklistLineToReplace);
   }
 }
+
+const updatePlaylistData = () => {
+  for (let track of playlist) {
+    track.updateTracklistLine();
+  }
+  window.player.getPlaylist(playlist);
+  window.localStorage.setItem("playlist", JSON.stringify(playlist));
+};
+
+const updateTracklistLength = () => {
+  loadedTrack
+    ? (tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`)
+    : (tracklistLength.innerText = `0 / ${playlist.length}`);
+};
 
 const addEventListenersToDropzone = () => {
   // Si on drag des pistes au-dessus de la dropzone, le texte d'information est supprimé au drop des premières pistes
@@ -321,16 +347,259 @@ const addEventListenersToDropzone = () => {
           selectedTracks.push(newTrack);
           newTrack.addTrackToPlaylist();
           let newTracklistLine = newTrack.createTracklistLine();
-          tracklist.appendChild(newTracklistLine);
           newTrack.tracklistLine = newTracklistLine;
-          console.log(playlist);
+          tracklist.appendChild(newTrack.tracklistLine);
         }
       });
+      window.player.getPlaylist(playlist);
+      window.localStorage.setItem("playlist", JSON.stringify(playlist));
     }
   });
 };
 
 addEventListenersToDropzone();
+
+// Cette fonction gère le changement de track et réinitialise le display par la même occasion
+const handleChangeTrack = (action) => {
+  if (action === "next") {
+    window.player.nextTrack();
+    if (!mute) mute = true;
+    if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
+      selectedTracks.forEach((selectedTrack) => {
+        selectedTrack.unselectTrack();
+      });
+      const newTrackId = loadedTrack.id + 1;
+      loadedTrack.unloadTrack();
+      playlist[newTrackId].loadTrack();
+      updateTracklistLength();
+    }
+  } else if (action === "previous") {
+    window.player.previousTrack();
+    if (!mute) mute = true;
+    if (parseInt(loadedTrack.id) - 1 >= 0) {
+      selectedTracks.forEach((selectedTrack) => {
+        selectedTrack.unselectTrack();
+      });
+      const newTrackId = loadedTrack.id - 1;
+      loadedTrack.unloadTrack();
+      playlist[newTrackId].loadTrack();
+      updateTracklistLength();
+    }
+  }
+  resetDisplay();
+};
+
+const addEventListenersToDocument = () => {
+  // Gestion des appuis sur les touches les raccourcis
+  document.addEventListener("keydown", (e) => {
+    if (!textFocus) {
+      // Lors de l'appui sur Suppr, les pistes sélectionnées (selectedTracks) sont supprimées
+      if (e.key === "Delete" && selectedTracks.length > 0) {
+        console.log(playlist);
+        e.preventDefault();
+        selectedTracks.forEach((selectedTrack) => {
+          if (selectedTrack !== loadedTrack) {
+            selectedTrack.deleteTrack();
+          }
+        });
+        console.log(playlist);
+        updatePlaylistData();
+      }
+      // Lors de l'appui sur la Entrée, si une seule track est sélectionnée, elle est chargée et lancée
+      if (e.key == "Enter" && selectedTracks.length === 1) {
+        e.preventDefault();
+        let trackToPlay = selectedTracks[0];
+        window.player.playFile(trackToPlay);
+        trackToPlay.unselectTrack();
+        trackToPlay.loadTrack();
+        if (!mute) mute = true;
+        updateTracklistLength();
+      }
+      // Lors de l'appui sur la barre espace, la pause est activée si la video est en cours de lecture, ou celle-ci reprend si elle est en pause
+      if (
+        e.key === " " &&
+        loadedTrack &&
+        (keyDownState[e.key] === false || !keyDownState[e.key])
+      ) {
+        e.preventDefault();
+        if (loadedTrack.paused) {
+          window.player.play();
+          loadedTrack.paused = false;
+        } else {
+          window.player.pause();
+          loadedTrack.paused = true;
+        }
+        keyDownState[e.key] = true;
+      }
+      // L'appui sur la touche M active/désactive le mute sur la video
+      if (
+        (e.key === "m" || e.key === "M") &&
+        (keyDownState[e.key] === false || !keyDownState[e.key])
+      ) {
+        if (loadedTrack) {
+          window.player.mute();
+          mute = !mute;
+        }
+        keyDownState[e.key] = true;
+      }
+      // L'appui sur la touche V remet le volume à 100%
+      if (
+        (e.key === "v" || e.key === "V") &&
+        (keyDownState[e.key] === false || !keyDownState[e.key])
+      ) {
+        volumeControl.value = 1;
+        window.player.changeVolume(volumeControl.value);
+        window.player.displaySlidingBackgroundColor(
+          volumeControl,
+          "fifth",
+          "third"
+        );
+        keyDownState[e.key] = true;
+      }
+      // L'appui sur la flèche du haut augmente le volume de 25%
+      if (
+        e.key === "ArrowUp" &&
+        (keyDownState[e.key] === false || !keyDownState[e.key])
+      ) {
+        e.preventDefault();
+        volumeControl.value = Number(volumeControl.value) + 0.25;
+        window.player.changeVolume(volumeControl.value);
+        window.player.displaySlidingBackgroundColor(
+          volumeControl,
+          "fifth",
+          "third"
+        );
+        keyDownState[e.key] = true;
+      }
+      // L'appui sur la flèche du bas baisse le volume de 25%
+      if (
+        e.key === "ArrowDown" &&
+        (keyDownState[e.key] === false || !keyDownState[e.key])
+      ) {
+        e.preventDefault();
+        volumeControl.value = Number(volumeControl.value) - 0.25;
+        window.player.changeVolume(volumeControl.value);
+        window.player.displaySlidingBackgroundColor(
+          volumeControl,
+          "fifth",
+          "third"
+        );
+        keyDownState[e.key] = true;
+      }
+      // L'appui sur la flèche de gauche lance la piste précédente
+      if (
+        e.key === "ArrowLeft" &&
+        (keyDownState[e.key] === false || !keyDownState[e.key])
+      ) {
+        e.preventDefault();
+        handleChangeTrack("previous");
+        keyDownState[e.key] = true;
+      }
+      // L'appui sur la flèche de gauche lance la piste suivante
+      if (
+        e.key === "ArrowRight" &&
+        (keyDownState[e.key] === false || !keyDownState[e.key])
+      ) {
+        e.preventDefault();
+        handleChangeTrack("next");
+        keyDownState[e.key] = true;
+      }
+      if (
+        (e.key === "F" || e.key === "f") &&
+        (keyDownState[e.key] === false || !keyDownState[e.key]) &&
+        e.ctrlKey
+      ) {
+        window.player.setFullScreen();
+        keyDownState[e.key] = true;
+      }
+    }
+  });
+
+  // Lorsque la touche est lâchée, le keyDownState correspondant est remis à false
+  document.addEventListener("keyup", (e) => {
+    keyDownState[e.key] = false;
+  });
+};
+
+addEventListenersToDocument();
+
+const addEventListenersToPlayerButtons = () => {
+  pauseButton.addEventListener("click", () => {
+    window.player.pause();
+  });
+  playButton.addEventListener("click", () => {
+    if (loadedTrack) window.player.play();
+  });
+  stopButton.addEventListener("click", () => {
+    window.player.stop();
+  });
+  muteButton.addEventListener("click", () => {
+    if (loadedTrack) {
+      window.player.mute();
+      mute = !mute;
+    }
+  });
+  previousButton.addEventListener("click", () => {
+    handleChangeTrack("previous");
+  });
+  nextButton.addEventListener("click", () => {
+    handleChangeTrack("next");
+  });
+
+  // Gestion de l'input relative aux temps de la loadedTrack
+  timeControl.addEventListener("change", () => {
+    window.player.changeTime(timeControl.value);
+    window.player.displaySlidingBackgroundColor(
+      timeControl,
+      "primary",
+      "third"
+    );
+  });
+  timeControl.addEventListener("input", (e) => {
+    window.player.stopGetCurrent();
+    window.player.displaySlidingInputValue(e.currentTarget.value);
+    window.player.displaySlidingBackgroundColor(
+      timeControl,
+      "primary",
+      "third"
+    );
+  });
+
+  // Gestion de l'input relative au volume de la video
+  volumeControl.addEventListener("change", () => {
+    window.player.changeVolume(volumeControl.value);
+    window.player.displaySlidingBackgroundColor(
+      volumeControl,
+      "fifth",
+      "third"
+    );
+  });
+  volumeControl.addEventListener("input", (e) => {
+    window.player.changeVolume(e.currentTarget.value);
+    window.player.displaySlidingBackgroundColor(
+      volumeControl,
+      "fifth",
+      "third"
+    );
+  });
+  window.player.displaySlidingBackgroundColor(volumeControl, "fifth", "third");
+};
+
+addEventListenersToPlayerButtons();
+
+const addEventListenersToTracklistButtons = () => {
+  // Le roundSelect permet de changer la manche de chaque piste sélectionnée (affichage du numéro de manche en début de piste)
+  roundSelect.addEventListener("change", () => {
+    if (selectedTracks.length > 0 && roundSelect.value !== "") {
+      for (let selectedTrack of selectedTracks) {
+        selectedTrack.round = roundSelect.value;
+        selectedTrack.unselectTrack();
+      }
+    }
+    roundSelect.value = "";
+  });
+};
+addEventListenersToTracklistButtons();
 
 //////////////////////// PARTIE TEAMLIST ////////////////////////
 
