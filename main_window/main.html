@@ -10,7 +10,7 @@
       http-equiv="X-Content-Security-Policy"
       content="default-src 'self'; script-src 'self'"
     />
-    <link href="./dist/styles.css" rel="stylesheet" />
+    <link href="../dist/styles.css" rel="stylesheet" />
     <title>Main window</title>
   </head>
   <body class="bg-third relative">
@@ -96,9 +96,10 @@
                 class="max-h-[200px] 2xl:max-h-[300px] overflow-y-auto pb-2 scroll-smooth"
               ></ul>
             </div>
-            <p class="absolute left-[30px] -bottom-[25px]" id="tracklistLength">
-              Test
-            </p>
+            <p
+              class="absolute left-[30px] -bottom-[25px]"
+              id="tracklistLength"
+            ></p>
           </div>
         </div>
         <div class="w-[80%] flex flex-col justify-between mb-6 mx-auto">
@@ -125,7 +126,7 @@
               >
                 <img
                   class="h-4 w-4 group-hover:scale-125"
-                  src="./src/assets/icons/previous.png"
+                  src="../src/assets/icons/previous.png"
                   alt="Previous track"
                 />
               </button>
@@ -137,7 +138,7 @@
               >
                 <img
                   class="h-4 w-4 group-hover:scale-125"
-                  src="./src/assets/icons/pause.png"
+                  src="../src/assets/icons/pause.png"
                   alt="Pause"
                 />
               </button>
@@ -149,7 +150,7 @@
               >
                 <img
                   class="h-4 w-4 group-hover:scale-125"
-                  src="./src/assets/icons/play.png"
+                  src="../src/assets/icons/play.png"
                   alt="Play"
                 />
               </button>
@@ -161,7 +162,7 @@
               >
                 <img
                   class="h-4 w-4 group-hover:scale-125"
-                  src="./src/assets/icons/stop.png"
+                  src="../src/assets/icons/stop.png"
                   alt="Stop"
                 />
               </button>
@@ -173,7 +174,7 @@
               >
                 <img
                   class="h-4 w-4 group-hover:scale-125"
-                  src="./src/assets/icons/next.png"
+                  src="../src/assets/icons/next.png"
                   alt="Next track"
                 />
               </button>
@@ -186,7 +187,7 @@
             >
               <img
                 class="h-4 w-4 m-auto group-hover:scale-125"
-                src="./src/assets/icons/mute.png"
+                src="../src/assets/icons/mute.png"
                 alt="Mute"
               />
             </button>
@@ -304,7 +305,7 @@
               id="addImageLabel"
             >
               <img
-                src="./src/assets/icons/add.png"
+                src="../src/assets/icons/add.png"
                 class="h-4 w-4 group-hover:scale-125"
               />
               <input
@@ -378,7 +379,7 @@
               id="displayInfoButton"
             >
               <img
-                src="./src/assets/images/DGC.png"
+                src="../src/assets/images/DGC.png"
                 class="w-[70%] group-hover:scale-125"
               />
             </button>
@@ -441,7 +442,7 @@
                 class="h-8 w-8 border border-solid border-black shadow-buttonShadow rounded-full group flex justify-center items-center m-auto mt-2"
               >
                 <img
-                  src="./src/assets/icons/fader.png"
+                  src="../src/assets/icons/fader.png"
                   class="h-4 w-4 group-hover:scale-125"
                 />
               </button>
@@ -459,25 +460,27 @@
               id="gifList"
             >
               <option value="">Gifs</option>
-              <option value="./src/assets/gifs/here we go.gif">
+              <option value="../src/assets/gifs/here we go.gif">
                 C'est parti
               </option>
-              <option value="./src/assets/gifs/what now.gif">Vraiment ?</option>
-              <option value="./src/assets/gifs/cheers.gif">Santé</option>
-              <option value="./src/assets/gifs/surprised.gif">Surpris</option>
-              <option value="./src/assets/gifs/excited.gif">Chouette</option>
-              <option value="./src/assets/gifs/fangirl.gif">Fangirl</option>
-              <option value="./src/assets/gifs/nice.gif">Nice</option>
-              <option value="./src/assets/gifs/omg.gif">OMG</option>
-              <option value="./src/assets/gifs/proud.gif">Fier</option>
-              <option value="./src/assets/gifs/snap.gif">Cassé</option>
-              <option value="./src/assets/gifs/wait.gif">Nimp</option>
-              <option value="./src/assets/gifs/woo.gif">Go go go</option>
+              <option value="../src/assets/gifs/what now.gif">
+                Vraiment ?
+              </option>
+              <option value="../src/assets/gifs/cheers.gif">Santé</option>
+              <option value="../src/assets/gifs/surprised.gif">Surpris</option>
+              <option value="../src/assets/gifs/excited.gif">Chouette</option>
+              <option value="../src/assets/gifs/fangirl.gif">Fangirl</option>
+              <option value="../src/assets/gifs/nice.gif">Nice</option>
+              <option value="../src/assets/gifs/omg.gif">OMG</option>
+              <option value="../src/assets/gifs/proud.gif">Fier</option>
+              <option value="../src/assets/gifs/snap.gif">Cassé</option>
+              <option value="../src/assets/gifs/wait.gif">Nimp</option>
+              <option value="../src/assets/gifs/woo.gif">Go go go</option>
             </select>
           </div>
         </div>
       </section>
     </div>
   </body>
-  <script src="./mainRenderer.js"></script>
+  <script src="./mainRenderer2.js"></script>
 </html>

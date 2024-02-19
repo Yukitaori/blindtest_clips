@@ -7,21 +7,22 @@ const createWindows = (screens) => {
     width: 1280,
     height: 720,
     webPreferences: {
-      preload: path.join(__dirname, "mainPreload.js"),
+      preload: path.join(__dirname, "./main_window/mainPreload.js"),
     },
   });
-  mainWindow.loadFile("main.html");
+  mainWindow.loadFile("./main_window/main.html");
   mainWindow.setPosition(screens[0].bounds.x, screens[0].bounds.y);
   mainWindow.setFullScreen(true);
+  mainWindow.openDevTools();
 
   // Création de la fenêtre secondaire : si deux écrans ou plus sont branchés,
   // la fenêtre est automatiquement en fullscreen sur l'écran 2
   const secondaryWindow = new BrowserWindow({
     webPreferences: {
-      preload: path.join(__dirname, "secondaryPreload.js"),
+      preload: path.join(__dirname, "./secondary_window/secondaryPreload.js"),
     },
   });
-  secondaryWindow.loadFile("secondary.html");
+  secondaryWindow.loadFile("./secondary_window/secondary.html");
 
   if (screens[1]) {
     secondaryWindow.setPosition(screens[1].bounds.x, screens[1].bounds.y);

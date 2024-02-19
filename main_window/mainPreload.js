@@ -2,7 +2,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 // le state du player : les informations sont mises à jour à chaque action
 const playerState = {
-  playlist: null,
+  // playlist: null,
   mute: true,
   videoPlaying: false,
   loadedTrack: null,
@@ -37,6 +37,9 @@ const displaySlidingBackgroundColor = (input, firstColor, secondColor) => {
 // Suppression de l'image affichée s'il y en a une + remise à zéro du select des images
 const playTrack = (track) => {
   const displayImageBlock = document.getElementById("displayImageBlock");
+  const currentTime = document.getElementById("current");
+  const timeControl = document.getElementById("timecontrol");
+
   console.log(track);
   if (track) {
     const playButton = document.getElementById("playerplay");
@@ -64,13 +67,13 @@ const playTrack = (track) => {
   } else {
     ipcRenderer.send("playFile", null);
   }
+
+  currentTime.innerText = getReadableTime(0).toString();
+  timeControl.value = getTimeControlPosition(0);
 };
 
 // Ce contextBridge contient toutes les méthodes du player
 contextBridge.exposeInMainWorld("player", {
-  getPlaylist: (list) => {
-    playerState.playlist = list;
-  },
   getLoadedTrack: (track) => {
     playTrack(track);
     playerState.loadedTrack = track;
@@ -163,29 +166,6 @@ contextBridge.exposeInMainWorld("player", {
   },
 
   changeVolume: (volume) => ipcRenderer.send("changeVolume", volume),
-
-  previousTrack: () => {
-    if (playerState.loadedTrack.id - 1 >= 0) {
-      const currentTime = document.getElementById("current");
-      const timeControl = document.getElementById("timecontrol");
-      const trackToPlay = playerState.playlist[playerState.loadedTrack.id - 1];
-
-      currentTime.innerText = getReadableTime(0).toString();
-      timeControl.value = getTimeControlPosition(0);
-      playTrack(trackToPlay);
-    }
-  },
-
-  nextTrack: () => {
-    if (playerState.loadedTrack.id + 1 < playerState.playlist.length) {
-      const currentTime = document.getElementById("current");
-      const timeControl = document.getElementById("timecontrol");
-      let trackToPlay = playerState.playlist[playerState.loadedTrack.id + 1];
-      currentTime.innerText = getReadableTime(0).toString();
-      timeControl.value = getTimeControlPosition(0);
-      playTrack(trackToPlay);
-    }
-  },
 
   stopGetCurrent: () => {
     ipcRenderer.send("stopGetCurrent");

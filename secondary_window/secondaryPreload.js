@@ -179,9 +179,9 @@ ipcRenderer.on("displayVideoAndPodium", (event, teams) => {
   let displayScores = document.createElement("div");
   let nodeToRemove = document.getElementById("displayscores");
   let trophiesUrl = [
-    "./src/assets/images/gold-trophy.png",
-    "./src/assets/images/silver-trophy.png",
-    "./src/assets/images/bronze-trophy.png",
+    "../src/assets/images/gold-trophy.png",
+    "../src/assets/images/silver-trophy.png",
+    "../src/assets/images/bronze-trophy.png",
   ];
   if (nodeToRemove) displayScreen.removeChild(nodeToRemove);
   displayScores.setAttribute("id", "displayscores");
