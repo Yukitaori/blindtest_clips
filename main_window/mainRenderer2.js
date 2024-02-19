@@ -29,9 +29,7 @@ animateButtons();
 //////////////////////// PARTIE PLAYLIST ////////////////////////
 
 // La playlist permet  l'enregistrement des tracks dans leur oredre de diffusion
-// TODO Remettre en place la récupération de la playlist au lancement (createTracklist)
 let playlist = JSON.parse(window.localStorage.getItem("playlist")) || [];
-// let playlist = [];
 // Les selectedTracks sont les tracks sélectionnées dans la liste (pas celle qui est chargée dans le player)
 let selectedTracks = [];
 // La loadedTrack est la track chargée dans le player
@@ -119,17 +117,13 @@ class Track {
 
     // Le double clic permet le chargement de la piste dans le player (loadedTrack)
     tracklistLine.addEventListener("dblclick", () => {
-      if (loadedTrack) {
-        loadedTrack.unloadTrack();
-      }
+      loadedTrack?.unloadTrack();
       this.loadTrack();
       selectedTracks.forEach((selectedTrack) => {
         selectedTrack.unselectTrack();
       });
-
       if (!mute) mute = true;
       updateTracklistLength();
-      loadedTrack.paused = false;
     });
 
     // Le clic simple permet juste de sélectionner une piste
@@ -478,7 +472,6 @@ const addEventListenersToDropzone = () => {
         }
       });
       cleanDropzone();
-      window.player.getPlaylist(playlist);
       window.localStorage.setItem("playlist", JSON.stringify(playlist));
     }
     updateTracklistLength();
@@ -490,7 +483,6 @@ addEventListenersToDropzone();
 // Cette fonction gère le changement de track et réinitialise le display par la même occasion
 const handleChangeTrack = (action) => {
   if (action === "next") {
-    window.player.nextTrack();
     if (!mute) mute = true;
     if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
       selectedTracks.forEach((selectedTrack) => {
@@ -502,7 +494,6 @@ const handleChangeTrack = (action) => {
       updateTracklistLength();
     }
   } else if (action === "previous") {
-    window.player.previousTrack();
     if (!mute) mute = true;
     if (parseInt(loadedTrack.id) - 1 >= 0) {
       selectedTracks.forEach((selectedTrack) => {
@@ -545,7 +536,6 @@ const addEventListenersToDocument = () => {
       if (e.key == "Enter" && selectedTracks.length === 1) {
         e.preventDefault();
         let trackToPlay = selectedTracks[0];
-        window.player.playFile(trackToPlay);
         trackToPlay.unselectTrack();
         trackToPlay.loadTrack();
         if (!mute) mute = true;
@@ -558,12 +548,12 @@ const addEventListenersToDocument = () => {
         (keyDownState[e.key] === false || !keyDownState[e.key])
       ) {
         e.preventDefault();
-        if (loadedTrack.paused) {
+        if (loadedTrack.isPaused) {
           window.player.play();
-          loadedTrack.paused = false;
+          loadedTrack.isPaused = false;
         } else {
           window.player.pause();
-          loadedTrack.paused = true;
+          loadedTrack.isPaused = true;
         }
         keyDownState[e.key] = true;
       }
@@ -937,7 +927,6 @@ const addListenersToGhostTrack = (ghostTrack, track, type) => {
       updateTracklist();
       updateTracklistLength();
     });
-    window.player.getPlaylist(playlist);
     window.localStorage.setItem("playlist", JSON.stringify(playlist));
   }
 
@@ -985,7 +974,6 @@ const addListenersToGhostTrack = (ghostTrack, track, type) => {
       updateTracklist();
       updateTracklistLength();
     });
-    window.player.getPlaylist(playlist);
     window.localStorage.setItem("playlist", JSON.stringify(playlist));
   }
 };
@@ -1005,7 +993,6 @@ const createTracklist = () => {
       newTrack.createTracklistLine();
       tracklist.appendChild(newTrack.tracklistLine);
     }
-    window.player.getPlaylist(playlist);
   }
   cleanDropzone();
 };
@@ -1029,7 +1016,6 @@ const updatePlaylistData = () => {
   for (let track of playlist) {
     track.updateTracklistLine();
   }
-  window.player.getPlaylist(playlist);
   window.localStorage.setItem("playlist", JSON.stringify(playlist));
 };
 
