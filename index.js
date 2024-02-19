@@ -13,6 +13,7 @@ const createWindows = (screens) => {
   mainWindow.loadFile("./main_window/main.html");
   mainWindow.setPosition(screens[0].bounds.x, screens[0].bounds.y);
   mainWindow.setFullScreen(true);
+  mainWindow.openDevTools();
 
   // Création de la fenêtre secondaire : si deux écrans ou plus sont branchés,
   // la fenêtre est automatiquement en fullscreen sur l'écran 2

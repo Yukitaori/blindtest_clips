@@ -29,7 +29,9 @@ animateButtons();
 //////////////////////// PARTIE PLAYLIST ////////////////////////
 
 // La playlist permet  l'enregistrement des tracks dans leur oredre de diffusion
+// TODO Remettre en place la récupération de la playlist au lancement (createTracklist)
 let playlist = JSON.parse(window.localStorage.getItem("playlist")) || [];
+// let playlist = [];
 // Les selectedTracks sont les tracks sélectionnées dans la liste (pas celle qui est chargée dans le player)
 let selectedTracks = [];
 // La loadedTrack est la track chargée dans le player
@@ -102,8 +104,7 @@ class Track {
     this.tracklistLine = null;
   }
 
-  addEventListenersToTracklistLine(track) {
-    let tracklistLine = track;
+  addEventListenersToTracklistLine(tracklistLine) {
     // Si une track est survolée, et qu'elle n'est ni selected ni loaded, elle change de style
     // Le style est supprimé lorsque la track n'est plus survolée
     tracklistLine.addEventListener("mouseover", () => {
@@ -125,7 +126,6 @@ class Track {
       selectedTracks.forEach((selectedTrack) => {
         selectedTrack.unselectTrack();
       });
-      window.player.playFile(this);
 
       if (!mute) mute = true;
       updateTracklistLength();
@@ -135,7 +135,6 @@ class Track {
     // Le clic simple permet juste de sélectionner une piste
     tracklistLine.addEventListener("click", (e) => {
       if (e.shiftKey) {
-        console.log("yes");
         for (
           let i = Math.min(
             selectedTracks[selectedTracks.length - 1]?.id,
@@ -144,7 +143,6 @@ class Track {
           i <= Math.max(selectedTracks[selectedTracks.length - 1]?.id, this.id);
           i++
         ) {
-          console.log(playlist[i]);
           if (!selectedTracks.includes(playlist[i])) {
             playlist[i].selectTrack();
           }
@@ -167,12 +165,142 @@ class Track {
       }
       this.updateTracklistLine();
     });
+
+    // Création du témoin (ghostTrack) de localisation de l'endroit où les pistes vont être insérées lors que l'on drag les fichiers par-dessus
+    tracklistLine.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      let ghostTrack = document.createElement("li");
+      ghostTrack.classList.add(
+        "pb-4",
+        "bg-fifth",
+        "border-y",
+        "border-double",
+        "border-black"
+      );
+      if (
+        // Si le drag est effectuée sur la moitié du haut de la track visée, la ghostTrack est générée avant la piste
+        e.clientY >= getPosition(tracklistLine).y &&
+        e.clientY <
+          getPosition(tracklistLine).y + getPosition(tracklistLine).height / 2
+      ) {
+        if (!document.getElementById("ghostTrackBefore")) {
+          if (document.getElementById("ghostTrackAfter")) {
+            tracklist.removeChild(document.getElementById("ghostTrackAfter"));
+          }
+          ghostTrack.setAttribute("id", "ghostTrackBefore");
+          addListenersToGhostTrack(ghostTrack, this, "ghostTrackBefore");
+          tracklist.insertBefore(ghostTrack, tracklistLine);
+        }
+      } else {
+        // Si le drag est effectuée sur la moitié du bas de la track visée, la ghostTrack est générée après la piste
+        if (!document.getElementById("ghostTrackAfter")) {
+          if (document.getElementById("ghostTrackBefore")) {
+            tracklist.removeChild(document.getElementById("ghostTrackBefore"));
+          }
+          ghostTrack.setAttribute("id", "ghostTrackAfter");
+          addListenersToGhostTrack(ghostTrack, this, "ghostTrackAfter");
+          tracklistLine.insertAdjacentElement("afterend", ghostTrack);
+        }
+      }
+    });
+
+    // Suppression du témoin de localisation de l'endroit où les pistes vont être insérées lors que l'on arrête le drag
+    tracklistLine.addEventListener("dragend", (e) => {
+      e.preventDefault();
+      let ghostTrack =
+        document.getElementById("ghostTrackAfter") ||
+        document.getElementById("ghostTrackBefore");
+      if (ghostTrack) tracklist.removeChild(ghostTrack);
+    });
+
+    // Au drop sur une track existante, les fichiers déposés sont insérés dans la playlist à l'index ou l'index suivant cette track selon la position de la ghostTrack
+    // Les tracks déposées deviennent les selectedTracks (si besoin de les supprimer immédiatement)
+    tracklistLine.addEventListener("drop", (e) => {
+      e.preventDefault();
+      selectedTracks.forEach((selectedTrack) => {
+        selectedTrack.unselectTrack();
+      });
+      if (draggedTracks.length > 0) {
+        let index = 0;
+        if (
+          e.clientY >= getPosition(tracklistLine).y &&
+          e.clientY <
+            getPosition(tracklistLine).y + getPosition(tracklistLine).height / 2
+        ) {
+          if (!draggedTracks.includes(this)) {
+            draggedTracks.forEach((draggedTrack) => {
+              playlist.splice(playlist.indexOf(draggedTrack), 1);
+              draggedTrack.addTrackToPlaylistToIndex(playlist.indexOf(this));
+              draggedTrack.selectTrack();
+              index++;
+            });
+          }
+        } else {
+          if (!draggedTracks.includes(this)) {
+            draggedTracks.forEach((track) => {
+              playlist.splice(playlist.indexOf(track), 1);
+              playlist.splice(playlist.indexOf(this) + 1 + index, 0, track);
+              track.selectTrack();
+              index++;
+            });
+          }
+        }
+      } else {
+        if (
+          e.clientY >= getPosition(tracklistLine).y &&
+          e.clientY <
+            getPosition(tracklistLine).y + getPosition(tracklistLine).height / 2
+        ) {
+          let index = 0;
+          Object.entries(e.dataTransfer.files).forEach((element) => {
+            if (element[1].type.includes("video")) {
+              let newTrack = new Track(
+                element[1].path.slice(0),
+                element[1].name.slice(0),
+                1,
+                false
+              );
+              let indexToInsertTrackTo = this.id + index;
+              newTrack.addTrackToPlaylistToIndex(indexToInsertTrackTo);
+              newTrack.createTracklistLine();
+              tracklist.appendChild(newTrack.tracklistLine);
+              newTrack.selectTrack();
+              index++;
+            }
+          });
+        } else {
+          let index = 0;
+          Object.entries(e.dataTransfer.files).forEach((element) => {
+            if (element[1].type.includes("video")) {
+              let newTrack = new Track(
+                element[1].path.slice(0),
+                element[1].name.slice(0),
+                1,
+                false
+              );
+              let indexToInsertTrackTo = this.id + 1 + index;
+              newTrack.addTrackToPlaylistToIndex(indexToInsertTrackTo);
+              newTrack.createTracklistLine();
+              tracklist.appendChild(newTrack.tracklistLine);
+              newTrack.selectTrack();
+              index++;
+            }
+          });
+        }
+      }
+      updatePlaylistData();
+      updateTracklist();
+    });
   }
 
   addTrackToPlaylist() {
     playlist.push(this);
     this.id = playlist.indexOf(this);
     this.trackNumber = playlist.indexOf(this) + 1;
+  }
+
+  addTrackToPlaylistToIndex(indexToInsertTrackTo) {
+    playlist.splice(indexToInsertTrackTo, 0, this);
   }
 
   cleanFileTitle = () => {
@@ -204,8 +332,8 @@ class Track {
       track.classList.remove("bg-fourth", "text-white");
       track.setAttribute("draggable", "true");
       track.addEventListener("drag", () => {
-        selectedTracks.sort((a, b) => b.id - a.id);
-        draggedTracks = selectedTracks.slice(0);
+        selectedTracks.sort((a, b) => a.id - b.id);
+        draggedTracks = playlist.filter((track) => track.isSelected);
       });
       track.addEventListener("dragend", () => {
         draggedTracks = [];
@@ -244,6 +372,7 @@ class Track {
 
   deleteTrack() {
     this.unselectTrack();
+    this.unloadTrack();
     let tracklistLineToRemove = this.tracklistLine;
     tracklist.removeChild(tracklistLineToRemove);
     this.updateTrackNumberAndId();
@@ -256,6 +385,7 @@ class Track {
     this.isLoaded = true;
     loadedTrack = this;
     this.updateTracklistLine();
+    window.player.getLoadedTrack(this);
   }
 
   selectTrack() {
@@ -268,6 +398,7 @@ class Track {
     this.isLoaded = false;
     loadedTrack = null;
     this.updateTracklistLine();
+    window.player.getLoadedTrack(null);
   }
 
   unselectTrack() {
@@ -288,20 +419,6 @@ class Track {
     tracklist.replaceChild(newTracklistLine, tracklistLineToReplace);
   }
 }
-
-const updatePlaylistData = () => {
-  for (let track of playlist) {
-    track.updateTracklistLine();
-  }
-  window.player.getPlaylist(playlist);
-  window.localStorage.setItem("playlist", JSON.stringify(playlist));
-};
-
-const updateTracklistLength = () => {
-  loadedTrack
-    ? (tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`)
-    : (tracklistLength.innerText = `0 / ${playlist.length}`);
-};
 
 const addEventListenersToDropzone = () => {
   // Si on drag des pistes au-dessus de la dropzone, le texte d'information est supprimé au drop des premières pistes
@@ -344,11 +461,10 @@ const addEventListenersToDropzone = () => {
             1,
             false
           );
-          selectedTracks.push(newTrack);
           newTrack.addTrackToPlaylist();
-          let newTracklistLine = newTrack.createTracklistLine();
-          newTrack.tracklistLine = newTracklistLine;
+          newTrack.createTracklistLine();
           tracklist.appendChild(newTrack.tracklistLine);
+          newTrack.selectTrack();
         }
       });
       window.player.getPlaylist(playlist);
@@ -389,20 +505,26 @@ const handleChangeTrack = (action) => {
   resetDisplay();
 };
 
+// Cette fonction récupère les positions et hauteur des éléments de la playlist pour la localisation du drop
+const getPosition = (element) => {
+  const rect = element.getBoundingClientRect();
+  return {
+    x: rect.left,
+    y: rect.top,
+    height: rect.height,
+  };
+};
+
 const addEventListenersToDocument = () => {
   // Gestion des appuis sur les touches les raccourcis
   document.addEventListener("keydown", (e) => {
     if (!textFocus) {
       // Lors de l'appui sur Suppr, les pistes sélectionnées (selectedTracks) sont supprimées
       if (e.key === "Delete" && selectedTracks.length > 0) {
-        console.log(playlist);
         e.preventDefault();
         selectedTracks.forEach((selectedTrack) => {
-          if (selectedTrack !== loadedTrack) {
-            selectedTrack.deleteTrack();
-          }
+          selectedTrack.deleteTrack();
         });
-        console.log(playlist);
         updatePlaylistData();
       }
       // Lors de l'appui sur la Entrée, si une seule track est sélectionnée, elle est chargée et lancée
@@ -598,8 +720,155 @@ const addEventListenersToTracklistButtons = () => {
     }
     roundSelect.value = "";
   });
+
+  clearTrackListButton.addEventListener("click", () => {
+    while (playlist.length > 0) {
+      playlist[0].deleteTrack();
+    }
+    window.localStorage.setItem("playlist", JSON.stringify(playlist));
+  });
 };
+
 addEventListenersToTracklistButtons();
+
+// Cette fonction ajoute des listeners d'event sur les ghostTracks créées lors des drag dans la playlist
+const addListenersToGhostTrack = (ghostTrack, track, type) => {
+  if (type === "ghostTrackBefore") {
+    ghostTrack.addEventListener("drop", (e) => {
+      e.preventDefault();
+      selectedTracks.forEach((selectedTrack) => {
+        selectedTrack.unselectTrack();
+      });
+      selectedTracks = [];
+      if (draggedTracks.length > 0) {
+        if (!draggedTracks.includes(track)) {
+          draggedTracks.forEach((draggedTrack) => {
+            playlist.splice(playlist.indexOf(draggedTrack), 1);
+            draggedTrack.addTrackToPlaylistToIndex(playlist.indexOf(track));
+            draggedTrack.selectTrack();
+          });
+        }
+      } else {
+        let index = 0;
+        Object.entries(e.dataTransfer.files).forEach((element) => {
+          if (element[1].type.includes("video")) {
+            let newTrack = new Track(
+              element[1].path.slice(0),
+              element[1].name.slice(0),
+              1,
+              false
+            );
+            let indexToInsertTrackTo = track.id + index;
+            newTrack.addTrackToPlaylistToIndex(indexToInsertTrackTo);
+            newTrack.createTracklistLine();
+            tracklist.appendChild(newTrack.tracklistLine);
+            newTrack.selectTrack();
+            index++;
+          }
+        });
+      }
+      tracklist.removeChild(ghostTrack);
+      updatePlaylistData();
+      updateTracklist();
+    });
+    window.player.getPlaylist(playlist);
+    window.localStorage.setItem("playlist", JSON.stringify(playlist));
+  }
+
+  if (type === "ghostTrackAfter") {
+    ghostTrack.addEventListener("drop", (e) => {
+      e.preventDefault();
+      selectedTracks.forEach((selectedTrack) => {
+        selectedTrack.unselectTrack();
+      });
+      selectedTracks = [];
+      let index = 0;
+      if (draggedTracks.length > 0) {
+        if (!draggedTracks.includes(track)) {
+          draggedTracks.forEach((draggedTrack) => {
+            playlist.splice(playlist.indexOf(draggedTrack), 1);
+            playlist.splice(
+              playlist.indexOf(track) + 1 + index,
+              0,
+              draggedTrack
+            );
+            draggedTrack.selectTrack();
+            index++;
+          });
+        }
+      } else {
+        Object.entries(e.dataTransfer.files).forEach((element) => {
+          if (element[1].type.includes("video")) {
+            let newTrack = new Track(
+              element[1].path.slice(0),
+              element[1].name.slice(0),
+              1,
+              false
+            );
+            let indexToInsertTrackTo = track.id + 1 + index;
+            newTrack.addTrackToPlaylistToIndex(indexToInsertTrackTo);
+            newTrack.createTracklistLine();
+            tracklist.appendChild(newTrack.tracklistLine);
+            newTrack.selectTrack();
+            index++;
+          }
+        });
+      }
+      tracklist.removeChild(ghostTrack);
+      updatePlaylistData();
+      updateTracklist();
+    });
+    window.player.getPlaylist(playlist);
+    window.localStorage.setItem("playlist", JSON.stringify(playlist));
+  }
+};
+
+const createTracklist = () => {
+  if (playlist.length > 0) {
+    let dataToTransform = [...playlist];
+    playlist = [];
+    for (let i = 0; i < dataToTransform.length; i++) {
+      let newTrack = new Track(
+        dataToTransform[i].path,
+        dataToTransform[i].title,
+        1,
+        false
+      );
+      newTrack.addTrackToPlaylist();
+      newTrack.createTracklistLine();
+      tracklist.appendChild(newTrack.tracklistLine);
+    }
+    window.player.getPlaylist(playlist);
+  }
+};
+
+createTracklist();
+
+const updateTracklist = () => {
+  for (let i = 0; i < tracklist.children.length; i++) {
+    let tracklistLineToUpdate = tracklist.children.item(i);
+    if (playlist[i]) {
+      let newTracklistLine = playlist[i].createTracklistLine();
+      tracklist.replaceChild(newTracklistLine, tracklistLineToUpdate);
+    } else {
+      tracklist.removeChild(tracklistLineToUpdate);
+    }
+  }
+};
+
+const updatePlaylistData = () => {
+  for (let track of playlist) {
+    track.updateTracklistLine();
+  }
+  window.player.getPlaylist(playlist);
+  window.localStorage.setItem("playlist", JSON.stringify(playlist));
+};
+
+const updateTracklistLength = () => {
+  loadedTrack
+    ? (tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`)
+    : (tracklistLength.innerText = `0 / ${playlist.length}`);
+};
 
 //////////////////////// PARTIE TEAMLIST ////////////////////////
 
