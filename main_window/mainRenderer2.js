@@ -290,6 +290,7 @@ class Track {
       }
       updatePlaylistData();
       updateTracklist();
+      updateTracklistLength();
     });
   }
 
@@ -480,6 +481,7 @@ const addEventListenersToDropzone = () => {
       window.player.getPlaylist(playlist);
       window.localStorage.setItem("playlist", JSON.stringify(playlist));
     }
+    updateTracklistLength();
   });
 };
 
@@ -537,6 +539,7 @@ const addEventListenersToDocument = () => {
         });
         updatePlaylistData();
         updateTracklist();
+        updateTracklistLength();
       }
       // Lors de l'appui sur la Entrée, si une seule track est sélectionnée, elle est chargée et lancée
       if (e.key == "Enter" && selectedTracks.length === 1) {
@@ -737,6 +740,7 @@ const addEventListenersToTracklistButtons = () => {
       playlist[0].deleteTrack();
     }
     updateTracklist();
+    updateTracklistLength();
     window.localStorage.setItem("playlist", JSON.stringify(playlist));
   });
 
@@ -931,6 +935,7 @@ const addListenersToGhostTrack = (ghostTrack, track, type) => {
       tracklist.removeChild(ghostTrack);
       updatePlaylistData();
       updateTracklist();
+      updateTracklistLength();
     });
     window.player.getPlaylist(playlist);
     window.localStorage.setItem("playlist", JSON.stringify(playlist));
@@ -978,6 +983,7 @@ const addListenersToGhostTrack = (ghostTrack, track, type) => {
       tracklist.removeChild(ghostTrack);
       updatePlaylistData();
       updateTracklist();
+      updateTracklistLength();
     });
     window.player.getPlaylist(playlist);
     window.localStorage.setItem("playlist", JSON.stringify(playlist));
@@ -1032,6 +1038,8 @@ const updateTracklistLength = () => {
     ? (tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`)
     : (tracklistLength.innerText = `0 / ${playlist.length}`);
 };
+
+updateTracklistLength();
 
 //////////////////////// PARTIE TEAMLIST ////////////////////////
 
