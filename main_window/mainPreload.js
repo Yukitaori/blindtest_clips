@@ -74,9 +74,6 @@ const playTrack = (track) => {
 
 // Ce contextBridge contient toutes les méthodes du player
 contextBridge.exposeInMainWorld("player", {
-  // getPlaylist: (list) => {
-  //   playerState.playlist = list;
-  // },
   getLoadedTrack: (track) => {
     playTrack(track);
     playerState.loadedTrack = track;
