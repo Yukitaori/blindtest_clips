@@ -381,6 +381,7 @@ class Track {
     loadedTrack = this;
     this.updateTracklistLine();
     window.player.getLoadedTrack(this);
+    resetDisplay();
   }
 
   selectTrack() {
@@ -505,7 +506,6 @@ const handleChangeTrack = (action) => {
       updateTracklistLength();
     }
   }
-  resetDisplay();
 };
 
 // Cette fonction récupère les positions et hauteur des éléments de la playlist pour la localisation du drop
