@@ -324,7 +324,7 @@ class Track {
       "gap-2"
     );
 
-    if (this.category) {
+    if (this.category == "true") {
       track.classList.add("font-bold");
     }
 
@@ -418,28 +418,37 @@ class Track {
     let newTracklistLine = this.createTracklistLine();
     tracklist.replaceChild(newTracklistLine, tracklistLineToReplace);
   }
+
+  updateTracklistLineText() {
+    this.tracklistLine.getElementsByTagName("button")[0].innerText =
+      displayTrackNumber
+        ? `${this.round?.toString().padStart(2, "0")} - ${this.trackNumber
+            .toString()
+            .padStart(2, "0")} - ${this.cleanFileTitle()}`
+        : `${this.round
+            ?.toString()
+            .padStart(2, "0")} - ${this.cleanFileTitle()}`;
+  }
 }
 
 const addEventListenersToDropzone = () => {
   // Si on drag des pistes au-dessus de la dropzone, le texte d'information est supprimé au drop des premières pistes
   dropzone.addEventListener("dragover", (e) => {
     e.preventDefault();
-    if (document.getElementById("playlistInstruction")) {
-      document
-        .getElementById("dropzone")
-        .removeChild(document.getElementById("playlistInstruction"));
-    }
+    cleanDropzone();
   });
 
   // Gestion des animations lors du drag au-dessus de la dropzone
   dropzone.addEventListener("dragenter", (e) => {
     e.preventDefault();
     if (draggedTracks.length === 0) dropzone.classList.add("bg-fifth");
+    cleanDropzone();
   });
 
   dropzone.addEventListener("dragleave", (e) => {
     e.preventDefault();
     dropzone.classList.remove("bg-fifth");
+    cleanDropzone();
   });
 
   // Gestion du drag'n'drop sur la zone d'affichage des pistes video
@@ -467,6 +476,7 @@ const addEventListenersToDropzone = () => {
           newTrack.selectTrack();
         }
       });
+      cleanDropzone();
       window.player.getPlaylist(playlist);
       window.localStorage.setItem("playlist", JSON.stringify(playlist));
     }
@@ -526,6 +536,7 @@ const addEventListenersToDocument = () => {
           selectedTrack.deleteTrack();
         });
         updatePlaylistData();
+        updateTracklist();
       }
       // Lors de l'appui sur la Entrée, si une seule track est sélectionnée, elle est chargée et lancée
       if (e.key == "Enter" && selectedTracks.length === 1) {
@@ -725,11 +736,161 @@ const addEventListenersToTracklistButtons = () => {
     while (playlist.length > 0) {
       playlist[0].deleteTrack();
     }
+    updateTracklist();
     window.localStorage.setItem("playlist", JSON.stringify(playlist));
+  });
+
+  // Le showTrackNumberButton permet d'afficher ou non le numéro de piste de chaque track
+  showTrackNumberButton.addEventListener("click", () => {
+    displayTrackNumber = !displayTrackNumber;
+    if (displayTrackNumber) {
+      showTrackNumberButton.classList.add("bg-fifth", "text-third");
+    } else {
+      showTrackNumberButton.classList.remove("bg-fifth", "text-third");
+    }
+    playlist.forEach((track) => {
+      track.updateTracklistLineText();
+    });
+  });
+
+  // Le eraseFileNamePartButton permet d'effacer ou non le numéro en amont de chaque nom de fichier dans le nom de la track
+  eraseFileNamePartButton.addEventListener("click", () => {
+    eraseFileTitleNumberPart = !eraseFileTitleNumberPart;
+    if (eraseFileTitleNumberPart) {
+      eraseFileNamePartButton.classList.add("bg-fifth", "text-third");
+    } else {
+      eraseFileNamePartButton.classList.remove("bg-fifth", "text-third");
+    }
+    playlist.forEach((track) => {
+      track.updateTracklistLineText();
+    });
+  });
+
+  // Le categorySelect permet de changer la catégorie de chaque piste sélectionnée (la piste apparaît en gras)
+  categorySelect.addEventListener("change", () => {
+    if (selectedTracks.length > 0 && categorySelect.value !== "") {
+      for (let track of selectedTracks) {
+        track.category = categorySelect.value;
+        track.unselectTrack();
+      }
+    }
+    categorySelect.value = "";
+  });
+
+  // Cet événement permet d'afficher une modale pour visualiser toute la playlist
+  showCompletePlaylistButton.addEventListener("click", () => {
+    let modalBackground = document.createElement("div");
+    modalBackground.classList.add(
+      "bg-transparentDisplay",
+      "absolute",
+      "top-0",
+      "w-[100vw]",
+      "h-[100vh]",
+      "flex",
+      "justify-center",
+      "items-center",
+      "overflow-hidden"
+    );
+    document.body.appendChild(modalBackground);
+    let modal = document.createElement("div");
+    modal.classList.add(
+      "m-4",
+      "w-[90%]",
+      "h-[90%]",
+      "flex",
+      "bg-third",
+      "rounded-3xl",
+      "relative"
+    );
+    modalBackground.appendChild(modal);
+    let modalCloseButton = document.createElement("button");
+    let modalCloseButtonCross = document.createElement("img");
+    modalCloseButtonCross.classList.add(
+      "h-4",
+      "w-4",
+      "group-hover:scale-125",
+      "transition-all"
+    );
+    modalCloseButtonCross.setAttribute("src", "../src/assets/icons/close.png");
+    modalCloseButton.appendChild(modalCloseButtonCross);
+    modalCloseButton.classList.add(
+      "absolute",
+      "top-2",
+      "right-2",
+      "h-10",
+      "w-10",
+      "shadow-buttonShadow",
+      "flex",
+      "justify-center",
+      "items-center",
+      "border",
+      "border-solid",
+      "border-black",
+      "rounded-3xl",
+      "transition-all",
+      "group"
+    );
+    modalCloseButton.addEventListener("click", () => {
+      document.body.removeChild(modalBackground);
+    });
+    modalCloseButton.addEventListener("mousedown", () => {
+      modalCloseButton.classList.remove("shadow-buttonShadow");
+      modalCloseButton.classList.add("translate-x-[3px]", "translate-y-[3px]");
+    });
+    modalCloseButton.addEventListener("mouseup", () => {
+      modalCloseButton.classList.add("shadow-buttonShadow");
+      modalCloseButton.classList.remove(
+        "translate-x-[3px]",
+        "translate-y-[3px]"
+      );
+    });
+    modalCloseButton.addEventListener("mouseleave", () => {
+      modalCloseButton.classList.add("shadow-buttonShadow");
+      modalCloseButton.classList.remove(
+        "translate-x-[3px]",
+        "translate-y-[3px]"
+      );
+    });
+    modal.appendChild(modalCloseButton);
+    let completePlaylist = document.createElement("div");
+    completePlaylist.classList.add(
+      "relative",
+      "m-16",
+      "flex",
+      "flex-col",
+      "flex-wrap",
+      "gap-2",
+      "overflow-auto"
+    );
+    for (let track of playlist) {
+      const trackToDisplay = document.createElement("p");
+      if (track.category === "true") {
+        trackToDisplay.classList.add("font-bold");
+      }
+      trackToDisplay.innerText = displayTrackNumber
+        ? `${track.round?.toString().padStart(2, "0")} - ${track.trackNumber
+            .toString()
+            .padStart(2, "0")} - ${track.cleanFileTitle()}`
+        : `${track.round
+            ?.toString()
+            .padStart(2, "0")} - ${track.cleanFileTitle()}`;
+      completePlaylist.appendChild(trackToDisplay);
+    }
+    modal.appendChild(completePlaylist);
   });
 };
 
 addEventListenersToTracklistButtons();
+
+const cleanDropzone = () => {
+  if (playlist.length > 0) {
+    if (document.getElementById("playlistInstruction")) {
+      document.getElementById("playlistInstruction").classList.add("hidden");
+    }
+  } else {
+    document.getElementById("playlistInstruction").classList.remove("hidden");
+  }
+};
 
 // Cette fonction ajoute des listeners d'event sur les ghostTracks créées lors des drag dans la playlist
 const addListenersToGhostTrack = (ghostTrack, track, type) => {
@@ -840,6 +1001,7 @@ const createTracklist = () => {
     }
     window.player.getPlaylist(playlist);
   }
+  cleanDropzone();
 };
 
 createTracklist();
@@ -854,6 +1016,7 @@ const updateTracklist = () => {
       tracklist.removeChild(tracklistLineToUpdate);
     }
   }
+  cleanDropzone();
 };
 
 const updatePlaylistData = () => {
