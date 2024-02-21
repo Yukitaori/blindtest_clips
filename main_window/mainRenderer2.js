@@ -1415,6 +1415,12 @@ const displayInfoBlock = document.getElementById("displayInfoBlock");
 const imageList = document.getElementById("imageList");
 const clearImageList = document.getElementById("clearImageList");
 const displayInfoButton = document.getElementById("displayInfoButton");
+const displayFirstCategoryButton = document.getElementById(
+  "displayFirstCategoryButton"
+);
+const displaySecondCategoryButton = document.getElementById(
+  "displaySecondCategoryButton"
+);
 const firstRoundInput = document.getElementById("firstRoundInput");
 const secondRoundInput = document.getElementById("secondRoundInput");
 const displayRoundsInput = document.getElementById("displayRoundsInput");
@@ -1476,6 +1482,15 @@ displayInfoButton.addEventListener("click", () => {
   } else {
     displayInfoBlock.classList.remove("bg-primary");
   }
+});
+
+// les displayCategoryButton permettent d'afficher le carton d'une catégorie
+displayFirstCategoryButton.addEventListener("click", () => {
+  console.log("click");
+});
+
+displayFirstCategoryButton.addEventListener("click", () => {
+  console.log("click");
 });
 
 // Les inputs ci-dessous permettent d'indiquer une heure de début pour chaque manche
