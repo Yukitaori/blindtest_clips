@@ -1031,7 +1031,6 @@ updateTracklistLength();
 
 // Teams stocke les informations relative à chaque équipe (nom, score)
 const teams = JSON.parse(window.localStorage.getItem("teams")) || [];
-let sortTeamsState = null;
 const sortAscAlphaButton = document.getElementById("sortAscAlpha");
 const sortDescAlphaButton = document.getElementById("sortDescAlpha");
 const sortAscNumButton = document.getElementById("sortAscNum");
@@ -1050,7 +1049,6 @@ const videoAndPodiumDisplayButton =
 
 // Création de la teamlist
 const createTeamList = () => {
-  if (sortTeamsState) handleSort(sortTeamsState);
   const teamList = document.getElementById("teamlist");
   teamList.innerHTML =
     '<li class="w-full p-1 pl-4 flex justify-center gap-4"><button class="h-10 w-10 flex justify-center items-center font-bold border border-solid border-black shadow-buttonShadow rounded-3xl group" id="addTeam"><img src="../src/assets/icons/add.png" class="h-4 w-4 group-hover:scale-125"></img></button><button class="h-10 w-10 flex justify-center items-center font-bold border border-solid border-black shadow-buttonShadow rounded-3xl group" id="resetScores"><img src="../src/assets/icons/reset.png" class="h-4 w-4 group-hover:scale-125"></img></button></li>';
@@ -1082,27 +1080,26 @@ const handleScore = (action, team) => {
   if (action === "decrement") {
     team.score--;
   }
+  handleSort(null);
   createTeamList();
 };
 
 // Logique de tri lors du clic sur les boutons
 const handleSort = (sortType) => {
-  sortTeamsState = sortType;
   if (sortType === "ascAlpha") {
     teams.sort((a, b) => {
       return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
     });
-  }
-  if (sortType === "descAlpha") {
+  } else if (sortType === "descAlpha") {
     teams.sort((a, b) => {
       return a.name.toLowerCase() > b.name.toLowerCase() ? -1 : 1;
     });
-  }
-  if (sortType === "ascNum") {
+  } else if (sortType === "ascNum") {
     teams.sort((a, b) => a.score - b.score);
-  }
-  if (sortType === "descNum") {
+  } else if (sortType === "descNum") {
     teams.sort((a, b) => b.score - a.score);
+  } else {
+    resetSortButtonsStyle();
   }
 };
 
@@ -1142,7 +1139,7 @@ const resetSortButtonsStyle = (clickedButton) => {
       button.classList.remove("rounded-teamSettingsSelected");
     }
   }
-  clickedButton.classList.add(
+  clickedButton?.classList.add(
     "bg-purple-300",
     "font-bold",
     "rounded-teamSettingsSelected"
@@ -1176,6 +1173,7 @@ const addTeamLine = (teamToAdd) => {
       score: 0,
     };
     teams.push(teamToAdd);
+    handleSort(null);
   }
   const teamList = document.getElementById("teamlist");
   const teamLine = document.createElement("li");
@@ -1307,8 +1305,8 @@ const addTeamLine = (teamToAdd) => {
       teams.indexOf(teams.find((team) => team.id === teamToAdd.id)),
       1
     );
-    handleSort(sortTeamsState);
     createTeamList();
+    handleSort(null);
   });
   window.localStorage.setItem("teams", JSON.stringify(teams));
 };
@@ -1351,7 +1349,9 @@ videoOnlyDisplayButton.addEventListener("click", () => {
 videoAndScoresDisplayButton.addEventListener("click", () => {
   if (teams.length > 0) {
     resetDisplayButtonsStyle(videoAndScoresDisplayButton);
-    window.display.displayVideoAndScores(teams);
+    window.display.displayVideoAndScores(
+      teams.sort((a, b) => b.score - a.score)
+    );
   }
 });
 videoAndPodiumDisplayButton.addEventListener("click", () => {
