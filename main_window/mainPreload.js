@@ -197,6 +197,9 @@ contextBridge.exposeInMainWorld("display", {
     ipcRenderer.send("displayInfo", isDisplay, displayRoundsState);
     displayInfoButton.classList.toggle("bg-fifth");
   },
+  displayCategory: (category, isDisplay) => {
+    ipcRenderer.send("displayCategory", category, isDisplay);
+  },
 });
 
 // Ecoute du message getDuration, qui permet de récupérer de la secondaryWindow la durée maximale de la loadedTrack et de l'afficher sur l'input range

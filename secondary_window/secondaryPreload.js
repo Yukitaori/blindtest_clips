@@ -355,6 +355,23 @@ ipcRenderer.on("displayInfo", (event, isDisplay, displayRoundsState) => {
   }
 });
 
+// Ecoute du message "displayInfo" et affichage du carton d'info + les informations de manches le cas échéant
+ipcRenderer.on("displayCategory", (event, category, isDisplay) => {
+  console.log(category, isDisplay);
+  let categoryBackground = document.getElementById("categoryBackground");
+  let categoryInfo = document.getElementById("categoryInfo");
+  isDisplay
+    ? (categoryInfo.innerText = category.toUpperCase())
+    : (categoryInfo.innerText = ``);
+  if (isDisplay) {
+    categoryBackground.classList.remove("hidden");
+    categoryBackground.classList.add("flex");
+  } else {
+    categoryBackground.classList.remove("flex");
+    categoryBackground.classList.add("hidden");
+  }
+});
+
 contextBridge.exposeInMainWorld("player", {
   setFullScreen: () => {
     ipcRenderer.send("fullscreen");

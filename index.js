@@ -103,6 +103,9 @@ const createWindows = (screens) => {
       displayRoundsState
     );
   });
+  ipcMain.on("displayCategory", (event, category, isDisplay) => {
+    secondaryWindow.webContents.send("displayCategory", category, isDisplay);
+  });
 
   // Gestion du FullScreen de la secondaryWindow (lors du double-click sur l'écran 2 ou ctl+f sur l'écran 1)
   ipcMain.on("fullscreen", () => {

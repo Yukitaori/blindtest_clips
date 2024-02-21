@@ -1161,6 +1161,14 @@ const resetDisplay = () => {
     window.display.displayInfo(displayInfo, displayRoundsState);
     displayInfoBlock.classList.remove("bg-primary");
   }
+  if (displayCategory.first || displayCategory.second) {
+    displayCategory.first = false;
+    displayCategory.second = false;
+    window.display.displayCategory(null, false);
+    displayCategoryBlock.classList.remove("bg-primary");
+    displayFirstCategoryButton.classList.remove("bg-fifth");
+    displaySecondCategoryButton.classList.remove("bg-fifth");
+  }
 };
 
 // Création d'une ligne d'équipe
@@ -1407,6 +1415,8 @@ document.addEventListener("keydown", (e) => {
 let displayInfo = false;
 // Le displayRoundsState permet la gestion de l'affichage ou non des différents horaires des manches
 let displayRoundsState = { first: null, second: null, isDisplay: false };
+// Le displayCategory permet de savoir si le carton d'affichage de la catégorie est actuellement affiché ou non sur la secondaryWindow
+let displayCategory = { first: false, second: false };
 
 const addImageForm = document.getElementById("addImageForm");
 const addImageInput = document.getElementById("addImageInput");
@@ -1415,6 +1425,9 @@ const displayInfoBlock = document.getElementById("displayInfoBlock");
 const imageList = document.getElementById("imageList");
 const clearImageList = document.getElementById("clearImageList");
 const displayInfoButton = document.getElementById("displayInfoButton");
+const displayCategoryBlock = document.getElementById("displayCategoryBlock");
+const firstCategoryInput = document.getElementById("firstCategoryInput");
+const secondCategoryInput = document.getElementById("secondCategoryInput");
 const displayFirstCategoryButton = document.getElementById(
   "displayFirstCategoryButton"
 );
@@ -1486,12 +1499,43 @@ displayInfoButton.addEventListener("click", () => {
 
 // les displayCategoryButton permettent d'afficher le carton d'une catégorie
 displayFirstCategoryButton.addEventListener("click", () => {
-  console.log("click");
+  handleCategoryDisplay(1);
 });
 
-displayFirstCategoryButton.addEventListener("click", () => {
-  console.log("click");
+displaySecondCategoryButton.addEventListener("click", () => {
+  handleCategoryDisplay(2);
 });
+
+const handleCategoryDisplay = (categoryNumber) => {
+  if (categoryNumber == 1) {
+    displayCategory.first = !displayCategory.first;
+    window.display.displayCategory(
+      firstCategoryInput.value,
+      displayCategory.first
+    );
+    displayCategory.second = false;
+    displaySecondCategoryButton.classList.remove("bg-fifth");
+    displayCategory.first
+      ? displayFirstCategoryButton.classList.add("bg-fifth")
+      : displayFirstCategoryButton.classList.remove("bg-fifth");
+  } else if (categoryNumber == 2) {
+    displayCategory.second = !displayCategory.second;
+    window.display.displayCategory(
+      secondCategoryInput.value,
+      displayCategory.second
+    );
+    displayCategory.first = false;
+    displayFirstCategoryButton.classList.remove("bg-fifth");
+    displayCategory.second
+      ? displaySecondCategoryButton.classList.add("bg-fifth")
+      : displaySecondCategoryButton.classList.remove("bg-fifth");
+  }
+  if (displayCategory.first || displayCategory.second) {
+    displayCategoryBlock.classList.add("bg-primary");
+  } else {
+    displayCategoryBlock.classList.remove("bg-primary");
+  }
+};
 
 // Les inputs ci-dessous permettent d'indiquer une heure de début pour chaque manche
 firstRoundInput.addEventListener("change", () => {
