@@ -17,6 +17,7 @@ module.exports = {
       },
       fontFamily: {
         raleway: "Raleway",
+        wickedhearts: "wickedhearts",
       },
       boxShadow: {
         buttonShadow: "3px 3px black",

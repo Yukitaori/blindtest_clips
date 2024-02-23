@@ -699,12 +699,12 @@ video {
   height: 150px;
 }
 
-.h-\[20\%\] {
-  height: 20%;
-}
-
 .h-\[200px\] {
   height: 200px;
+}
+
+.h-\[20vh\] {
+  height: 20vh;
 }
 
 .h-\[30\%\] {
@@ -727,8 +727,8 @@ video {
   height: 60%;
 }
 
-.h-\[80\%\] {
-  height: 80%;
+.h-\[70\%\] {
+  height: 70%;
 }
 
 .h-\[90\%\] {
@@ -802,6 +802,10 @@ video {
 
 .w-\[180px\] {
   width: 180px;
+}
+
+.w-\[20vh\] {
+  width: 20vh;
 }
 
 .w-\[30\%\] {
@@ -1262,6 +1266,10 @@ video {
   padding-left: 1rem;
 }
 
+.pt-8 {
+  padding-top: 2rem;
+}
+
 .text-left {
   text-align: left;
 }
@@ -1272,6 +1280,10 @@ video {
 
 .font-raleway {
   font-family: Raleway;
+}
+
+.font-wickedhearts {
+  font-family: wickedhearts;
 }
 
 .text-2xl {
@@ -1300,6 +1312,10 @@ video {
 
 .font-semibold {
   font-weight: 600;
+}
+
+.leading-loose {
+  line-height: 2;
 }
 
 .text-black {
@@ -1369,6 +1385,12 @@ video {
   font-family: raleway;
 
   src: url("../src/assets/fonts/Raleway/Raleway-Regular.ttf");
+}
+
+@font-face {
+  font-family: wickedhearts;
+
+  src: url("../src/assets/fonts/Wicked_Hearts/Wicked-Hearts.otf");
 }
 
 * {
