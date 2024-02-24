@@ -367,7 +367,7 @@ class Track {
 
   deleteTrack() {
     this.unselectTrack();
-    this.unloadTrack();
+    this.isLoaded ? this.unloadTrack() : null;
     let tracklistLineToRemove = this.tracklistLine;
     tracklist.removeChild(tracklistLineToRemove);
     this.updateTrackNumberAndId();
