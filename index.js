@@ -32,7 +32,6 @@ const createWindows = (screens) => {
 
   // Gestion des messages liés au player
   ipcMain.on("playFile", (event, path) => {
-    console.log(path);
     secondaryWindow.webContents.send("playFile", path);
   });
 

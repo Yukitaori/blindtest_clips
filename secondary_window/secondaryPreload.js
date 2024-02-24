@@ -82,7 +82,6 @@ ipcRenderer.on("changeTime", (event, time) => {
 ipcRenderer.on("changeVolume", (event, volume) => {
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.volume = volume;
-  console.log(videoPlayer.volume);
 });
 
 // Ecoute du message "displayVideoOnly" et affichage de la video sans les scores dans la secondaryWindow
@@ -320,7 +319,6 @@ ipcRenderer.on("displayGif", (event, path) => {
 
 // Ecoute du message "displayInfo" et affichage du carton d'info + les informations de manches le cas échéant
 ipcRenderer.on("displayInfo", (event, isDisplay, displayRoundsState) => {
-  console.log(isDisplay);
   let infoBackground = document.getElementById("infoBackground");
   let roundsDisplay = document.getElementById("roundsDisplay");
   let firstRoundDisplay = document.getElementById("firstRoundDisplay");
@@ -338,7 +336,6 @@ ipcRenderer.on("displayInfo", (event, isDisplay, displayRoundsState) => {
     displayRoundsState.isDisplay &&
     (displayRoundsState.first || displayRoundsState.second)
   ) {
-    console.log(displayRoundsState);
     if (displayRoundsState.first && displayRoundsState.second) {
       roundsDisplay.classList.remove("hidden");
       roundsDisplay.classList.add("flex");
@@ -357,7 +354,6 @@ ipcRenderer.on("displayInfo", (event, isDisplay, displayRoundsState) => {
 
 // Ecoute du message "displayInfo" et affichage du carton d'info + les informations de manches le cas échéant
 ipcRenderer.on("displayCategory", (event, category, isDisplay) => {
-  console.log(category, isDisplay);
   let categoryBackground = document.getElementById("categoryBackground");
   let categoryInfo = document.getElementById("categoryInfo");
   isDisplay

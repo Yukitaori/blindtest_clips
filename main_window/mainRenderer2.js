@@ -521,9 +521,21 @@ const getPosition = (element) => {
 const addEventListenersToDocument = () => {
   // Gestion des appuis sur les touches les raccourcis
   document.addEventListener("keydown", (e) => {
+    if (textFocus) {
+      keyDownState[e.key] = true;
+      if (e.key == "Enter") {
+        e.target.blur();
+        textFocus = false;
+      }
+    }
+
     if (!textFocus) {
       // Lors de l'appui sur Suppr, les pistes sélectionnées (selectedTracks) sont supprimées
-      if (e.key === "Delete" && selectedTracks.length > 0) {
+      if (
+        e.key === "Delete" &&
+        selectedTracks.length > 0 &&
+        (keyDownState[e.key] === false || !keyDownState[e.key])
+      ) {
         e.preventDefault();
         selectedTracks.forEach((selectedTrack) => {
           selectedTrack.deleteTrack();
@@ -533,7 +545,11 @@ const addEventListenersToDocument = () => {
         updateTracklistLength();
       }
       // Lors de l'appui sur la Entrée, si une seule track est sélectionnée, elle est chargée et lancée
-      if (e.key == "Enter" && selectedTracks.length === 1) {
+      if (
+        e.key == "Enter" &&
+        selectedTracks.length === 1 &&
+        (keyDownState[e.key] === false || !keyDownState[e.key])
+      ) {
         e.preventDefault();
         let trackToPlay = selectedTracks[0];
         trackToPlay.unselectTrack();
@@ -1288,8 +1304,9 @@ const addTeamLine = (teamToAdd) => {
         createTeamList();
       }
     });
-    document.addEventListener("keydown", (e) => {
+    teamNameInput.addEventListener("keydown", (e) => {
       if (textFocus) {
+        keyDownState[e.key] = true;
         if (e.key === "Enter" && e.target.value.match(/\S+/g)) {
           textFocus = false;
           createTeamList();
@@ -1537,12 +1554,40 @@ const handleCategoryDisplay = (categoryNumber) => {
   }
 };
 
+firstCategoryInput.addEventListener("focusin", () => {
+  textFocus = true;
+});
+secondCategoryInput.addEventListener("focusin", () => {
+  textFocus = true;
+});
+
+firstCategoryInput.addEventListener("focusout", () => {
+  textFocus = false;
+});
+secondCategoryInput.addEventListener("focusout", () => {
+  textFocus = false;
+});
+
 // Les inputs ci-dessous permettent d'indiquer une heure de début pour chaque manche
 firstRoundInput.addEventListener("change", () => {
   displayRoundsState.first = firstRoundInput.value;
 });
 secondRoundInput.addEventListener("change", () => {
   displayRoundsState.second = secondRoundInput.value;
+});
+
+firstRoundInput.addEventListener("focusin", () => {
+  textFocus = true;
+});
+secondRoundInput.addEventListener("focusin", () => {
+  textFocus = true;
+});
+
+firstRoundInput.addEventListener("focusout", () => {
+  textFocus = false;
+});
+secondRoundInput.addEventListener("focusout", () => {
+  textFocus = false;
 });
 
 // Lorsque la displayRoundsInput est cochée, les informations de manches s'affichent sur le carton d'informations
