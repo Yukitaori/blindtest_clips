@@ -1356,7 +1356,7 @@ videoAndScoresDisplayButton.addEventListener("click", () => {
   if (teams.length > 0) {
     resetDisplayButtonsStyle(videoAndScoresDisplayButton);
     window.display.displayVideoAndScores(
-      teams.sort((a, b) => b.score - a.score)
+      teams.toSorted((a, b) => b.score - a.score)
     );
   }
 });
@@ -1364,7 +1364,7 @@ videoAndPodiumDisplayButton.addEventListener("click", () => {
   if (teams.length > 0) {
     resetDisplayButtonsStyle(videoAndPodiumDisplayButton);
     window.display.displayVideoAndPodium(
-      teams.sort((a, b) => b.score - a.score)
+      teams.toSorted((a, b) => b.score - a.score)
     );
   }
 });
