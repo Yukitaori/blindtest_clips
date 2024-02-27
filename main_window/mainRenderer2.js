@@ -724,6 +724,7 @@ const addEventListenersToTracklistButtons = () => {
       }
     }
     roundSelect.value = "";
+    window.localStorage.setItem("playlist", JSON.stringify(playlist));
   });
 
   clearTrackListButton.addEventListener("click", () => {
@@ -770,6 +771,7 @@ const addEventListenersToTracklistButtons = () => {
       }
     }
     categorySelect.value = "";
+    window.localStorage.setItem("playlist", JSON.stringify(playlist));
   });
 
   // Cet événement permet d'afficher une modale pour visualiser toute la playlist
@@ -779,8 +781,8 @@ const addEventListenersToTracklistButtons = () => {
       "bg-transparentDisplay",
       "absolute",
       "top-0",
-      "w-[100vw]",
-      "h-[100vh]",
+      "w-full",
+      "h-full",
       "flex",
       "justify-center",
       "items-center",
@@ -849,6 +851,7 @@ const addEventListenersToTracklistButtons = () => {
     modal.appendChild(modalCloseButton);
     let completePlaylist = document.createElement("div");
     completePlaylist.classList.add(
+      "text-xs",
       "relative",
       "m-16",
       "flex",
@@ -874,6 +877,7 @@ const addEventListenersToTracklistButtons = () => {
     modal.appendChild(completePlaylist);
   });
 
+  // Le hidePlaylistButton permet de flouter la tracklist pour plus de confidentialité
   hidePlaylistButton.addEventListener("click", () => {
     tracklist.classList.toggle("blur-sm");
     hidePlaylistButton.classList.toggle("bg-fifth");
