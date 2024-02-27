@@ -7,6 +7,11 @@
   src: url("../src/assets/fonts/Raleway/Raleway-Regular.ttf");
 }
 
+@font-face {
+  font-family: wickedhearts;
+  src: url("../src/assets/fonts/Wicked_Hearts/Wicked-Hearts.otf");
+}
+
 * {
   --primary: #dda15e;
   --secondary: #bc6c25;

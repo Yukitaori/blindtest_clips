@@ -32,7 +32,6 @@ const createWindows = (screens) => {
 
   // Gestion des messages liés au player
   ipcMain.on("playFile", (event, path) => {
-    console.log(path);
     secondaryWindow.webContents.send("playFile", path);
   });
 
@@ -102,6 +101,9 @@ const createWindows = (screens) => {
       isDisplay,
       displayRoundsState
     );
+  });
+  ipcMain.on("displayCategory", (event, category, isDisplay) => {
+    secondaryWindow.webContents.send("displayCategory", category, isDisplay);
   });
 
   // Gestion du FullScreen de la secondaryWindow (lors du double-click sur l'écran 2 ou ctl+f sur l'écran 1)

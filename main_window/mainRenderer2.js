@@ -368,7 +368,7 @@ class Track {
 
   deleteTrack() {
     this.unselectTrack();
-    this.unloadTrack();
+    this.isLoaded ? this.unloadTrack() : null;
     let tracklistLineToRemove = this.tracklistLine;
     tracklist.removeChild(tracklistLineToRemove);
     this.updateTrackNumberAndId();
@@ -522,9 +522,21 @@ const getPosition = (element) => {
 const addEventListenersToDocument = () => {
   // Gestion des appuis sur les touches les raccourcis
   document.addEventListener("keydown", (e) => {
+    if (textFocus) {
+      keyDownState[e.key] = true;
+      if (e.key == "Enter") {
+        e.target.blur();
+        textFocus = false;
+      }
+    }
+
     if (!textFocus) {
       // Lors de l'appui sur Suppr, les pistes sélectionnées (selectedTracks) sont supprimées
-      if (e.key === "Delete" && selectedTracks.length > 0) {
+      if (
+        e.key === "Delete" &&
+        selectedTracks.length > 0 &&
+        (keyDownState[e.key] === false || !keyDownState[e.key])
+      ) {
         e.preventDefault();
         selectedTracks.forEach((selectedTrack) => {
           selectedTrack.deleteTrack();
@@ -534,7 +546,11 @@ const addEventListenersToDocument = () => {
         updateTracklistLength();
       }
       // Lors de l'appui sur la Entrée, si une seule track est sélectionnée, elle est chargée et lancée
-      if (e.key == "Enter" && selectedTracks.length === 1) {
+      if (
+        e.key == "Enter" &&
+        selectedTracks.length === 1 &&
+        (keyDownState[e.key] === false || !keyDownState[e.key])
+      ) {
         e.preventDefault();
         let trackToPlay = selectedTracks[0];
         trackToPlay.unselectTrack();
@@ -1171,6 +1187,14 @@ const resetDisplay = () => {
     window.display.displayInfo(displayInfo, displayRoundsState);
     displayInfoBlock.classList.remove("bg-primary");
   }
+  if (displayCategory.first || displayCategory.second) {
+    displayCategory.first = false;
+    displayCategory.second = false;
+    window.display.displayCategory(null, false);
+    displayCategoryBlock.classList.remove("bg-primary");
+    displayFirstCategoryButton.classList.remove("bg-fifth");
+    displaySecondCategoryButton.classList.remove("bg-fifth");
+  }
 };
 
 // Création d'une ligne d'équipe
@@ -1290,8 +1314,9 @@ const addTeamLine = (teamToAdd) => {
         createTeamList();
       }
     });
-    document.addEventListener("keydown", (e) => {
+    teamNameInput.addEventListener("keydown", (e) => {
       if (textFocus) {
+        keyDownState[e.key] = true;
         if (e.key === "Enter" && e.target.value.match(/\S+/g)) {
           textFocus = false;
           createTeamList();
@@ -1417,6 +1442,8 @@ document.addEventListener("keydown", (e) => {
 let displayInfo = false;
 // Le displayRoundsState permet la gestion de l'affichage ou non des différents horaires des manches
 let displayRoundsState = { first: null, second: null, isDisplay: false };
+// Le displayCategory permet de savoir si le carton d'affichage de la catégorie est actuellement affiché ou non sur la secondaryWindow
+let displayCategory = { first: false, second: false };
 
 const addImageForm = document.getElementById("addImageForm");
 const addImageInput = document.getElementById("addImageInput");
@@ -1425,6 +1452,15 @@ const displayInfoBlock = document.getElementById("displayInfoBlock");
 const imageList = document.getElementById("imageList");
 const clearImageList = document.getElementById("clearImageList");
 const displayInfoButton = document.getElementById("displayInfoButton");
+const displayCategoryBlock = document.getElementById("displayCategoryBlock");
+const firstCategoryInput = document.getElementById("firstCategoryInput");
+const secondCategoryInput = document.getElementById("secondCategoryInput");
+const displayFirstCategoryButton = document.getElementById(
+  "displayFirstCategoryButton"
+);
+const displaySecondCategoryButton = document.getElementById(
+  "displaySecondCategoryButton"
+);
 const firstRoundInput = document.getElementById("firstRoundInput");
 const secondRoundInput = document.getElementById("secondRoundInput");
 const displayRoundsInput = document.getElementById("displayRoundsInput");
@@ -1488,12 +1524,80 @@ displayInfoButton.addEventListener("click", () => {
   }
 });
 
+// les displayCategoryButton permettent d'afficher le carton d'une catégorie
+displayFirstCategoryButton.addEventListener("click", () => {
+  handleCategoryDisplay(1);
+});
+
+displaySecondCategoryButton.addEventListener("click", () => {
+  handleCategoryDisplay(2);
+});
+
+const handleCategoryDisplay = (categoryNumber) => {
+  if (categoryNumber == 1) {
+    displayCategory.first = !displayCategory.first;
+    window.display.displayCategory(
+      firstCategoryInput.value,
+      displayCategory.first
+    );
+    displayCategory.second = false;
+    displaySecondCategoryButton.classList.remove("bg-fifth");
+    displayCategory.first
+      ? displayFirstCategoryButton.classList.add("bg-fifth")
+      : displayFirstCategoryButton.classList.remove("bg-fifth");
+  } else if (categoryNumber == 2) {
+    displayCategory.second = !displayCategory.second;
+    window.display.displayCategory(
+      secondCategoryInput.value,
+      displayCategory.second
+    );
+    displayCategory.first = false;
+    displayFirstCategoryButton.classList.remove("bg-fifth");
+    displayCategory.second
+      ? displaySecondCategoryButton.classList.add("bg-fifth")
+      : displaySecondCategoryButton.classList.remove("bg-fifth");
+  }
+  if (displayCategory.first || displayCategory.second) {
+    displayCategoryBlock.classList.add("bg-primary");
+  } else {
+    displayCategoryBlock.classList.remove("bg-primary");
+  }
+};
+
+firstCategoryInput.addEventListener("focusin", () => {
+  textFocus = true;
+});
+secondCategoryInput.addEventListener("focusin", () => {
+  textFocus = true;
+});
+
+firstCategoryInput.addEventListener("focusout", () => {
+  textFocus = false;
+});
+secondCategoryInput.addEventListener("focusout", () => {
+  textFocus = false;
+});
+
 // Les inputs ci-dessous permettent d'indiquer une heure de début pour chaque manche
 firstRoundInput.addEventListener("change", () => {
   displayRoundsState.first = firstRoundInput.value;
 });
 secondRoundInput.addEventListener("change", () => {
   displayRoundsState.second = secondRoundInput.value;
+});
+
+firstRoundInput.addEventListener("focusin", () => {
+  textFocus = true;
+});
+secondRoundInput.addEventListener("focusin", () => {
+  textFocus = true;
+});
+
+firstRoundInput.addEventListener("focusout", () => {
+  textFocus = false;
+});
+secondRoundInput.addEventListener("focusout", () => {
+  textFocus = false;
 });
 
 // Lorsque la displayRoundsInput est cochée, les informations de manches s'affichent sur le carton d'informations
