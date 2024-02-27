@@ -76,6 +76,7 @@ const showCompletePlaylistButton = document.getElementById(
 );
 const clearTrackListButton = document.getElementById("clearTrackListButton");
 const categorySelect = document.getElementById("categorySelect");
+const hidePlaylistButton = document.getElementById("hidePlaylistButton");
 const tracklist = document.getElementById("tracklist");
 const tracklistLength = document.getElementById("tracklistLength");
 const dropzone = document.getElementById("dropzone");
@@ -739,6 +740,7 @@ const addEventListenersToTracklistButtons = () => {
       }
     }
     roundSelect.value = "";
+    window.localStorage.setItem("playlist", JSON.stringify(playlist));
   });
 
   clearTrackListButton.addEventListener("click", () => {
@@ -785,6 +787,7 @@ const addEventListenersToTracklistButtons = () => {
       }
     }
     categorySelect.value = "";
+    window.localStorage.setItem("playlist", JSON.stringify(playlist));
   });
 
   // Cet événement permet d'afficher une modale pour visualiser toute la playlist
@@ -794,8 +797,8 @@ const addEventListenersToTracklistButtons = () => {
       "bg-transparentDisplay",
       "absolute",
       "top-0",
-      "w-[100vw]",
-      "h-[100vh]",
+      "w-full",
+      "h-full",
       "flex",
       "justify-center",
       "items-center",
@@ -864,6 +867,7 @@ const addEventListenersToTracklistButtons = () => {
     modal.appendChild(modalCloseButton);
     let completePlaylist = document.createElement("div");
     completePlaylist.classList.add(
+      "text-xs",
       "relative",
       "m-16",
       "flex",
@@ -887,6 +891,12 @@ const addEventListenersToTracklistButtons = () => {
       completePlaylist.appendChild(trackToDisplay);
     }
     modal.appendChild(completePlaylist);
+  });
+
+  // Le hidePlaylistButton permet de flouter la tracklist pour plus de confidentialité
+  hidePlaylistButton.addEventListener("click", () => {
+    tracklist.classList.toggle("blur-sm");
+    hidePlaylistButton.classList.toggle("bg-fifth");
   });
 };
 
@@ -1375,7 +1385,7 @@ videoAndScoresDisplayButton.addEventListener("click", () => {
   if (teams.length > 0) {
     resetDisplayButtonsStyle(videoAndScoresDisplayButton);
     window.display.displayVideoAndScores(
-      teams.sort((a, b) => b.score - a.score)
+      teams.toSorted((a, b) => b.score - a.score)
     );
   }
 });
@@ -1383,7 +1393,7 @@ videoAndPodiumDisplayButton.addEventListener("click", () => {
   if (teams.length > 0) {
     resetDisplayButtonsStyle(videoAndPodiumDisplayButton);
     window.display.displayVideoAndPodium(
-      teams.sort((a, b) => b.score - a.score)
+      teams.toSorted((a, b) => b.score - a.score)
     );
   }
 });
