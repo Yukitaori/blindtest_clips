@@ -76,6 +76,7 @@ const showCompletePlaylistButton = document.getElementById(
 );
 const clearTrackListButton = document.getElementById("clearTrackListButton");
 const categorySelect = document.getElementById("categorySelect");
+const hidePlaylistButton = document.getElementById("hidePlaylistButton");
 const tracklist = document.getElementById("tracklist");
 const tracklistLength = document.getElementById("tracklistLength");
 const dropzone = document.getElementById("dropzone");
@@ -871,6 +872,11 @@ const addEventListenersToTracklistButtons = () => {
       completePlaylist.appendChild(trackToDisplay);
     }
     modal.appendChild(completePlaylist);
+  });
+
+  hidePlaylistButton.addEventListener("click", () => {
+    tracklist.classList.toggle("blur-sm");
+    hidePlaylistButton.classList.toggle("bg-fifth");
   });
 };
 
