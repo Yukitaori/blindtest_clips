@@ -39,8 +39,6 @@ const playTrack = (track) => {
   const displayImageBlock = document.getElementById("displayImageBlock");
   const currentTime = document.getElementById("current");
   const timeControl = document.getElementById("timecontrol");
-
-  console.log(track);
   if (track) {
     const playButton = document.getElementById("playerplay");
     const pauseButton = document.getElementById("playerpause");
@@ -196,6 +194,9 @@ contextBridge.exposeInMainWorld("display", {
     const displayInfoButton = document.getElementById("displayInfoButton");
     ipcRenderer.send("displayInfo", isDisplay, displayRoundsState);
     displayInfoButton.classList.toggle("bg-fifth");
+  },
+  displayCategory: (category, isDisplay) => {
+    ipcRenderer.send("displayCategory", category, isDisplay);
   },
 });
 
