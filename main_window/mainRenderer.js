@@ -54,28 +54,24 @@ let textFocus = false;
 let displayTrackNumber = false;
 // Le displayTrackNumber permet de vérifier si le bouton d'affichage du numéro du nom de fichier a été coché ou non
 let eraseFileNameNumberPart = false;
-// Le displayInfo permet de savoir si le carton d'info est actuellement affiché ou non sur la secondaryWindow
-let displayInfo = false;
-// Le displayRoundsState permet la gestion de l'affichage ou non des différents horaires des manches
-let displayRoundsState = { first: null, second: null, isDisplay: false };
 // La songsLibrary contient les liens et infos de chaque musique jouable dans l'audioplayer
 let songsLibrary = [
   {
     id: "song1",
     title: "Love Boat",
-    src: "./src/assets/music/Love Boat.mp3",
+    src: "../src/assets/music/Love Boat.mp3",
     start: 0,
   },
   {
     id: "song2",
     title: "Rocky - Win",
-    src: "./src/assets/music/Rocky.mp3",
+    src: "../src/assets/music/Rocky.mp3",
     start: 90,
   },
   {
     id: "song3",
     title: "Anniversaire",
-    src: "./src/assets/music/Joyeux Anniversaire.mp3",
+    src: "../src/assets/music/Joyeux Anniversaire.mp3",
     start: 9.8,
   },
 ];
@@ -168,6 +164,64 @@ const changeTrackTitles = () => {
   }
 };
 
+// Cette fonction gère le changement de track et réinitialise le display par la même occasion
+const handleChangeTrack = (action) => {
+  if (action === "next") {
+    window.player.nextTrack();
+    if (!mute) mute = true;
+    if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
+      selectedTracks.forEach((selectedTrack) => {
+        let trackListLine = document.getElementById(`${selectedTrack.id}`);
+        changeTrackBehavior(trackListLine, selectedTrack, "unselected");
+      });
+      selectedTracks = [];
+      changeTrackBehavior(
+        document.getElementById(`${loadedTrack.id}`),
+        playlist[loadedTrack.id],
+        "unloaded"
+      );
+      loadedTrack = playlist[parseInt(loadedTrack.id) + 1];
+      changeTrackBehavior(
+        document.getElementById(`${loadedTrack.id}`),
+        loadedTrack,
+        "loaded"
+      );
+      scrollParentToChild(
+        tracklist,
+        document.getElementById(`${loadedTrack.id}`)
+      );
+      tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
+    }
+  } else if (action === "previous") {
+    window.player.previousTrack();
+    if (!mute) mute = true;
+    if (parseInt(loadedTrack.id) - 1 >= 0) {
+      selectedTracks.forEach((selectedTrack) => {
+        let trackListLine = document.getElementById(`${selectedTrack.id}`);
+        changeTrackBehavior(trackListLine, selectedTrack, "unselected");
+      });
+      selectedTracks = [];
+      changeTrackBehavior(
+        document.getElementById(`${loadedTrack.id}`),
+        playlist[loadedTrack.id],
+        "unloaded"
+      );
+      loadedTrack = playlist[parseInt(loadedTrack.id) - 1];
+      changeTrackBehavior(
+        document.getElementById(`${loadedTrack.id}`),
+        loadedTrack,
+        "loaded"
+      );
+      scrollParentToChild(
+        tracklist,
+        document.getElementById(`${loadedTrack.id}`)
+      );
+      tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
+    }
+  }
+  resetDisplay();
+};
+
 // Le eraseFileNamePartButton permet d'effacer ou non le numéro en amont de chaque nom de fichier dans le nom de la track
 eraseFileNamePartButton.addEventListener("click", () => {
   eraseFileNameNumberPart = !eraseFileNameNumberPart;
@@ -224,7 +278,7 @@ showCompletePlaylistButton.addEventListener("click", () => {
     "group-hover:scale-125",
     "transition-all"
   );
-  modalCloseButtonCross.setAttribute("src", "./src/assets/icons/close.png");
+  modalCloseButtonCross.setAttribute("src", "../src/assets/icons/close.png");
   modalCloseButton.appendChild(modalCloseButtonCross);
   modalCloseButton.classList.add(
     "absolute",
@@ -347,7 +401,7 @@ const changeTrackBehavior = (track, file, type) => {
   } else if (type === "loaded") {
     track.classList.remove("bg-fourth", "text-white");
     let playIcon = document.createElement("img");
-    playIcon.setAttribute("src", "./src/assets/icons/playwhite.png");
+    playIcon.setAttribute("src", "../src/assets/icons/playwhite.png");
     playIcon.classList.add("h-2", "w-2");
     track.insertBefore(playIcon, track.firstChild);
     track.classList.add(
@@ -522,6 +576,7 @@ const createTrackList = () => {
         : (tracklistLength.innerText = `0 / ${playlist.length}`);
       changeTrackBehavior(track, file, "loaded");
       loadedTrack.paused = false;
+      resetDisplay();
     });
 
     // Le clic simple permet juste de sélectionner une piste
@@ -622,6 +677,7 @@ const createTrackList = () => {
             window.player.pause();
             loadedTrack.paused = true;
           }
+          keyDownState[e.key] = true;
         }
         // L'appui sur la touche M active/désactive le mute sur la video
         if (
@@ -632,6 +688,7 @@ const createTrackList = () => {
             window.player.mute();
             mute = !mute;
           }
+          keyDownState[e.key] = true;
         }
         // L'appui sur la touche V remet le volume à 100%
         if (
@@ -645,6 +702,7 @@ const createTrackList = () => {
             "fifth",
             "third"
           );
+          keyDownState[e.key] = true;
         }
         // L'appui sur la flèche du haut augmente le volume de 25%
         if (
@@ -659,6 +717,7 @@ const createTrackList = () => {
             "fifth",
             "third"
           );
+          keyDownState[e.key] = true;
         }
         // L'appui sur la flèche du bas baisse le volume de 25%
         if (
@@ -673,6 +732,7 @@ const createTrackList = () => {
             "fifth",
             "third"
           );
+          keyDownState[e.key] = true;
         }
         // L'appui sur la flèche de gauche lance la piste précédente
         if (
@@ -680,33 +740,8 @@ const createTrackList = () => {
           (keyDownState[e.key] === false || !keyDownState[e.key])
         ) {
           e.preventDefault();
-          window.player.previousTrack();
-          if (!mute) mute = true;
-          if (parseInt(loadedTrack.id) - 1 >= 0) {
-            selectedTracks.forEach((selectedTrack) => {
-              let trackListLine = document.getElementById(
-                `${selectedTrack.id}`
-              );
-              changeTrackBehavior(trackListLine, selectedTrack, "unselected");
-            });
-            selectedTracks = [];
-            changeTrackBehavior(
-              document.getElementById(`${loadedTrack.id}`),
-              playlist[loadedTrack.id],
-              "unloaded"
-            );
-            loadedTrack = playlist[parseInt(loadedTrack.id) - 1];
-            changeTrackBehavior(
-              document.getElementById(`${loadedTrack.id}`),
-              loadedTrack,
-              "loaded"
-            );
-            scrollParentToChild(
-              tracklist,
-              document.getElementById(`${loadedTrack.id}`)
-            );
-            tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
-          }
+          handleChangeTrack("previous");
+          keyDownState[e.key] = true;
         }
         // L'appui sur la flèche de gauche lance la piste suivante
         if (
@@ -714,33 +749,8 @@ const createTrackList = () => {
           (keyDownState[e.key] === false || !keyDownState[e.key])
         ) {
           e.preventDefault();
-          window.player.nextTrack();
-          if (!mute) mute = true;
-          if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
-            selectedTracks.forEach((selectedTrack) => {
-              let trackListLine = document.getElementById(
-                `${selectedTrack.id}`
-              );
-              changeTrackBehavior(trackListLine, selectedTrack, "unselected");
-            });
-            selectedTracks = [];
-            changeTrackBehavior(
-              document.getElementById(`${loadedTrack.id}`),
-              playlist[loadedTrack.id],
-              "unloaded"
-            );
-            loadedTrack = playlist[parseInt(loadedTrack.id) + 1];
-            changeTrackBehavior(
-              document.getElementById(`${loadedTrack.id}`),
-              loadedTrack,
-              "loaded"
-            );
-            scrollParentToChild(
-              tracklist,
-              document.getElementById(`${loadedTrack.id}`)
-            );
-            tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
-          }
+          handleChangeTrack("next");
+          keyDownState[e.key] = true;
         }
         if (
           (e.key === "F" || e.key === "f") &&
@@ -748,9 +758,9 @@ const createTrackList = () => {
           e.ctrlKey
         ) {
           window.player.setFullScreen();
+          keyDownState[e.key] = true;
         }
       }
-      keyDownState[e.key] = true;
     });
 
     // Lorsque la touche est lâchée, le keyDownState correspondant est remis à false
@@ -975,58 +985,10 @@ muteButton.addEventListener("click", () => {
   }
 });
 previousButton.addEventListener("click", () => {
-  window.player.previousTrack();
-  if (!mute) mute = true;
-  if (parseInt(loadedTrack.id) - 1 >= 0) {
-    selectedTracks.forEach((selectedTrack) => {
-      let trackListLine = document.getElementById(`${selectedTrack.id}`);
-      changeTrackBehavior(trackListLine, selectedTrack, "unselected");
-    });
-    selectedTracks = [];
-    changeTrackBehavior(
-      document.getElementById(`${loadedTrack.id}`),
-      playlist[loadedTrack.id],
-      "unloaded"
-    );
-    loadedTrack = playlist[parseInt(loadedTrack.id) - 1];
-    changeTrackBehavior(
-      document.getElementById(`${loadedTrack.id}`),
-      loadedTrack,
-      "loaded"
-    );
-    scrollParentToChild(
-      tracklist,
-      document.getElementById(`${loadedTrack.id}`)
-    );
-    tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
-  }
+  handleChangeTrack("previous");
 });
 nextButton.addEventListener("click", () => {
-  window.player.nextTrack();
-  if (!mute) mute = true;
-  if (parseInt(loadedTrack.id) + 1 <= playlist.length - 1) {
-    selectedTracks.forEach((selectedTrack) => {
-      let trackListLine = document.getElementById(`${selectedTrack.id}`);
-      changeTrackBehavior(trackListLine, selectedTrack, "unselected");
-    });
-    selectedTracks = [];
-    changeTrackBehavior(
-      document.getElementById(`${loadedTrack.id}`),
-      playlist[loadedTrack.id],
-      "unloaded"
-    );
-    loadedTrack = playlist[parseInt(loadedTrack.id) + 1];
-    changeTrackBehavior(
-      document.getElementById(`${loadedTrack.id}`),
-      loadedTrack,
-      "loaded"
-    );
-    scrollParentToChild(
-      tracklist,
-      document.getElementById(`${loadedTrack.id}`)
-    );
-    tracklistLength.innerText = `${loadedTrack.trackNumber} / ${playlist.length}`;
-  }
+  handleChangeTrack("next");
 });
 
 // Gestion de l'input relative aux temps de la loadedTrack
@@ -1054,7 +1016,7 @@ window.player.displaySlidingBackgroundColor(volumeControl, "fifth", "third");
 //////////////////////// PARTIE TEAMLIST ////////////////////////
 
 // Teams stocke les informations relative à chaque équipe (nom, score)
-const teams = [];
+const teams = JSON.parse(window.localStorage.getItem("teams")) || [];
 let sortTeamsState = null;
 const sortAscAlphaButton = document.getElementById("sortAscAlpha");
 const sortDescAlphaButton = document.getElementById("sortDescAlpha");
@@ -1077,7 +1039,7 @@ const createTeamList = () => {
   if (sortTeamsState) handleSort(sortTeamsState);
   const teamList = document.getElementById("teamlist");
   teamList.innerHTML =
-    '<li class="w-full p-1 pl-4 flex justify-center gap-4"><button class="h-10 w-10 flex justify-center items-center font-bold border border-solid border-black shadow-buttonShadow rounded-3xl group" id="addTeam"><img src="./src/assets/icons/add.png" class="h-4 w-4 group-hover:scale-125"></img></button><button class="h-10 w-10 flex justify-center items-center font-bold border border-solid border-black shadow-buttonShadow rounded-3xl group" id="resetScores"><img src="./src/assets/icons/reset.png" class="h-4 w-4 group-hover:scale-125"></img></button></li>';
+    '<li class="w-full p-1 pl-4 flex justify-center gap-4"><button class="h-10 w-10 flex justify-center items-center font-bold border border-solid border-black shadow-buttonShadow rounded-3xl group" id="addTeam"><img src="../src/assets/icons/add.png" class="h-4 w-4 group-hover:scale-125"></img></button><button class="h-10 w-10 flex justify-center items-center font-bold border border-solid border-black shadow-buttonShadow rounded-3xl group" id="resetScores"><img src="../src/assets/icons/reset.png" class="h-4 w-4 group-hover:scale-125"></img></button></li>';
   const addTeamButton = document.getElementById("addTeam");
   const resetScoresButton = document.getElementById("resetScores");
   addTeamButton.addEventListener("click", () => addTeamLine());
@@ -1095,6 +1057,7 @@ const createTeamList = () => {
   for (let team of teams) {
     addTeamLine(team);
   }
+  window.localStorage.setItem("teams", JSON.stringify(teams));
 };
 
 // Logique de modification du score lors du clic sur les boutons
@@ -1170,6 +1133,23 @@ const resetSortButtonsStyle = (clickedButton) => {
     "font-bold",
     "rounded-teamSettingsSelected"
   );
+};
+
+// Cette fonction gère la réinitialisation du display complet de la secondaryWindow
+const resetDisplay = () => {
+  resetDisplayButtonsStyle(videoOnlyDisplayButton);
+  window.display.displayVideoOnly();
+  imageList.value = "video";
+  window.display.displayImage(null);
+  displayImageBlock.classList.remove("bg-primary");
+  gifList.value = "";
+  window.display.displayGif(gifList.value);
+  gifBlock.classList.remove("bg-primary");
+  if (displayInfo) {
+    displayInfo = !displayInfo;
+    window.display.displayInfo(displayInfo, displayRoundsState);
+    displayInfoBlock.classList.remove("bg-primary");
+  }
 };
 
 // Création d'une ligne d'équipe
@@ -1316,6 +1296,7 @@ const addTeamLine = (teamToAdd) => {
     handleSort(sortTeamsState);
     createTeamList();
   });
+  window.localStorage.setItem("teams", JSON.stringify(teams));
 };
 
 // Au chargement de la fenêtre, la teamList est initialisée
@@ -1374,42 +1355,44 @@ document.addEventListener("keydown", (e) => {
     e.key === "F1" &&
     (keyDownState[e.key] === false || !keyDownState[e.key])
   ) {
-    resetDisplayButtonsStyle(videoOnlyDisplayButton);
-    window.display.displayVideoOnly();
-    imageList.value = "video";
-    window.display.displayImage(null);
-    gifList.value = "";
-    window.display.displayGif(gifList.value);
-    if (displayInfo) {
-      displayInfo = !displayInfo;
-      window.display.displayInfo(displayInfo, displayRoundsState);
-    }
+    e.preventDefault();
+    resetDisplay();
+    keyDownState[e.key] = true;
   }
   // Lors de l'appui sur F2, le mode display passe sur video + scores
   if (
     e.key === "F2" &&
     (keyDownState[e.key] === false || !keyDownState[e.key])
   ) {
+    e.preventDefault();
     if (teams.length > 0) {
       resetDisplayButtonsStyle(videoAndScoresDisplayButton);
       window.display.displayVideoAndScores(teams);
     }
+    keyDownState[e.key] = true;
   }
   // Lors de l'appui sur F3, le mode display passe sur video + podium
   if (
     e.key === "F3" &&
     (keyDownState[e.key] === false || !keyDownState[e.key])
   ) {
+    e.preventDefault();
     if (teams.length > 0) {
       resetDisplayButtonsStyle(videoAndPodiumDisplayButton);
       window.display.displayVideoAndPodium(
         teams.sort((a, b) => b.score - a.score)
       );
     }
+    keyDownState[e.key] = true;
   }
 });
 
 //////////////////////// PARTIE IMAGES ////////////////////////
+
+// Le displayInfo permet de savoir si le carton d'info est actuellement affiché ou non sur la secondaryWindow
+let displayInfo = false;
+// Le displayRoundsState permet la gestion de l'affichage ou non des différents horaires des manches
+let displayRoundsState = { first: null, second: null, isDisplay: false };
 
 const addImageForm = document.getElementById("addImageForm");
 const addImageInput = document.getElementById("addImageInput");
@@ -1527,6 +1510,7 @@ for (let song of songsLibrary) {
     audioplayer.src = song.src;
     audioplayer.currentTime = song.start;
     songTitleDisplay.innerText = song.title;
+    audioplayer.play();
   });
 }
 

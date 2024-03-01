@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./*.{html,js}"],
+  content: [
+    "./*.{html,js}",
+    "./main_window/*.{html,js}",
+    "./secondary_window/*.{html,js}",
+  ],
   theme: {
     extend: {
       colors: {
@@ -13,6 +17,7 @@ module.exports = {
       },
       fontFamily: {
         raleway: "Raleway",
+        wickedhearts: "wickedhearts",
       },
       boxShadow: {
         buttonShadow: "3px 3px black",

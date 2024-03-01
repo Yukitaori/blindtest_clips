@@ -30,11 +30,9 @@ ipcRenderer.on("playFile", (event, path) => {
     ipcRenderer.send("duration", videoPlayer.duration.toFixed());
   });
   videoPlayer.addEventListener("ended", () => {
-    delete videoPlayer.src;
     clearInterval(intervals[0]);
     ipcRenderer.send("videoover");
     videoPlayer.src = "";
-    // TODO Mettre en place un écran noir lors de l'arrêt et supprimer la source
   });
 });
 
@@ -60,9 +58,8 @@ ipcRenderer.on("pause", () => {
 // Ecoute du message "stop" et arrêt de la video
 ipcRenderer.on("stop", () => {
   let videoPlayer = document.getElementById("videoplayer");
-  videoPlayer.load();
   clearInterval(intervals[0]);
-  // TODO Mettre en place un écran noir lors de l'arrêt et supprimer la source
+  videoPlayer.src = "";
 });
 
 // Ecoute du message "mute" et mise en silence de la video
@@ -85,7 +82,6 @@ ipcRenderer.on("changeTime", (event, time) => {
 ipcRenderer.on("changeVolume", (event, volume) => {
   let videoPlayer = document.getElementById("videoplayer");
   videoPlayer.volume = volume;
-  console.log(videoPlayer.volume);
 });
 
 // Ecoute du message "displayVideoOnly" et affichage de la video sans les scores dans la secondaryWindow
@@ -182,9 +178,9 @@ ipcRenderer.on("displayVideoAndPodium", (event, teams) => {
   let displayScores = document.createElement("div");
   let nodeToRemove = document.getElementById("displayscores");
   let trophiesUrl = [
-    "./src/assets/images/gold-trophy.png",
-    "./src/assets/images/silver-trophy.png",
-    "./src/assets/images/bronze-trophy.png",
+    "../src/assets/images/gold-trophy.png",
+    "../src/assets/images/silver-trophy.png",
+    "../src/assets/images/bronze-trophy.png",
   ];
   if (nodeToRemove) displayScreen.removeChild(nodeToRemove);
   displayScores.setAttribute("id", "displayscores");
@@ -323,7 +319,6 @@ ipcRenderer.on("displayGif", (event, path) => {
 
 // Ecoute du message "displayInfo" et affichage du carton d'info + les informations de manches le cas échéant
 ipcRenderer.on("displayInfo", (event, isDisplay, displayRoundsState) => {
-  console.log(isDisplay);
   let infoBackground = document.getElementById("infoBackground");
   let roundsDisplay = document.getElementById("roundsDisplay");
   let firstRoundDisplay = document.getElementById("firstRoundDisplay");
@@ -341,7 +336,6 @@ ipcRenderer.on("displayInfo", (event, isDisplay, displayRoundsState) => {
     displayRoundsState.isDisplay &&
     (displayRoundsState.first || displayRoundsState.second)
   ) {
-    console.log(displayRoundsState);
     if (displayRoundsState.first && displayRoundsState.second) {
       roundsDisplay.classList.remove("hidden");
       roundsDisplay.classList.add("flex");
@@ -355,6 +349,22 @@ ipcRenderer.on("displayInfo", (event, isDisplay, displayRoundsState) => {
   } else {
     roundsDisplay.classList.remove("flex");
     roundsDisplay.classList.add("hidden");
+  }
+});
+
+// Ecoute du message "displayInfo" et affichage du carton d'info + les informations de manches le cas échéant
+ipcRenderer.on("displayCategory", (event, category, isDisplay) => {
+  let categoryBackground = document.getElementById("categoryBackground");
+  let categoryInfo = document.getElementById("categoryInfo");
+  isDisplay
+    ? (categoryInfo.innerText = category.toUpperCase())
+    : (categoryInfo.innerText = ``);
+  if (isDisplay) {
+    categoryBackground.classList.remove("hidden");
+    categoryBackground.classList.add("flex");
+  } else {
+    categoryBackground.classList.remove("flex");
+    categoryBackground.classList.add("hidden");
   }
 });
 
