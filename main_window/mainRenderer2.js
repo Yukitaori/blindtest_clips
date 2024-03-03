@@ -1,3 +1,13 @@
+//////////////////////// MENU ////////////////////////
+
+const infoModalCloseButton = document.getElementById("infoModalCloseButton");
+
+infoModalCloseButton.addEventListener("click", () => {
+  let infoModal = document.getElementById("infoModal");
+  infoModal.classList.remove("flex");
+  infoModal.classList.add("hidden");
+});
+
 //////////////////////// GENERAL ////////////////////////
 
 // le keyDownState enregistre l'état appuyé ou non des différentes touches, afin d'éviter le repeat lors du keydown
@@ -795,7 +805,7 @@ const addEventListenersToTracklistButtons = () => {
     let modalBackground = document.createElement("div");
     modalBackground.classList.add(
       "bg-transparentDisplay",
-      "absolute",
+      "fixed",
       "top-0",
       "w-full",
       "h-full",
