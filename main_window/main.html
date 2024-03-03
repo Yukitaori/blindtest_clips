@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="h-full w-full">
   <head>
     <meta charset="UTF-8" />
     <meta
@@ -13,7 +13,611 @@
     <link href="../dist/styles.css" rel="stylesheet" />
     <title>Main window</title>
   </head>
-  <body class="bg-third relative">
+  <body
+    class="bg-third relative w-full min-w-fit h-full min-h-fit overflow-auto"
+  >
+    <div
+      id="infoModal"
+      class="hidden bg-transparentDisplay fixed top-0 w-full h-full justify-center items-items overflow-hidden z-50"
+    >
+      <div
+        class="m-4 my-[5vh] w-[90vw] h-[90vh] max-h-[90%] flex bg-third rounded-3xl relative"
+      >
+        <button
+          class="absolute top-2 right-2 h-10 w-10 shadow-buttonShadow flex justify-center items-center border border-solid border-black rounded-3xl transition-all group"
+          id="infoModalCloseButton"
+        >
+          <img
+            src="../src/assets/icons/close.png"
+            class="h-4 w-4 group-hover:scale-125 transition-all"
+          />
+        </button>
+        <div class="w-full mt-12 overflow-auto" id="infoContent">
+          <h1
+            class="w-full text-2xl font-bold text-center border-y-2 border-black border-solid bg-fifth text-primary mt-2"
+          >
+            Info
+          </h1>
+          <div class="p-2 overflow-auto">
+            <details>
+              <summary class="text-xl font-extrabold underline">
+                Liste de lecture
+              </summary>
+              <div class="py-2 text-fourth flex flex-col gap-2">
+                <div class="pl-8 flex flex-col gap-2">
+                  <h2 class="text-xl font-bold underline">A savoir</h2>
+                  <p class="pl-4 w-max-[70ch]">
+                    Si l'application est fermée, intentionnellement ou non, la
+                    playlist sera récupérée en l'état. Celle-ci est sauvegardée
+                    à chaque fois qu'elle est modifiée.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Au lancement d'une nouvelle piste, le mode muet est
+                    automatiquement activé.
+                  </p>
+                </div>
+              </div>
+              <div class="py-2 text-fourth flex flex-col gap-2">
+                <div class="pl-8 flex flex-col gap-2">
+                  <h2 class="text-xl font-bold underline">
+                    Ajouter des pistes
+                  </h2>
+                  <p class="pl-4 w-max-[70ch]">
+                    Il est possible d'ajouter des pistes dans la playlist en
+                    réalisant un glisser-déposer dans la zone concernée.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Si des pistes sont déjà présentes dans la playlist, les
+                    pistes peuvent être placées avant ou après une piste déjà
+                    existante.
+                  </p>
+                </div>
+                <div class="pl-8 flex flex-col gap-2">
+                  <h2 class="text-xl font-bold underline">
+                    Sélectionner des pistes
+                  </h2>
+                  <p class="pl-4 w-max-[70ch]">
+                    Il est possible de sélectionner une piste en effectuant un
+                    clic simple dessus.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Pour sélectionner plusieurs pistes, il est possible de
+                    maintenir les touches "Ctrl" ou "Shift" appuyées.
+                  </p>
+                </div>
+                <div class="pl-8 flex flex-col gap-2">
+                  <h2 class="text-xl font-bold underline">
+                    Intéragir avec des pistes
+                  </h2>
+                  <p class="pl-4 w-max-[70ch]">
+                    Pour lancer la lecture d'une vidéo, il est possible soit de
+                    double-cliquer sur la piste correspondante, soit d'appuyer
+                    sur "Entrée" si la piste est la seule sélectionnée.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Il est possible de supprimer les pistes sélectionnées en
+                    appuyant sur la touche "Suppr".
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Les pistes peuvent être déplacées plus haut ou plus bas dans
+                    la playlist uniquement si elles sont sélectionnées.
+                  </p>
+                </div>
+                <div class="pl-8 flex flex-col gap-2">
+                  <h2 class="text-xl font-bold underline">
+                    Menu de la playlist
+                  </h2>
+                  <p class="pl-4 w-max-[70ch]">
+                    Le menu déroulant "Manche" permet de changer le numéro de
+                    manche attribué à chaque piste sélectionnée (par défaut
+                    "01").
+                  </p>
+                  <p class="pl-4 w-max-[70ch] flex flex-row items-center">
+                    Le bouton &nbsp;
+                    <span
+                      class="h-8 w-8 border border-black shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
+                    >
+                      <span class="text-center line-through"> 01 </span>
+                    </span>
+                    &nbsp; permet de supprimer ou remettre le texte relatif au
+                    numéro de piste du nom de fichier d'origine, afin de le
+                    "nettoyer". Il est utile lorsque les pistes ont été
+                    réorganisées.
+                  </p>
+                  <p class="pl-4 w-max-[70ch] flex flex-row">
+                    Le bouton &nbsp;
+                    <span
+                      class="h-8 w-8 border border-black shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
+                    >
+                      <span class="text-center">01</span>
+                    </span>
+                    &nbsp; permet d'afficher ou non à la piste le numéro de
+                    piste associé.
+                  </p>
+                  <p class="pl-4 w-max-[70ch] flex flex-row">
+                    Le bouton &nbsp;
+                    <span
+                      class="h-8 w-8 border border-black shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
+                    >
+                      <span>🔍</span>
+                    </span>
+                    &nbsp; permet d'afficher une fenêtre récapitulative
+                    permettant une vue d'ensemble de la playlist.
+                  </p>
+                  <p class="pl-4 w-max-[70ch] flex flex-row">
+                    Le bouton &nbsp;
+                    <span
+                      class="h-8 w-8 border border-black shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
+                    >
+                      <img class="h-4 w-4" src="../src/assets/icons/hide.png" />
+                    </span>
+                    &nbsp; permet de flouter la playlist si un besoin de
+                    confidentialité se fait ressentir.
+                  </p>
+                  <p class="pl-4 w-max-[70ch] flex flex-row">
+                    Le bouton &nbsp;
+                    <span
+                      class="h-8 w-8 border border-black shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
+                    >
+                      <span>🗑️</span>
+                    </span>
+                    &nbsp; permet de vider la playlist.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Le menu déroulant "Catégorie" permet de mettre en gras
+                    chaque piste sélectionnée afin de la distinguer des pistes
+                    hors catégorie.
+                  </p>
+                </div>
+                <div class="pl-8 flex flex-col gap-2">
+                  <h2 class="text-xl font-bold underline">Lecture</h2>
+                  <p class="pl-4 w-max-[70ch]">
+                    Au cours de la lecture d'une piste, celle-ci peut être mise
+                    en pause en appuyant sur la touche "Espace".
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Pour passer à la piste suivante, il est possible d'appuyer
+                    sur la touche "→". Pour revenir à la piste précédente, il
+                    s'agit de la touche "←".
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Les touches "↑" et "↓" permettent respectivement d'augmenter
+                    le volume de 25% et de baisser le volume de 25%.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    L'appuis sur la touche "V" permet de réinitialiser
+                    entièrement le volume à 100%.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Il est possible d'activer ou désactiver le mute en appuyant
+                    sur la touche "M".
+                  </p>
+                </div>
+              </div>
+            </details>
+            <details>
+              <summary class="text-xl font-extrabold underline">
+                Contrôle des scores
+              </summary>
+              <div class="py-2 text-fourth flex flex-col gap-2">
+                <div class="pl-8 flex flex-col gap-2">
+                  <h2 class="text-xl font-bold underline">A savoir</h2>
+                  <p class="pl-4 w-max-[70ch]">
+                    Si l'application est fermée, intentionnellement ou non, la
+                    liste des équipes sera récupérée en l'état. Celle-ci est
+                    sauvegardée à chaque fois qu'elle est modifiée.
+                  </p>
+                </div>
+                <div class="pl-8 flex flex-col gap-2">
+                  <h2 class="text-xl font-bold underline">
+                    Gestion des équipes
+                  </h2>
+                  <p class="pl-4 w-max-[70ch] flex items-center">
+                    Pour ajouter une nouvelle équipe, il faut cliquer sur le
+                    bouton &nbsp;
+                    <span
+                      class="h-8 w-8 flex justify-center items-center font-bold border border-solid border-black shadow-buttonShadow rounded-3xl"
+                      ><img src="../src/assets/icons/add.png" class="h-4 w-4"
+                    /></span>
+                    &nbsp;.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Pour modifier le nom d'une équipe, il faut cliquer sur le
+                    champ où celui-ci apparaît, puis valider le nouveau nom avec
+                    la touche "Entrée".
+                  </p>
+                  <p class="pl-4 w-max-[70ch] flex flex-row">
+                    Le bouton &nbsp;
+                    <span
+                      class="h-8 w-8 border border-black shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
+                    >
+                      <span>🗑️</span>
+                    </span>
+                    &nbsp; situé à côté du score d'une équipe permet de
+                    supprimer celle-ci.
+                  </p>
+                </div>
+                <div class="pl-8 flex flex-col gap-2">
+                  <h2 class="text-xl font-bold underline">
+                    Gestion des scores
+                  </h2>
+                  <p class="pl-4 w-max-[70ch] flex items-center">
+                    Pour réinitialiser les scores, il faut cliquer sur le bouton
+                    &nbsp;
+                    <span
+                      class="h-8 w-8 flex justify-center items-center font-bold border border-solid border-black shadow-buttonShadow rounded-3xl"
+                      ><img src="../src/assets/icons/reset.png" class="h-4 w-4"
+                    /></span>
+                    &nbsp;.
+                  </p>
+                </div>
+                <div class="pl-8 flex flex-col gap-2">
+                  <h2 class="text-xl font-bold underline">Tri des équipes</h2>
+                  <p class="pl-4 w-max-[70ch]">
+                    L'appui sur la touche "A-Z" trie de manière ponctuelle les
+                    équipes dans l'ordre alphabétique.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    L'appui sur la touche "Z-A" trie de manière ponctuelle les
+                    équipes dans l'ordre inverse de l'ordre alphabétique.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    L'appui sur la touche "1-3" trie de manière ponctuelle les
+                    équipes dans l'ordre croissant des scores.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    L'appui sur la touche "3-1" trie de manière ponctuelle les
+                    équipes dans l'ordre décroissant des scores.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Le tri n'est pas persistant : si un score est modifié suite
+                    à un tri, l'ordre des équipes restera identique tant que
+                    l'utilisateur n'aura pas de nouveau appuyé sur un bouton de
+                    tri.
+                  </p>
+                </div>
+                <div class="pl-8 flex flex-col gap-2">
+                  <h2 class="text-xl font-bold underline">
+                    Affichage des scores
+                  </h2>
+                  <p class="pl-4 w-max-[70ch]">
+                    Le bouton "Video" permet de n'afficher que la vidéo sur le
+                    second écran. C'est le mode d'affichage par défaut. Il est
+                    également possible de sélectionner cette option en appuyant
+                    sur la touche "F1"
+                    <strong class="underline"
+                      >(Attention ! L'utilisation de la touche "F1" réinitialise
+                      l'intégralité de l'affichage : gifs, images et cartons
+                      compris)</strong
+                    >.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Le bouton "Scores" permet d'afficher les équipes et les
+                    scores (dans l'ordre décroissant des scores) en plus de la
+                    video sur le second écran. Il est également possible de
+                    sélectionner cette option en appuyant sur la touche "F2".
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Le bouton "Podium" permet d'afficher le podium (les trois
+                    premières équipes dans l'ordre décroissant des scores) en
+                    plus de la video sur le second écran. Il est également
+                    possible de sélectionner cette option en appuyant sur la
+                    touche "F3".
+                  </p>
+                </div>
+              </div>
+            </details>
+            <details>
+              <summary class="text-xl font-extrabold underline">
+                Cartons
+              </summary>
+              <div class="py-2 text-fourth flex flex-col gap-2">
+                <div class="pl-8 flex flex-col gap-2">
+                  <h2 class="text-xl font-bold underline">
+                    Affichage d'images personnalisées
+                  </h2>
+                  <p class="pl-4 w-max-[70ch]">
+                    Pour afficher des images personnaliser, faut les ajouter via
+                    le menu accessible avec le bouton "+", puis cliquer sur le
+                    bouton "Ajouter les images".
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Une fois cette manipulation effectuée, les images ajoutées
+                    sont disponibles dans la liste déroulante (par défaut
+                    "Video"). Le clic sur une des options a pour effet de
+                    l'afficher sur le second écran.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Pour ne plus afficher l'image sélectionnée, il faut
+                    sélectionner l'option "Video".
+                  </p>
+                  <p class="pl-4 w-max-[70ch] flex flex-row">
+                    Le bouton &nbsp;
+                    <span
+                      class="h-8 w-8 border border-black shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
+                    >
+                      <span>🗑️</span>
+                    </span>
+                    &nbsp; permet de vider la liste des images, si besoin.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    L'appui sur la touche "F1" permet de réinitialiser
+                    entièrement l'affichage du second écran pour n'afficher que
+                    la video.
+                  </p>
+                </div>
+                <div class="pl-8 flex flex-col gap-2">
+                  <h2 class="text-xl font-bold underline">
+                    Affichage de l'écran d'accueil et des manches
+                  </h2>
+                  <p class="pl-4 w-max-[70ch]">
+                    Il est possible d'afficher l'écran d'accueil en appuyant sur
+                    le bouton "Des Gens Cool". Un second appui sur le bouton
+                    arrêtera l'affichage.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Pour afficher les horaires des manches, il faut renseigner
+                    les champs correspondant, puis cocher la case "Afficher les
+                    manches", et réinitisaliser l'affichage de l'écran d'accueil
+                    en activant le bouton "Des Gens Cool" (les modifications ne
+                    sont pas répercutées sur le second écran spontanément).
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Si seul l'horaire de la première manche est renseigné,
+                    l'écran d'accueil ne précisera pas de numéro de manche.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    L'appui sur la touche "F1" permet de réinitialiser
+                    entièrement l'affichage du second écran pour n'afficher que
+                    la video.
+                  </p>
+                </div>
+                <div class="pl-8 flex flex-col gap-2">
+                  <h2 class="text-xl font-bold underline">
+                    Affichage des catégories
+                  </h2>
+                  <p class="pl-4 w-max-[70ch]">
+                    Pour renseigner le nom d'une catégorie, il suffit de
+                    l'indiquer dans le champ relatif à celle-ci.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Pour activer ou désactiver l'affichage de l'écran d'annonce
+                    d'une catégorie, il faut cliquer sur le bouton correspondant
+                    au numéro de celle-ci.
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    L'appui sur la touche "F1" permet de réinitialiser
+                    entièrement l'affichage du second écran pour n'afficher que
+                    la video.
+                  </p>
+                </div>
+              </div>
+            </details>
+            <details>
+              <summary class="text-xl font-extrabold underline">Media</summary>
+              <div class="py-2 text-fourth flex flex-col gap-2">
+                <div class="pl-8 flex flex-col gap-2">
+                  <h2 class="text-xl font-bold underline">Musiques</h2>
+                  <p class="pl-4 w-max-[70ch]">
+                    L'appui sur chaque bouton lancera la musique correspondante.
+                    La piste video en cours, s'il y en a une, est alors
+                    automatiquement mutée.
+                  </p>
+                  <p class="pl-4 w-max-[70ch] flex flex-row">
+                    Le bouton &nbsp;
+                    <span
+                      class="h-8 w-8 border border-black shadow-buttonShadow rounded-full transition-all flex justify-center items-center group"
+                    >
+                      <img
+                        class="h-4 w-4"
+                        src="../src/assets/icons/fader.png"
+                      />
+                    </span>
+                    &nbsp; permet d'effectuer un fondu afin de diffuser de
+                    nouveau le son de la video progressivement (si une video est
+                    en cours de diffusion), puis arrête la diffusion de la
+                    musique.
+                  </p>
+                </div>
+                <div class="pl-8 flex flex-col gap-2">
+                  <h2 class="text-xl font-bold underline">Gifs</h2>
+                  <p class="pl-4 w-max-[70ch]">
+                    Pour afficher un gif sur le second écran, il faut le
+                    sélectionner dans le menu déroulant "Gifs".
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    Pour arrêter l'affichage d'un gif, il faut sélectionner
+                    l'option "Gifs".
+                  </p>
+                  <p class="pl-4 w-max-[70ch]">
+                    L'appui sur la touche "F1" permet de réinitialiser
+                    entièrement l'affichage du second écran pour n'afficher que
+                    la video.
+                  </p>
+                </div>
+              </div>
+            </details>
+            <details>
+              <summary class="text-xl font-extrabold underline">
+                Raccourcis
+              </summary>
+              <div class="py-2 text-fourth flex flex-col gap-2">
+                <div class="pl-8 flex flex-col gap-2">
+                  <table>
+                    <thead>
+                      <tr class="bg-secondary">
+                        <th
+                          scope="col"
+                          class="border border-1 border-black text-fourth"
+                        >
+                          Touche
+                        </th>
+                        <th
+                          scope="col"
+                          class="border border-1 border-black text-fourth"
+                        >
+                          Description
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="bg-third">
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          F1
+                        </td>
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          Réinitialise entièrement l'affichage de la deuxième
+                          fenêtre pour ne plus afficher que la video.
+                        </td>
+                      </tr>
+                      <tr class="bg-primary">
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          F2
+                        </td>
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          Affiche les scores en plus de la video.
+                        </td>
+                      </tr>
+                      <tr class="bg-third">
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          F3
+                        </td>
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          Affiche le podium en plus de la video.
+                        </td>
+                      </tr>
+                      <tr class="bg-primary">
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          Entrée
+                        </td>
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          Lance la diffusion de la piste sélectionnée.
+                        </td>
+                      </tr>
+                      <tr class="bg-third">
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          Suppr
+                        </td>
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          Supprime les pistes sélectionnées.
+                        </td>
+                      </tr>
+                      <tr class="bg-primary">
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          Espace
+                        </td>
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          Active / Désactive la pause sur la video diffusée.
+                        </td>
+                      </tr>
+                      <tr class="bg-third">
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          M
+                        </td>
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          Active / Désactive le mode muet de la video diffusée.
+                        </td>
+                      </tr>
+                      <tr class="bg-primary">
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          V
+                        </td>
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          Réinitialise le volume à 100%.
+                        </td>
+                      </tr>
+                      <tr class="bg-third">
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          Ctrl + F
+                        </td>
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          Active / Désactive le mode plein écran de la deuxième
+                          fenêtre (le double-clic sur la fenêtre fonctionne
+                          également).
+                        </td>
+                      </tr>
+                      <tr class="bg-primary">
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          F11
+                        </td>
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          Active / Désactive le mode plein écran de la fenêtre
+                          principale.
+                        </td>
+                      </tr>
+                      <tr class="bg-third">
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          → / ←
+                        </td>
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          Lance la piste suivante / la piste précédente.
+                        </td>
+                      </tr>
+                      <tr class="bg-primary">
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          ↑ / ↓
+                        </td>
+                        <td
+                          class="border border-1 border-black text-center p-1"
+                        >
+                          Augmente / Diminue le volume de 25%.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="flex justify-between flex-wrap text-fourth">
       <section
         id="videoside"
@@ -281,7 +885,7 @@
               class="border-2 border-solid border-black shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
               id="videoScoreDisplay"
             >
-              Video + Scores
+              Scores
             </button>
             <button
               class="border-2 border-solid border-black shadow-buttonShadow rounded-teamSettings h-16 w-16 p-1 text-sm 2xl:h-20 2xl:w-20 2xl:text-base hover:font-bold transition-all"
@@ -311,7 +915,7 @@
             <p class="font-bold underline">Ajoute les images à la liste :</p>
             <label
               for="addImageInput"
-              class="h-[34px] rounded-2xl border border-solid border-black shadow-buttonShadow transition-all bg-third w-[150px] 2xl:w-full flex justify-center items-center cursor-pointer p-1 group"
+              class="w-32 h-[34px] rounded-2xl border border-solid border-black shadow-buttonShadow transition-all bg-third w-[150px] 2xl:w-full flex justify-center items-center cursor-pointer p-1 group"
               id="addImageLabel"
             >
               <img
